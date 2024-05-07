@@ -1,0 +1,6 @@
+@projet_csharp_travel_plan_HostAddress = http://localhost:5057
+
+GET {{projet_csharp_travel_plan_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
