@@ -1,4 +1,5 @@
-﻿using System;
+﻿using projet_csharp_travel_plan.Models;
+using System;
 using System.Collections.Generic;
 
 namespace projet_csharp_travel_plan_frontend.Models;
