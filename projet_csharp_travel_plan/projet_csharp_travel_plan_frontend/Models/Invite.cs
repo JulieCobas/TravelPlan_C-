@@ -1,11 +1,13 @@
 ﻿using projet_csharp_travel_plan_frontend.Models;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
-namespace projet_csharp_travel_plan.Models;
+namespace projet_csharp_travel_plan_frontend.Models;
 
 public partial class Invite
 {
+    [Key]
     public int IdInvitee { get; set; }
 
     public int IdUtilisateur { get; set; }

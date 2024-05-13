@@ -1,11 +1,12 @@
-﻿using projet_csharp_travel_plan.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace projet_csharp_travel_plan_frontend.Models;
 
 public partial class AspNetUser
 {
+    [Key]
     public string Id { get; set; } = null!;
 
     public int? IdUtilisateur { get; set; }

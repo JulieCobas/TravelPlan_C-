@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
-namespace projet_csharp_travel_plan.Models;
+namespace projet_csharp_travel_plan_frontend.Models;
 
 public partial class TransportOption
 {
+    [Key]
     public int IdOptionTransport { get; set; }
 
     public string? NumeroSiege { get; set; }

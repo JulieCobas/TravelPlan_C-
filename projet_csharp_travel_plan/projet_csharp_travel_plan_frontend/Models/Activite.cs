@@ -1,11 +1,12 @@
-﻿using projet_csharp_travel_plan_frontend.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
-namespace projet_csharp_travel_plan.Models;
+namespace projet_csharp_travel_plan_frontend.Models;
 
 public partial class Activite
 {
+    [Key]
     public int IdActivite { get; set; }
 
     public int? IdOptionActivite { get; set; }

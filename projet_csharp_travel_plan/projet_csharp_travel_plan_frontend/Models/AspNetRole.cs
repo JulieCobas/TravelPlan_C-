@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace projet_csharp_travel_plan_frontend.Models;
 
 public partial class AspNetRole
 {
+    [Key]
     public string Id { get; set; } = null!;
 
     public string? Name { get; set; }

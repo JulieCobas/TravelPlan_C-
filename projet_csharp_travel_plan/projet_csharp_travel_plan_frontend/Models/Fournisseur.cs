@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
-namespace projet_csharp_travel_plan.Models;
+namespace projet_csharp_travel_plan_frontend.Models;
 
 public partial class Fournisseur
 {
+    [Key]
     public int IdFournisseur { get; set; }
 
     public string NomCompagnie { get; set; } = null!;

@@ -1,11 +1,13 @@
 ﻿using projet_csharp_travel_plan_frontend.Models;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
-namespace projet_csharp_travel_plan.Models;
+namespace projet_csharp_travel_plan_frontend.Models;
 
 public partial class Reservation
 {
+    [Key]
     public int IdReservation { get; set; }
 
     public int? IdLogement { get; set; }

@@ -1,10 +1,11 @@
-﻿using projet_csharp_travel_plan.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 namespace projet_csharp_travel_plan_frontend.Models;
 
 public partial class Voyage
 {
+    [Key]
     public int IdVoyage { get; set; }
 
     public int IdUtilisateur { get; set; }

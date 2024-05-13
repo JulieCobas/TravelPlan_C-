@@ -1,11 +1,13 @@
 ﻿using projet_csharp_travel_plan_frontend.Models;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
-namespace projet_csharp_travel_plan.Models;
+namespace projet_csharp_travel_plan_frontend.Models;
 
 public partial class AspNetUserLogin
 {
+    [Key]
     public string LoginProvider { get; set; } = null!;
 
     public string ProviderKey { get; set; } = null!;
