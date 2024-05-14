@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using projet_csharp_travel_plan.DTO;  // Ajoutez cette ligne pour importer le namespace de PayDTO
 using projet_csharp_travel_plan.Models;
+using projet_csharp_travel_plan_frontend.DTO;
 
 namespace projet_csharp_travel_plan.Controllers
 {
@@ -20,14 +20,14 @@ namespace projet_csharp_travel_plan.Controllers
             _context = context;
         }
 
-        // GET: api/Voyages1
+        // GET: api/Voyages
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Voyage>>> GetVoyages()
         {
             return await _context.Voyages.ToListAsync();
         }
 
-        // GET: api/Voyages1/5
+        // GET: api/Voyages/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Voyage>> GetVoyage(int id)
         {
@@ -41,8 +41,23 @@ namespace projet_csharp_travel_plan.Controllers
             return voyage;
         }
 
-        // PUT: api/Voyages1/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        // GET: api/Voyages/Pays
+        [HttpGet("Pays")]
+        public async Task<ActionResult<IEnumerable<PayDTO>>> GetPays()
+        {
+            var pays = await _context.Pays
+                                     .Select(p => new PayDTO
+                                     {
+                                         Nom = p.Nom,
+                                         Region = p.Region,
+                                         Ville = p.Ville
+                                     })
+                                     .ToListAsync();
+
+            return pays;
+        }
+
+        // PUT: api/Voyages/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutVoyage(int id, Voyage voyage)
         {
@@ -72,8 +87,7 @@ namespace projet_csharp_travel_plan.Controllers
             return NoContent();
         }
 
-        // POST: api/Voyages1
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        // POST: api/Voyages
         [HttpPost]
         public async Task<ActionResult<Voyage>> PostVoyage(Voyage voyage)
         {
@@ -83,7 +97,7 @@ namespace projet_csharp_travel_plan.Controllers
             return CreatedAtAction("GetVoyage", new { id = voyage.IdVoyage }, voyage);
         }
 
-        // DELETE: api/Voyages1/5
+        // DELETE: api/Voyages/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteVoyage(int id)
         {
