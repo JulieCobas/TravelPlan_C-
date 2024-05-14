@@ -1,0 +1,93 @@
+﻿@model IEnumerable<projet_csharp_travel_plan_frontend.Models.Transport>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<h1>Liste des Transports</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Catégorie
+            </th>
+            <th>
+                Marque
+            </th>
+            <th>
+                Type
+            </th>
+            <th>
+                Nombre de siège
+            </th>
+            <th>
+                Nom de la compagnie
+            </th>
+            <th>
+                Numéro du siège
+            </th>
+            <th>
+                Bagage a main
+            </th>
+            <th>
+                Bagage en soute
+            </th>
+            <th>
+                Bagage large
+            </th>
+            <th>
+                Speedyboarding
+            </th>
+            <th>
+                Prix
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @item.IdCategorieTransportNavigation?.Nom <!-- Affiche le nom de la catégorie de transport, si disponible -->
+                </td>
+                <td>
+                    @item.IdVehiculeLocNavigation?.Marque <!-- Affiche la marque du transport, si disponible -->
+                </td>
+                <td>
+                    @item.IdVehiculeLocNavigation?.TypeVehicule <!-- Affiche le type du véhicule, si disponible -->
+                </td>
+                <td>
+                    @item.IdVehiculeLocNavigation?.NbSiege <!-- Affiche le nombre de siège du véhicule, si disponible -->
+                </td>
+                <td>
+                    @item.IdFournisseurNavigation?.NomCompagnie <!-- Affiche le nom de la compagnie, si disponible -->
+                </td>
+                <td>
+                    @item.IdOptionTransportNavigation?.NumeroSiege <!-- Affiche le numéro de siège, si disponible -->
+                </td>
+                <td>
+                    @item.IdOptionTransportNavigation?.BagageMain <!-- Affiche la sélection du bagage a main, si disponible -->
+                </td>
+                <td>
+                    @item.IdOptionTransportNavigation?.BagageEnSoute <!-- Affiche la sélection du bagage en soute, si disponible -->
+                </td>
+                <td>
+                    @item.IdOptionTransportNavigation?.BagageLarge <!-- Affiche la sélection du bagage large, si disponible -->
+                </td>
+                <td>
+                    @item.IdOptionTransportNavigation?.Speedyboarding <!-- Affiche la sélection du speedyboarding, si disponible -->
+                </td>
+                <td>
+                    @item.IdPrixTransportNavigation?.Prix <!-- Affiche le prix, si disponible -->
+                </td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.IdTransport">Details</a> |
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
