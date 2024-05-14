@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using projet_csharp_travel_plan.DTO;
 using projet_csharp_travel_plan.Models;
 
 namespace projet_csharp_travel_plan.Controllers
@@ -22,10 +23,36 @@ namespace projet_csharp_travel_plan.Controllers
 
         // GET: api/Activites
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Activite>>> GetActivites()
+        public async Task<ActionResult<IEnumerable<ActiviteDTO>>> GetActivites()
         {
-            return await _context.Activites.ToListAsync();
+            var activites = await _context.Activites
+                .Include(a => a.IdCatActivNavigation)
+                .Include(a => a.IdFournisseurNavigation)
+                .Include(a => a.IdOptionActiviteNavigation)
+                .Include(a => a.IdPaysNavigation)
+                .Include(a => a.IdPrixActiviteNavigation)
+                .Select(a => new ActiviteDTO
+                {
+                    Id = a.IdActivite,
+                    Nom = a.Nom,
+                    Details = a.Details,
+                    Note = a.Note,
+                    NbEvaluation = a.NbEvaluation,
+                    HeuresMoyennes = a.HeuresMoyennes.HasValue ? TimeSpan.FromHours(a.HeuresMoyennes.Value.Hour) : (TimeSpan?)null,
+                    // Ajoutez d'autres propriétés de l'activité selon vos besoins
+                    NomFournisseur = a.IdFournisseurNavigation.NomCompagnie,
+                    NomCategorie = a.IdCatActivNavigation.Nom,
+                    EquipementInclu = a.IdOptionActiviteNavigation.EquipementInclu,
+                    GuideAudio = a.IdOptionActiviteNavigation.GuideAudio,
+                    VisiteGuidee = a.IdOptionActiviteNavigation.VisiteGuidee,
+                    NomPays = a.IdPaysNavigation.Nom,
+                    Prix = a.IdPrixActiviteNavigation.Prix
+                })
+                .ToListAsync();
+
+            return activites;
         }
+
 
         // GET: api/Activites/5
         [HttpGet("{id}")]

@@ -1,4 +1,4 @@
-﻿@* @model projet_csharp_travel_plan_frontend.Models.Logement
+﻿@model projet_csharp_travel_plan_frontend.DTO.LogementDTO
 
 @{
     ViewData["Title"] = "Détails du Logement";
@@ -11,11 +11,11 @@
     <hr />
     <dl class="row">
         <dt class="col-sm-2">Fournisseur</dt>
-        <dd class="col-sm-10">@Model.IdFournisseurNavigation?.NomCompagnie</dd>
+        <dd class="col-sm-10">@Model.NomFournisseur</dd>
         <dt class="col-sm-2">Catégorie</dt>
-        <dd class="col-sm-10">@Model.IdLogementCategorieNavigation?.Nom</dd>
+        <dd class="col-sm-10">@Model.NomCategorie</dd>
         <dt class="col-sm-2">Pays</dt>
-        <dd class="col-sm-10">@Model.IdPaysNavigation?.Nom</dd>
+        <dd class="col-sm-10">@Model.NomPays</dd>
         <dt class="col-sm-2">Détails</dt>
         <dd class="col-sm-10">@Model.Details</dd>
         <dt class="col-sm-2">Note</dt>
@@ -28,8 +28,8 @@
         </dd>
     </dl>
     <p>
-        <a asp-action="Reserve" asp-route-logementId="@Model.IdLogement" class="btn btn-primary">Louer ce logement</a>
+        <a asp-controller="Logements" asp-action="Reserve" asp-route-logementId="@Model.Id" class="btn btn-primary">Louer ce logement</a>
+        <a asp-action="Index" class="btn btn-secondary">Retour à la liste des logements</a>
     </p>
 
 </div>
- *@
