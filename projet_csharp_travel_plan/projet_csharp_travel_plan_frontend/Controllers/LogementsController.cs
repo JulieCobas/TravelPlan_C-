@@ -3,7 +3,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using projet_csharp_travel_plan_frontend.Models;
+using projet_csharp_travel_plan_frontend.DTO; // Utilisation du DTO local au frontend
 
 namespace projet_csharp_travel_plan_frontend.Controllers
 {
@@ -17,20 +17,14 @@ namespace projet_csharp_travel_plan_frontend.Controllers
             _client = client;
         }
 
-        public async Task<IActionResult> Index(int? idPays)
+        // GET: Logements
+        public async Task<IActionResult> Index()
         {
-            // Vérifie si l'ID du pays est fourni
-            if (idPays == null)
-            {
-                return BadRequest(); // Retourne un code d'erreur si l'ID du pays n'est pas fourni
-            }
-
-            // Récupère les logements du pays spécifié avec les données des fournisseurs, des catégories de logements et des pays incluses
-            var response = await _client.GetAsync($"{API_URL}?idPays={idPays}&includeFournisseurs=true&includeCategories=true&includePays=true");
+            var response = await _client.GetAsync($"{API_URL}");
             if (response.IsSuccessStatusCode)
             {
                 var json = await response.Content.ReadAsStringAsync();
-                var logements = JsonConvert.DeserializeObject<List<Logement>>(json);
+                var logements = JsonConvert.DeserializeObject<List<LogementDTO>>(json); // Utilisation du DTO local au frontend
                 return View(logements);
             }
             return View("Error");
@@ -44,7 +38,7 @@ namespace projet_csharp_travel_plan_frontend.Controllers
             if (response.IsSuccessStatusCode)
             {
                 var json = await response.Content.ReadAsStringAsync();
-                var logement = JsonConvert.DeserializeObject<Logement>(json);
+                var logement = JsonConvert.DeserializeObject<LogementDTO>(json); // Utilisation du DTO local au frontend
                 return View(logement);
             }
             return View("Error");

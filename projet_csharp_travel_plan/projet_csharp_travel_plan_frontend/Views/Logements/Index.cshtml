@@ -1,4 +1,4 @@
-﻿@model IEnumerable<projet_csharp_travel_plan_frontend.Models.Logement>
+﻿@model IEnumerable<projet_csharp_travel_plan_frontend.DTO.LogementDTO> // Utilisation du DTO local au frontend
 
 @{
     ViewData["Title"] = "Liste des Logements";
@@ -9,38 +9,45 @@
     <a asp-action="ReserveWithoutSelection" class="btn btn-primary">Passer outre la sélection du logement</a>
 </p>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Nom du Logement</th>
-            <th>Fournisseur</th>
-            <th>Catégorie</th>
-            <th>Pays</th>
-            <th>Détails</th>
-            <th>Note</th>
-            <th>Nombre d'évaluations</th>
-            <th>Image</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
+@if (Model != null && Model.Any())
+{
+    <table class="table">
+        <thead>
             <tr>
-                <td>@item.Nom</td>
-                <td>@item.IdFournisseurNavigation?.NomCompagnie</td>
-                <td>@item.IdLogementCategorieNavigation?.Nom</td>
-                <td>@item.IdPaysNavigation?.Nom</td>
-                <td>@item.Details</td>
-                <td>@item.Note</td>
-                <td>@item.NbEvaluation</td>
-                <td>
-                    <!-- Vous devez décider comment afficher l'image -->
-                </td>
-                <td>
-                    <a asp-action="Details" asp-route-id="@item.IdLogement">Details</a>
-                </td>
+                <th>Nom du Logement</th>
+                <th>Fournisseur</th>
+                <th>Catégorie</th>
+                <th>Pays</th>
+                <th>Détails</th>
+                <th>Note</th>
+                <th>Nombre d'évaluations</th>
+                <th>Image</th>
+                <th></th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Nom</td>
+                    <td>@item.NomFournisseur</td>
+                    <td>@item.NomCategorie</td>
+                    <td>@item.NomPays</td>
+                    <td>@item.Details</td>
+                    <td>@item.Note</td>
+                    <td>@item.NbEvaluation</td>
+                    <td>
+                        <!-- Vous devez décider comment afficher l'image -->
+                    </td>
+                    <td>
+                        <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>Aucun logement disponible.</p>
+}
