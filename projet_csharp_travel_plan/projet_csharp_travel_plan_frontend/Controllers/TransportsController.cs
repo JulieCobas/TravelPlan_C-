@@ -58,30 +58,26 @@ namespace projet_csharp_travel_plan_frontend.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ConfirmSelection(Dictionary<string, TransportOptionsViewModel> options)
+        public async Task<IActionResult> ConfirmTransportSelection(int IdTransport, bool BagageMain, bool BagageEnSoute, bool BagageLarge, bool Speedyboarding)
         {
-            foreach (var option in options)
+            var response = await _client.GetAsync($"{API_URL}{IdTransport}");
+            if (!response.IsSuccessStatusCode)
             {
-                int idTransport = int.Parse(option.Key);
-                var response = await _client.GetAsync($"{API_URL}{idTransport}");
-                if (!response.IsSuccessStatusCode)
-                {
-                    return View("Error");
-                }
+                return View("Error");
+            }
 
-                var json = await response.Content.ReadAsStringAsync();
-                var transportDto = JsonConvert.DeserializeObject<TransportDto>(json);
+            var json = await response.Content.ReadAsStringAsync();
+            var transportDto = JsonConvert.DeserializeObject<TransportDto>(json);
 
-                transportDto.OptionTransportBagageMain = option.Value.BagageMain;
-                transportDto.OptionTransportBagageEnSoute = option.Value.BagageEnSoute;
-                transportDto.OptionTransportBagageLarge = option.Value.BagageLarge;
-                transportDto.OptionTransportSpeedyboarding = option.Value.Speedyboarding;
+            transportDto.OptionTransportBagageMain = BagageMain;
+            transportDto.OptionTransportBagageEnSoute = BagageEnSoute;
+            transportDto.OptionTransportBagageLarge = BagageLarge;
+            transportDto.OptionTransportSpeedyboarding = Speedyboarding;
 
-                var updateResponse = await _client.PutAsJsonAsync($"{API_URL}{transportDto.IdTransport}", transportDto);
-                if (!updateResponse.IsSuccessStatusCode)
-                {
-                    return View("Error");
-                }
+            var updateResponse = await _client.PutAsJsonAsync($"{API_URL}{transportDto.IdTransport}", transportDto);
+            if (!updateResponse.IsSuccessStatusCode)
+            {
+                return View("Error");
             }
 
             return RedirectToAction("Index", "Logements");

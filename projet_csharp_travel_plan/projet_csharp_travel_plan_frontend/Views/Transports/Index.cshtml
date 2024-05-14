@@ -10,7 +10,7 @@
 
 <form method="get">
     <select name="category" onchange="this.form.submit()">
-        <option value="">Select a Category</option>
+        <option value="">Sélectionner la catégorie de véhicule</option>
         <option value="Aérien">Aérien</option>
         <option value="Maritime">Maritime</option>
         <option value="Terrestre - Voiture">Terrestre - Voiture</option>
@@ -30,12 +30,8 @@
                     @if (selectedCategory == "Aérien" || selectedCategory == "Maritime" || selectedCategory == "Terrestre - Train")
                     {
                         <th>Nom de la compagnie</th>
-                        <th>Numéro du siège</th>
-                        <th>Bagage à main</th>
-                        <th>Bagage en soute</th>
-                        <th>Bagage large</th>
-                        <th>Speedyboarding</th>
                         <th>Prix</th>
+                        <th>Actions</th>
                     }
                     else if (selectedCategory == "Terrestre - Voiture")
                     {
@@ -58,20 +54,10 @@
                         @if (selectedCategory == "Aérien" || selectedCategory == "Maritime" || selectedCategory == "Terrestre - Train")
                         {
                             <td>@item.FournisseurNomCompagnie</td>
-                            <td>@item.OptionTransportNumeroSiege</td>
-                            <td>
-                                <input type="checkbox" name="options[@item.IdTransport].BagageMain" @(item.OptionTransportBagageMain == true ? "checked" : "") />
-                            </td>
-                            <td>
-                                <input type="checkbox" name="options[@item.IdTransport].BagageEnSoute" @(item.OptionTransportBagageEnSoute == true ? "checked" : "") />
-                            </td>
-                            <td>
-                                <input type="checkbox" name="options[@item.IdTransport].BagageLarge" @(item.OptionTransportBagageLarge == true ? "checked" : "") />
-                            </td>
-                            <td>
-                                <input type="checkbox" name="options[@item.IdTransport].Speedyboarding" @(item.OptionTransportSpeedyboarding == true ? "checked" : "") />
-                            </td>
                             <td>@item.PrixTransportPrix</td>
+                            <td>
+                                <a asp-action="Details" asp-route-id="@item.IdTransport" class="btn btn-info">Voir détails</a>
+                            </td>
                         }
                         else if (selectedCategory == "Terrestre - Voiture")
                         {
@@ -79,17 +65,21 @@
                             <td>@item.VehiculeLocTypeVehicule</td>
                             <td>@item.VehiculeLocNbSiege</td>
                             <td>@item.PrixTransportPrix</td>
+                            <td>
+                                <button type="submit" name="confirmTransport" value="@item.IdTransport" class="btn btn-primary">Confirmer et passer à la réservation de logement</button>
+                            </td>
                         }
                         else if (selectedCategory == "Cyclable")
                         {
                             <td>@item.PrixTransportPrix</td>
+                            <td>
+                                <button type="submit" name="confirmTransport" value="@item.IdTransport" class="btn btn-primary">Confirmer et passer à la réservation de logement</button>
+                            </td>
                         }
                     </tr>
                 }
             </tbody>
         </table>
-
-        <button type="submit" class="btn btn-primary">Confirmer et passer à la réservation de logement</button>
     </form>
 }
 

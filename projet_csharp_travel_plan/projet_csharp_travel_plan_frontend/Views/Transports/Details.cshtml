@@ -11,74 +11,52 @@
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.IdTransport)
+            Nom de la compagnie
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.IdTransport)
+            @Model.FournisseurNomCompagnie
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.IdVehiculeLoc)
+            Numéro du siège
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.IdVehiculeLoc)
+            @Model.OptionTransportNumeroSiege
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.IdCategorieTransport)
+            Bagage à main
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.IdCategorieTransport)
+            <input type="checkbox" name="BagageMain" @(Model.OptionTransportBagageMain == true ? "checked" : "") />
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.IdPrixTransport)
+            Bagage en soute
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.IdPrixTransport)
+            <input type="checkbox" name="BagageEnSoute" @(Model.OptionTransportBagageEnSoute == true ? "checked" : "") />
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.IdOptionTransport)
+            Bagage large
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.IdOptionTransport)
+            <input type="checkbox" name="BagageLarge" @(Model.OptionTransportBagageLarge == true ? "checked" : "") />
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.IdFournisseur)
+            Speedyboarding
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.IdFournisseur)
+            <input type="checkbox" name="Speedyboarding" @(Model.OptionTransportSpeedyboarding == true ? "checked" : "") />
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.IdPays)
+            Prix
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.IdPays)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.LieuDepart)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.LieuDepart)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.HeureDepart)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.HeureDepart)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.HeureArrivee)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.HeureArrivee)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Classe)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Classe)
+            @Model.PrixTransportPrix
         </dd>
     </dl>
 </div>
-<div>
-    @Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |
-    <a asp-action="Index">Back to List</a>
-</div>
+<form method="post" asp-action="ConfirmTransportSelection">
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="IdTransport" value="@Model.IdTransport" />
+    <button type="submit" class="btn btn-primary">Confirmer et passer à la réservation de logement</button>
+</form>
+<a asp-action="Index" class="btn btn-secondary">Retour à la liste</a>
