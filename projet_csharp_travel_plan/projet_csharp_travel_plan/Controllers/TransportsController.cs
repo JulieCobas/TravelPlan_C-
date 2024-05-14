@@ -1,11 +1,10 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using projet_csharp_travel_plan.DTO;
+using projet_csharp_travel_plan.Models;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using projet_csharp_travel_plan.Models;
 
 namespace projet_csharp_travel_plan.Controllers
 {
@@ -22,34 +21,117 @@ namespace projet_csharp_travel_plan.Controllers
 
         // GET: api/Transports
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Transport>>> GetTransports()
+        public async Task<ActionResult<IEnumerable<TransportDto>>> GetTransports()
         {
-            return await _context.Transports.ToListAsync();
+            var transports = await _context.Transports
+                .Include(t => t.IdCategorieTransportNavigation)
+                .Include(t => t.IdFournisseurNavigation)
+                .Include(t => t.IdOptionTransportNavigation)
+                .Include(t => t.IdPrixTransportNavigation)
+                .Include(t => t.IdVehiculeLocNavigation)
+                .ToListAsync();
+
+            return transports.Select(t => new TransportDto
+            {
+                IdTransport = t.IdTransport,
+                IdVehiculeLoc = t.IdVehiculeLoc,
+                IdCategorieTransport = t.IdCategorieTransport,
+                IdPrixTransport = t.IdPrixTransport,
+                IdOptionTransport = t.IdOptionTransport,
+                IdFournisseur = t.IdFournisseur,
+                IdPays = t.IdPays,
+                LieuDepart = t.LieuDepart,
+                HeureDepart = t.HeureDepart,
+                HeureArrivee = t.HeureArrivee,
+                Classe = t.Classe,
+                CategorieTransportNom = t.IdCategorieTransportNavigation?.Nom,
+                FournisseurNomCompagnie = t.IdFournisseurNavigation?.NomCompagnie,
+                VehiculeLocMarque = t.IdVehiculeLocNavigation?.Marque,
+                VehiculeLocTypeVehicule = t.IdVehiculeLocNavigation?.TypeVehicule,
+                VehiculeLocNbSiege = t.IdVehiculeLocNavigation?.NbSiege,
+                OptionTransportNumeroSiege = t.IdOptionTransportNavigation?.NumeroSiege,
+                OptionTransportBagageMain = t.IdOptionTransportNavigation?.BagageMain,
+                OptionTransportBagageEnSoute = t.IdOptionTransportNavigation?.BagageEnSoute,
+                OptionTransportBagageLarge = t.IdOptionTransportNavigation?.BagageLarge,
+                OptionTransportSpeedyboarding = t.IdOptionTransportNavigation?.Speedyboarding,
+                PrixTransportPrix = t.IdPrixTransportNavigation?.Prix
+            }).ToList();
         }
 
         // GET: api/Transports/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Transport>> GetTransport(int id)
+        public async Task<ActionResult<TransportDto>> GetTransport(int id)
         {
-            var transport = await _context.Transports.FindAsync(id);
+            var transport = await _context.Transports
+                .Include(t => t.IdCategorieTransportNavigation)
+                .Include(t => t.IdFournisseurNavigation)
+                .Include(t => t.IdOptionTransportNavigation)
+                .Include(t => t.IdPrixTransportNavigation)
+                .Include(t => t.IdVehiculeLocNavigation)
+                .FirstOrDefaultAsync(t => t.IdTransport == id);
 
             if (transport == null)
             {
                 return NotFound();
             }
 
-            return transport;
+            var transportDto = new TransportDto
+            {
+                IdTransport = transport.IdTransport,
+                IdVehiculeLoc = transport.IdVehiculeLoc,
+                IdCategorieTransport = transport.IdCategorieTransport,
+                IdPrixTransport = transport.IdPrixTransport,
+                IdOptionTransport = transport.IdOptionTransport,
+                IdFournisseur = transport.IdFournisseur,
+                IdPays = transport.IdPays,
+                LieuDepart = transport.LieuDepart,
+                HeureDepart = transport.HeureDepart,
+                HeureArrivee = transport.HeureArrivee,
+                Classe = transport.Classe,
+                CategorieTransportNom = transport.IdCategorieTransportNavigation?.Nom,
+                FournisseurNomCompagnie = transport.IdFournisseurNavigation?.NomCompagnie,
+                VehiculeLocMarque = transport.IdVehiculeLocNavigation?.Marque,
+                VehiculeLocTypeVehicule = transport.IdVehiculeLocNavigation?.TypeVehicule,
+                VehiculeLocNbSiege = transport.IdVehiculeLocNavigation?.NbSiege,
+                OptionTransportNumeroSiege = transport.IdOptionTransportNavigation?.NumeroSiege,
+                OptionTransportBagageMain = transport.IdOptionTransportNavigation?.BagageMain,
+                OptionTransportBagageEnSoute = transport.IdOptionTransportNavigation?.BagageEnSoute,
+                OptionTransportBagageLarge = transport.IdOptionTransportNavigation?.BagageLarge,
+                OptionTransportSpeedyboarding = transport.IdOptionTransportNavigation?.Speedyboarding,
+                PrixTransportPrix = transport.IdPrixTransportNavigation?.Prix
+            };
+
+            return transportDto;
         }
 
-        // PUT: api/Transports/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutTransport(int id, Transport transport)
+        public async Task<IActionResult> PutTransport(int id, TransportDto dto)
         {
-            if (id != transport.IdTransport)
+            if (id != dto.IdTransport)
             {
                 return BadRequest();
             }
+
+            var transport = await _context.Transports
+                .Include(t => t.IdOptionTransportNavigation)
+                .FirstOrDefaultAsync(t => t.IdTransport == id);
+
+            if (transport == null)
+            {
+                return NotFound();
+            }
+
+            // Ensure the IdOptionTransportNavigation is not null
+            if (transport.IdOptionTransportNavigation == null)
+            {
+                transport.IdOptionTransportNavigation = new TransportOption();
+            }
+
+            // Update only the boolean properties
+            transport.IdOptionTransportNavigation.BagageMain = dto.OptionTransportBagageMain;
+            transport.IdOptionTransportNavigation.BagageEnSoute = dto.OptionTransportBagageEnSoute;
+            transport.IdOptionTransportNavigation.BagageLarge = dto.OptionTransportBagageLarge;
+            transport.IdOptionTransportNavigation.Speedyboarding = dto.OptionTransportSpeedyboarding;
 
             _context.Entry(transport).State = EntityState.Modified;
 
@@ -68,33 +150,6 @@ namespace projet_csharp_travel_plan.Controllers
                     throw;
                 }
             }
-
-            return NoContent();
-        }
-
-        // POST: api/Transports
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<Transport>> PostTransport(Transport transport)
-        {
-            _context.Transports.Add(transport);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetTransport", new { id = transport.IdTransport }, transport);
-        }
-
-        // DELETE: api/Transports/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteTransport(int id)
-        {
-            var transport = await _context.Transports.FindAsync(id);
-            if (transport == null)
-            {
-                return NotFound();
-            }
-
-            _context.Transports.Remove(transport);
-            await _context.SaveChangesAsync();
 
             return NoContent();
         }
