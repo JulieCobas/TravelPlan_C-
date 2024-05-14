@@ -10,7 +10,7 @@
 
 <form method="get">
     <select name="category" onchange="this.form.submit()">
-        <option value="">Sélectionner une catégorie</option>
+        <option value="">Select a Category</option>
         <option value="Aérien">Aérien</option>
         <option value="Maritime">Maritime</option>
         <option value="Terrestre - Voiture">Terrestre - Voiture</option>
@@ -54,6 +54,7 @@
                 @foreach (var item in Model)
                 {
                     <tr>
+                        <input type="hidden" name="options[@item.IdTransport].IdTransport" value="@item.IdTransport" />
                         @if (selectedCategory == "Aérien" || selectedCategory == "Maritime" || selectedCategory == "Terrestre - Train")
                         {
                             <td>@item.FournisseurNomCompagnie</td>
