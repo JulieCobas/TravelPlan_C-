@@ -1,0 +1,8 @@
+﻿namespace projet_csharp_travel_plan_frontend.DTO
+{
+    public class LogementCategorieDTO
+    {
+        public int IdLogementCategorie { get; set; }
+        public string Nom { get; set; }
+    }
+}

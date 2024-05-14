@@ -1,0 +1,96 @@
+﻿@* @model IEnumerable<projet_csharp_travel_plan_frontend.Models.Activite>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.IdActivite)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IdOptionActivite)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IdPrixActivite)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IdPays)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IdFournisseur)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IdCatActiv)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Nom)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Details)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Note)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.NbEvaluation)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Img)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdActivite)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdOptionActivite)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdPrixActivite)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdPays)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdFournisseur)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdCatActiv)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Nom)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Details)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Note)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NbEvaluation)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Img)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+ *@
