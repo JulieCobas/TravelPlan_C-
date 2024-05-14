@@ -58,70 +58,26 @@ namespace projet_csharp_travel_plan_frontend.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> UpdateBoolean([FromBody] UpdateBooleanRequest request)
+        public async Task<IActionResult> ConfirmTransportSelection(int IdTransport, bool BagageMain, bool BagageEnSoute, bool BagageLarge, bool Speedyboarding)
         {
-            var response = await _client.GetAsync($"{API_URL}{request.Id}");
+            var response = await _client.GetAsync($"{API_URL}{IdTransport}");
             if (!response.IsSuccessStatusCode)
             {
-                return StatusCode((int)response.StatusCode);
+                return View("Error");
             }
 
             var json = await response.Content.ReadAsStringAsync();
             var transportDto = JsonConvert.DeserializeObject<TransportDto>(json);
 
-            switch (request.Field)
-            {
-                case "BagageMain":
-                    transportDto.OptionTransportBagageMain = request.Value;
-                    break;
-                case "BagageEnSoute":
-                    transportDto.OptionTransportBagageEnSoute = request.Value;
-                    break;
-                case "BagageLarge":
-                    transportDto.OptionTransportBagageLarge = request.Value;
-                    break;
-                case "Speedyboarding":
-                    transportDto.OptionTransportSpeedyboarding = request.Value;
-                    break;
-                default:
-                    return BadRequest("Invalid field name.");
-            }
+            transportDto.OptionTransportBagageMain = BagageMain;
+            transportDto.OptionTransportBagageEnSoute = BagageEnSoute;
+            transportDto.OptionTransportBagageLarge = BagageLarge;
+            transportDto.OptionTransportSpeedyboarding = Speedyboarding;
 
             var updateResponse = await _client.PutAsJsonAsync($"{API_URL}{transportDto.IdTransport}", transportDto);
             if (!updateResponse.IsSuccessStatusCode)
             {
-                return StatusCode((int)updateResponse.StatusCode);
-            }
-
-            return NoContent();
-        }
-
-        // New action to confirm the selection and proceed to lodging reservation
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ConfirmSelection(Dictionary<int, TransportOptionsViewModel> options)
-        {
-            foreach (var option in options)
-            {
-                var response = await _client.GetAsync($"{API_URL}{option.Key}");
-                if (!response.IsSuccessStatusCode)
-                {
-                    return View("Error");
-                }
-
-                var json = await response.Content.ReadAsStringAsync();
-                var transportDto = JsonConvert.DeserializeObject<TransportDto>(json);
-
-                transportDto.OptionTransportBagageMain = option.Value.BagageMain;
-                transportDto.OptionTransportBagageEnSoute = option.Value.BagageEnSoute;
-                transportDto.OptionTransportBagageLarge = option.Value.BagageLarge;
-                transportDto.OptionTransportSpeedyboarding = option.Value.Speedyboarding;
-
-                var updateResponse = await _client.PutAsJsonAsync($"{API_URL}{transportDto.IdTransport}", transportDto);
-                if (!updateResponse.IsSuccessStatusCode)
-                {
-                    return View("Error");
-                }
+                return View("Error");
             }
 
             return RedirectToAction("Index", "Logements");
@@ -150,5 +106,6 @@ namespace projet_csharp_travel_plan_frontend.Controllers
         public bool BagageEnSoute { get; set; }
         public bool BagageLarge { get; set; }
         public bool Speedyboarding { get; set; }
+        public int IdTransport { get; set; }  // Ensure we have the IdTransport for each option set
     }
 }

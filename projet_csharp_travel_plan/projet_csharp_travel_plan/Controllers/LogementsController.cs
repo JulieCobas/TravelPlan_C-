@@ -51,9 +51,28 @@ namespace projet_csharp_travel_plan.Controllers
 
         // GET: api/Logements/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Logement>> GetLogement(int id)
+        public async Task<ActionResult<LogementDTO>> GetLogement(int id)
         {
-            var logement = await _context.Logements.FindAsync(id);
+            var logement = await _context.Logements
+                .Include(l => l.IdFournisseurNavigation)
+                .Include(l => l.IdLogementCategorieNavigation)
+                .Include(l => l.IdPaysNavigation)
+                .Where(l => l.IdLogement == id)
+                .Select(l => new LogementDTO
+                {
+                    Id = l.IdLogement,
+                    Nom = l.Nom,
+                    // Autres propriétés du logement
+                    Details = l.Details,
+                    Note = l.Note,
+                    NbEvaluation = l.NbEvaluation,
+                    // Ajoutez d'autres propriétés du logement selon vos besoins
+
+                    NomFournisseur = l.IdFournisseurNavigation.NomCompagnie,
+                    NomCategorie = l.IdLogementCategorieNavigation.Nom,
+                    NomPays = l.IdPaysNavigation.Nom
+                })
+                .FirstOrDefaultAsync();
 
             if (logement == null)
             {
@@ -62,6 +81,7 @@ namespace projet_csharp_travel_plan.Controllers
 
             return logement;
         }
+
 
         // PUT: api/Logements/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754

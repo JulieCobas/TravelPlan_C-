@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using projet_csharp_travel_plan.DTO;
 
 namespace projet_csharp_travel_plan.Models;
 
@@ -902,4 +903,6 @@ public partial class TravelPlanContext : DbContext
     }
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+
+public DbSet<projet_csharp_travel_plan.DTO.ActiviteDTO> ActiviteDTO { get; set; } = default!;
 }

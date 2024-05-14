@@ -1,4 +1,4 @@
-﻿@model IEnumerable<projet_csharp_travel_plan_frontend.DTO.ActiviteDTO>
+﻿@model IEnumerable<projet_csharp_travel_plan.DTO.ActiviteDTO>
 
 @{
     ViewData["Title"] = "Index";
@@ -12,9 +12,6 @@
 <table class="table">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Id)
-            </th>
             <th>
                 @Html.DisplayNameFor(model => model.Nom)
             </th>
@@ -58,9 +55,6 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Id)
-            </td>
-            <td>
                 @Html.DisplayFor(modelItem => item.Nom)
             </td>
             <td>
@@ -97,7 +91,9 @@
                 @Html.DisplayFor(modelItem => item.NomCategorie)
             </td>
             <td>
-                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info">Voir détails</a>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
             </td>
         </tr>
 }
