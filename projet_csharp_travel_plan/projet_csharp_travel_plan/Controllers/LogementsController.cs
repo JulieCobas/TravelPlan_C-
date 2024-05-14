@@ -22,24 +22,33 @@ namespace projet_csharp_travel_plan.Controllers
 
         // GET: api/Logements
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Logement>>> GetLogements()
+        public async Task<ActionResult<IEnumerable<Logement>>> GetLogements(int? idPays, bool includeFournisseurs = false, bool includeCategories = false, bool includePays = false)
         {
-            return await _context.Logements.ToListAsync();
-        }
+            IQueryable<Logement> query = _context.Logements;
 
-        // GET: api/Logements/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Logement>> GetLogement(int id)
-        {
-            var logement = await _context.Logements.FindAsync(id);
-
-            if (logement == null)
+            // Vérifie si l'ID du pays est fourni
+            if (idPays != null)
             {
-                return NotFound();
+                query = query.Where(l => l.IdPays == idPays);
             }
 
-            return logement;
+            // Inclure les données associées des fournisseurs, des catégories de logements et des pays si les paramètres sont définis à true
+            if (includeFournisseurs)
+            {
+                query = query.Include(l => l.IdFournisseurNavigation);
+            }
+            if (includeCategories)
+            {
+                query = query.Include(l => l.IdLogementCategorieNavigation);
+            }
+            if (includePays)
+            {
+                query = query.Include(l => l.IdPaysNavigation);
+            }
+
+            return await query.ToListAsync();
         }
+
 
         // PUT: api/Logements/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754

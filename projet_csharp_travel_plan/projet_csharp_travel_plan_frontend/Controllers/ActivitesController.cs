@@ -7,12 +7,12 @@ using projet_csharp_travel_plan_frontend.Models;
 
 namespace projet_csharp_travel_plan_frontend.Controllers
 {
-    public class LogementsController : Controller
+    public class ActivitesController : Controller
     {
         private readonly HttpClient _client;
         private const string API_URL = "https://localhost:7287/api/Logements/";
 
-        public LogementsController(HttpClient client)
+        public ActivitesController(HttpClient client)
         {
             _client = client;
         }
@@ -30,8 +30,8 @@ namespace projet_csharp_travel_plan_frontend.Controllers
             if (response.IsSuccessStatusCode)
             {
                 var json = await response.Content.ReadAsStringAsync();
-                var logements = JsonConvert.DeserializeObject<List<Logement>>(json);
-                return View(logements);
+                var activites = JsonConvert.DeserializeObject<List<Activite>>(json);
+                return View(activites);
             }
             return View("Error");
         }
@@ -44,8 +44,8 @@ namespace projet_csharp_travel_plan_frontend.Controllers
             if (response.IsSuccessStatusCode)
             {
                 var json = await response.Content.ReadAsStringAsync();
-                var logement = JsonConvert.DeserializeObject<Logement>(json);
-                return View(logement);
+                var activite = JsonConvert.DeserializeObject<Activite>(json);
+                return View(activite);
             }
             return View("Error");
         }
