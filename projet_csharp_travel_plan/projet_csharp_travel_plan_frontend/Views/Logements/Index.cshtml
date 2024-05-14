@@ -1,43 +1,25 @@
 ﻿@model IEnumerable<projet_csharp_travel_plan_frontend.Models.Logement>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Liste des Logements";
 }
 
-<h1>Index</h1>
-
-<h1>Liste des Logements</h1>
+<h1>@ViewData["Title"]</h1>
+<p>
+    <a asp-action="ReserveWithoutSelection" class="btn btn-primary">Passer outre la sélection du logement</a>
+</p>
 
 <table class="table">
     <thead>
         <tr>
-            <th>
-                Nom du Logement
-            </th>
-            <th>
-                Fournisseur
-            </th>
-            <th>
-                Catégorie
-            </th>
-            <th>
-                Pays
-            </th>
-            <th>
-                Nom
-            </th>
-            <th>
-                Détails
-            </th>
-            <th>
-                Note
-            </th>
-            <th>
-                Nombre d'évaluations
-            </th>
-            <th>
-                Image
-            </th>
+            <th>Nom du Logement</th>
+            <th>Fournisseur</th>
+            <th>Catégorie</th>
+            <th>Pays</th>
+            <th>Détails</th>
+            <th>Note</th>
+            <th>Nombre d'évaluations</th>
+            <th>Image</th>
             <th></th>
         </tr>
     </thead>
@@ -45,32 +27,18 @@
         @foreach (var item in Model)
         {
             <tr>
-                <td>
-                    @item.Nom
-                </td>
-                <td>
-                    @item.IdFournisseurNavigation?.NomCompagnie <!-- Affiche le nom du fournisseur, si disponible -->
-                </td>
-                <td>
-                    @item.IdLogementCategorieNavigation?.Nom <!-- Affiche le nom de la catégorie de logement, si disponible -->
-                </td>
-                <td>
-                    @item.IdPaysNavigation?.Nom <!-- Affiche le nom du pays, si disponible -->
-                </td>
-                <td>
-                    @item.Details
-                </td>
-                <td>
-                    @item.Note
-                </td>
-                <td>
-                    @item.NbEvaluation
-                </td>
+                <td>@item.Nom</td>
+                <td>@item.IdFournisseurNavigation?.NomCompagnie</td>
+                <td>@item.IdLogementCategorieNavigation?.Nom</td>
+                <td>@item.IdPaysNavigation?.Nom</td>
+                <td>@item.Details</td>
+                <td>@item.Note</td>
+                <td>@item.NbEvaluation</td>
                 <td>
                     <!-- Vous devez décider comment afficher l'image -->
                 </td>
                 <td>
-                    <a asp-action="Details" asp-route-id="@item.IdLogement">Details</a> |
+                    <a asp-action="Details" asp-route-id="@item.IdLogement">Details</a>
                 </td>
             </tr>
         }
