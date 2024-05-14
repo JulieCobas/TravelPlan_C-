@@ -1,8 +1,8 @@
 {
   "dependencies": {
-    "mssql1": {
+    "mssql2": {
       "type": "mssql.local",
-      "connectionId": "ConnectionStrings:projet_csharp_travel_plan_frontendContext"
+      "connectionId": "ConnectionStrings:TravelPlanContextConnection"
     }
   }
 }
