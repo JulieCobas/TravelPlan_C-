@@ -1,14 +1,9 @@
-<<<<<<< HEAD
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-var builder = WebApplication.CreateBuilder(args);
-=======
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using projet_csharp_travel_plan_frontend.Areas.Identity.Data;
 using projet_csharp_travel_plan_frontend.Models;
->>>>>>> identity_branch
 
 
 namespace projet_csharp_travel_plan_frontend
