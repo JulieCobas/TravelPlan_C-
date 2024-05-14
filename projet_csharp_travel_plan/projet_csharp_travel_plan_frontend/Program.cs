@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using projet_csharp_travel_plan_frontend.Data;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
