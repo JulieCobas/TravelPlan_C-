@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -20,9 +18,16 @@ namespace projet_csharp_travel_plan_frontend.Controllers
         }
 
         // GET: Logements
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? idPays)
         {
-            var response = await _client.GetAsync(API_URL);
+            // Vérifie si l'ID du pays est fourni
+            if (idPays == null)
+            {
+                return BadRequest(); // Retourne un code d'erreur si l'ID du pays n'est pas fourni
+            }
+
+            // Récupère les logements du pays spécifié
+            var response = await _client.GetAsync($"{API_URL}?idPays={idPays}");
             if (response.IsSuccessStatusCode)
             {
                 var json = await response.Content.ReadAsStringAsync();
@@ -32,6 +37,7 @@ namespace projet_csharp_travel_plan_frontend.Controllers
             return View("Error");
         }
 
+        // GET: Logements/Details/5
         public async Task<IActionResult> Details(int id)
         {
             var response = await _client.GetAsync($"{API_URL}{id}");
