@@ -1,16 +1,15 @@
 ﻿@model IEnumerable<projet_csharp_travel_plan_frontend.DTO.TransportDto>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Transports";
     var selectedCategory = ViewData["SelectedCategory"] as string;
 }
 
-<h1>Index</h1>
 <h1>Liste des Transports</h1>
 
 <form method="get">
     <select name="category" onchange="this.form.submit()">
-        <option value="">Sélectionner la catégorie de véhicule</option>
+        <option value="" disabled selected>Sélectionner la catégorie de véhicule</option>
         <option value="Aérien">Aérien</option>
         <option value="Maritime">Maritime</option>
         <option value="Terrestre - Voiture">Terrestre - Voiture</option>
