@@ -1,4 +1,4 @@
-﻿namespace projet_csharp_travel_plan.DTO
+﻿namespace projet_csharp_travel_plan_frontend.DTO
 {
     public class PayDTO
     {
