@@ -29,7 +29,6 @@ namespace projet_csharp_travel_plan_frontend.Controllers
             }
             return View("Error");
         }
-
         // Autres actions comme Details, Create, Edit, etc.
     }
 
