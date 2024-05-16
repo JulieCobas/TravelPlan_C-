@@ -27,9 +27,11 @@
             <!-- Vous devez décider comment afficher l'image -->
         </dd>
     </dl>
-    <p>
-        <a asp-controller="Logements" asp-action="Reserve" asp-route-logementId="@Model.Id" class="btn btn-primary">Louer ce logement</a>
-        <a asp-action="Index" class="btn btn-secondary">Retour à la liste des logements</a>
-    </p>
-
+    @* <form method="post" asp-action="ConfirmReservation">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="IdLogement" value="@Model.Id" />
+        <button type="submit" class="btn btn-primary">Confirmer la réservation</button>
+    </form> *@
+    <a class="nav-link text-dark" asp-area="" asp-controller="Reservation" asp-action="Index">Reservation</a>
+    <a asp-action="Index" class="btn btn-secondary">Retour à la liste des logements</a>
 </div>
