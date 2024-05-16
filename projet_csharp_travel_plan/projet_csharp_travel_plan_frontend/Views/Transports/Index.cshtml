@@ -81,9 +81,3 @@
         </table>
     </form>
 }
-
-<!-- Form to skip transport selection and proceed to lodging -->
-<form method="post" asp-action="ProceedToLodging">
-    @Html.AntiForgeryToken()
-    <button type="submit" class="btn btn-secondary">Passer à la réservation de logement sans sélectionner de transport</button>
-</form>
