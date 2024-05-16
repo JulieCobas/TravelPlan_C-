@@ -17,9 +17,10 @@ namespace projet_csharp_travel_plan_frontend.Controllers
             _client = client;
         }
 
-        public async Task<IActionResult> Index()
+        // GET: Activites
+        public async Task<IActionResult> Index(string country)
         {
-            var response = await _client.GetAsync(API_URL);
+            var response = await _client.GetAsync($"{API_URL}?country={country}");
             if (response.IsSuccessStatusCode)
             {
                 var json = await response.Content.ReadAsStringAsync();
@@ -28,7 +29,6 @@ namespace projet_csharp_travel_plan_frontend.Controllers
             }
             return View("Error");
         }
-
 
         // GET: Activites/Details/5
         public async Task<IActionResult> Details(int id)

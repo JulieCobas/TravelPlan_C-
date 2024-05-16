@@ -3,7 +3,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using projet_csharp_travel_plan_frontend.DTO; // Utilisation du DTO local au frontend
+using projet_csharp_travel_plan_frontend.DTO;
 
 namespace projet_csharp_travel_plan_frontend.Controllers
 {
@@ -18,13 +18,13 @@ namespace projet_csharp_travel_plan_frontend.Controllers
         }
 
         // GET: Logements
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string country)
         {
-            var response = await _client.GetAsync($"{API_URL}");
+            var response = await _client.GetAsync($"{API_URL}?country={country}");
             if (response.IsSuccessStatusCode)
             {
                 var json = await response.Content.ReadAsStringAsync();
-                var logements = JsonConvert.DeserializeObject<List<LogementDTO>>(json); // Utilisation du DTO local au frontend
+                var logements = JsonConvert.DeserializeObject<List<LogementDTO>>(json);
                 return View(logements);
             }
             return View("Error");
@@ -37,34 +37,9 @@ namespace projet_csharp_travel_plan_frontend.Controllers
             if (response.IsSuccessStatusCode)
             {
                 var json = await response.Content.ReadAsStringAsync();
-                var logement = JsonConvert.DeserializeObject<LogementDTO>(json); // Utilisation du DTO local au frontend
+                var logement = JsonConvert.DeserializeObject<LogementDTO>(json);
                 return View(logement);
             }
-            return View("Error");
-        }
-
-        // POST: Logements/ConfirmReservation
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ConfirmReservation(int IdLogement)
-        {
-            // Créer une nouvelle réservation
-            var reservation = new ReservationDTO
-            {
-                IdLogement = IdLogement,
-                // Ajoutez d'autres propriétés nécessaires pour la réservation
-            };
-
-            var json = JsonConvert.SerializeObject(reservation);
-            var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
-
-            var response = await _client.PostAsync("https://localhost:7287/api/Reservations", content);
-
-            if (response.IsSuccessStatusCode)
-            {
-                return RedirectToAction("Index", "Reservations");
-            }
-
             return View("Error");
         }
     }
