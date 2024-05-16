@@ -1,5 +1,4 @@
-﻿
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using projet_csharp_travel_plan_frontend.DTO;
 using System.Collections.Generic;
@@ -57,9 +56,6 @@ namespace projet_csharp_travel_plan_frontend.Controllers
                 Pays = pays
             };
 
-            // Stocker l'information sur le pays choisi dans une variable de session
-            HttpContext.Session.SetString("SelectedCountry", "");
-
             return View(voyageDto);
         }
 
@@ -70,11 +66,14 @@ namespace projet_csharp_travel_plan_frontend.Controllers
         {
             if (ModelState.IsValid)
             {
-                // Stocker l'information sur le pays choisi dans une variable de session
-                HttpContext.Session.SetString("SelectedCountry", voyage.SelectedPay);
+                var json = JsonConvert.SerializeObject(voyage);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-                // Redirection vers la page des réservations
-                return RedirectToAction("Index", "Reservation");
+                var response = await _client.PostAsync(API_URL, content);
+                if (response.IsSuccessStatusCode)
+                {
+                    return RedirectToAction("Index");
+                }
             }
 
             // Si la validation échoue, rechargez la liste des pays
@@ -90,6 +89,5 @@ namespace projet_csharp_travel_plan_frontend.Controllers
             voyage.Pays = pays;
             return View(voyage);
         }
-
     }
 }

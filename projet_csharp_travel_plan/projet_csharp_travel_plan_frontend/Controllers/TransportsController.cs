@@ -80,7 +80,7 @@ namespace projet_csharp_travel_plan_frontend.Controllers
                 return View("Error");
             }
 
-            return RedirectToAction("Index", "Logements");
+            return RedirectToAction("Reservations");
         }
 
         // New action to proceed to lodging reservation without selecting transport

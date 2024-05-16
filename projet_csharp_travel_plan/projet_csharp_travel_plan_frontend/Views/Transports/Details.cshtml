@@ -54,9 +54,11 @@
         </dd>
     </dl>
 </div>
-<form method="post" asp-action="ConfirmTransportSelection">
+@* <form method="post" asp-action="ConfirmTransportSelection">
     @Html.AntiForgeryToken()
     <input type="hidden" name="IdTransport" value="@Model.IdTransport" />
     <button type="submit" class="btn btn-primary">Confirmer et passer à la réservation de logement</button>
 </form>
-<a asp-action="Index" class="btn btn-secondary">Retour à la liste</a>
+<a asp-action="Index" class="btn btn-secondary">Retour à la liste</a> *@
+
+    <a class="nav-link text-dark" asp-area="" asp-controller="Reservation" asp-action="Index">Reservation</a>
