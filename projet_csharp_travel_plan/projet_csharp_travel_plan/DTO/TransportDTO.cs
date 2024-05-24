@@ -1,42 +1,27 @@
 ﻿namespace projet_csharp_travel_plan.DTO
 {
+    public class TransportDTO
+    {
+        public short IdTransport { get; set; }
+        public short IdVehiculeLoc { get; set; }
+        public short IdCategorieTransport { get; set; }
+        public short IdPrixTransport { get; set; }
+        public short? IdOptionTransport { get; set; }
+        public short IdFournisseur { get; set; }
+        public short IdPays { get; set; }
+        public string LieuDepart { get; set; } = null!;
+        public DateTime HeureDepart { get; set; }
+        public DateTime HeureArrivee { get; set; }
+        public byte? Classe { get; set; }
 
-        public class TransportDto
-        {
-            public int IdTransport { get; set; }
-
-            public int IdVehiculeLoc { get; set; }
-
-            public int IdCategorieTransport { get; set; }
-
-            public int IdPrixTransport { get; set; }
-
-            public int? IdOptionTransport { get; set; }
-
-            public int IdFournisseur { get; set; }
-
-            public int IdPays { get; set; }
-
-            public string LieuDepart { get; set; } = null!;
-
-            public DateTime HeureDepart { get; set; }
-
-            public DateTime HeureArrivee { get; set; }
-
-            public short? Classe { get; set; }
-
-            // Optionally include simple properties from navigation properties
-            public string? CategorieTransportNom { get; set; }
-            public string? FournisseurNomCompagnie { get; set; }
-            public string? VehiculeLocMarque { get; set; }
-            public string? VehiculeLocTypeVehicule { get; set; }
-            public int? VehiculeLocNbSiege { get; set; }
-            public string? OptionTransportNumeroSiege { get; set; }
-            public bool? OptionTransportBagageMain { get; set; }
-            public bool? OptionTransportBagageEnSoute { get; set; }
-            public bool? OptionTransportBagageLarge { get; set; }
-            public bool? OptionTransportSpeedyboarding { get; set; }
-            public decimal? PrixTransportPrix { get; set; }
-        }
-
+        // Navigation properties
+        public TransportCategorieDTO CategorieTransport { get; set; }
+        public FournisseurDTO Fournisseur { get; set; }
+        public TransportOptionDTO? OptionTransport { get; set; }
+        public PayDTO Pays { get; set; }
+        public TransportPrixDTO PrixTransport { get; set; }
+        public VehiculeLocationDTO VehiculeLoc { get; set; }
+        public List<DisponibiliteTransportDTO> DisponibiliteTransports { get; set; } = new List<DisponibiliteTransportDTO>();
+        public List<ReservationDTO> Reservations { get; set; } = new List<ReservationDTO>();
+    }
 }

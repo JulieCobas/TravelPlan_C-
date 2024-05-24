@@ -1,23 +1,31 @@
-﻿using System;
-
-namespace projet_csharp_travel_plan_frontend.DTO
+﻿namespace projet_csharp_travel_plan.DTO
 {
     public class ActiviteDTO
     {
-        public int Id { get; set; }
-        public string Nom { get; set; }
-        public string Details { get; set; }
-        public short? Note { get; set; }
-        public int? NbEvaluation { get; set; }
-        public TimeSpan? HeuresMoyennes { get; set; }
-        // Ajoutez d'autres propriétés de l'activité selon vos besoins
-        public string NomFournisseur { get; set; }
-        public bool? EquipementInclu { get; set; }
+        public short IdActivite { get; set; }
+        public short? IdOptionActivite { get; set; }
+        public short IdPrixActivite { get; set; }
+        public short IdPays { get; set; }
+        public short IdFournisseur { get; set; }
+        public short IdCatActiv { get; set; }
+        public string Nom { get; set; } = null!;
+        public string Details { get; set; } = null!;
+        public byte? Note { get; set; }
+        public short? NbEvaluation { get; set; }
+        public DateTime? HeuresMoyennes { get; set; }
+        public byte[]? Img { get; set; }
+        public int? CapaciteMax { get; set; }
+
+        // Navigation properties
+        public string? CategorieActiviteNom { get; set; }
+        public string? FournisseurNom { get; set; }
+        public string? PaysNom { get; set; }
+        public decimal? PrixActivite { get; set; }
+
+        // Option properties
         public bool? GuideAudio { get; set; }
+        public int? PrixGuideAudio { get; set; }
         public bool? VisiteGuidee { get; set; }
-        public string NomPays { get; set; }
-        // Ajoutez la propriété Prix
-        public decimal Prix { get; set; }
-        public string NomCategorie { get; set; }
+        public int? PrixVisiteGuide { get; set; }
     }
 }

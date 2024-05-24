@@ -51,19 +51,33 @@ namespace projet_csharp_travel_plan.Controllers
                     } : null,
                     Activite = r.IdActiviteNavigation != null ? new ActiviteDTO
                     {
-                        Id = r.IdActiviteNavigation.IdActivite,
+                        IdActivite = r.IdActiviteNavigation.IdActivite,
+                        IdOptionActivite = r.IdActiviteNavigation.IdOptionActivite,
+                        IdPrixActivite = r.IdActiviteNavigation.IdPrixActivite,
+                        IdPays = r.IdActiviteNavigation.IdPays,
+                        IdFournisseur = r.IdActiviteNavigation.IdFournisseur,
+                        IdCatActiv = r.IdActiviteNavigation.IdCatActiv,
                         Nom = r.IdActiviteNavigation.Nom,
                         Details = r.IdActiviteNavigation.Details,
                         Note = r.IdActiviteNavigation.Note,
                         NbEvaluation = r.IdActiviteNavigation.NbEvaluation,
-                        
-                        NomFournisseur = r.IdActiviteNavigation.IdFournisseurNavigation.NomCompagnie,
-                        
-                        NomPays = r.IdActiviteNavigation.IdPaysNavigation.Nom,
-                        Prix = r.IdActiviteNavigation.IdPrixActiviteNavigation.Prix,
-                        NomCategorie = r.IdActiviteNavigation.IdCatActivNavigation.Nom
+                        HeuresMoyennes = r.IdActiviteNavigation.HeuresMoyennes,
+                        Img = r.IdActiviteNavigation.Img,
+                        CapaciteMax = r.IdActiviteNavigation.CapaciteMax,
+
+                        // Navigation properties
+                        CategorieActiviteNom = r.IdActiviteNavigation.IdCatActivNavigation != null ? r.IdActiviteNavigation.IdCatActivNavigation.Nom : null,
+                        FournisseurNom = r.IdActiviteNavigation.IdFournisseurNavigation != null ? r.IdActiviteNavigation.IdFournisseurNavigation.NomCompagnie : null,
+                        PaysNom = r.IdActiviteNavigation.IdPaysNavigation != null ? r.IdActiviteNavigation.IdPaysNavigation.Nom : null,
+                        PrixActivite = r.IdActiviteNavigation.IdPrixActiviteNavigation != null ? r.IdActiviteNavigation.IdPrixActiviteNavigation.Prix : (decimal?)null,
+
+                        // Option properties
+                        GuideAudio = r.IdActiviteNavigation.IdOptionActiviteNavigation != null ? r.IdActiviteNavigation.IdOptionActiviteNavigation.GuideAudio : (bool?)null,
+                        PrixGuideAudio = r.IdActiviteNavigation.IdOptionActiviteNavigation != null ? r.IdActiviteNavigation.IdOptionActiviteNavigation.PrixGuideAudio : (int?)null,
+                        VisiteGuidee = r.IdActiviteNavigation.IdOptionActiviteNavigation != null ? r.IdActiviteNavigation.IdOptionActiviteNavigation.VisiteGuidee : (bool?)null,
+                        PrixVisiteGuide = r.IdActiviteNavigation.IdOptionActiviteNavigation != null ? r.IdActiviteNavigation.IdOptionActiviteNavigation.PrixVisiteGuide : (int?)null
                     } : null,
-                    Transport = r.IdTransportNavigation != null ? new TransportDto
+            Transport = r.IdTransportNavigation != null ? new TransportDto
                     {
                         IdTransport = r.IdTransportNavigation.IdTransport,
                         IdVehiculeLoc = r.IdTransportNavigation.IdVehiculeLoc,

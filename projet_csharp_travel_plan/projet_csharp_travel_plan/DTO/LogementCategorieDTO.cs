@@ -1,8 +1,8 @@
-﻿namespace projet_csharp_travel_plan.DTO
+﻿namespace projet_csharp_travel_plan.DTOs
 {
     public class LogementCategorieDTO
     {
-        public int IdLogementCategorie { get; set; }
-        public string Nom { get; set; }
+        public short IdLogementCategorie { get; set; }
+        public string Nom { get; set; } = null!;
     }
 }

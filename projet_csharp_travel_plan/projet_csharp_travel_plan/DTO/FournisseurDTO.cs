@@ -2,14 +2,19 @@
 {
     public class FournisseurDTO
     {
-        public int IdFournisseur { get; set; }
-        public string NomCompagnie { get; set; }
-        public string Adresse { get; set; }
-        public string Cp { get; set; }
-        public string Ville { get; set; }
-        public string Pays { get; set; }
-        public string Mail { get; set; }
-        public string Telephone { get; set; }
-        public string CompteBancaire { get; set; }
+        public short IdFournisseur { get; set; }
+        public string NomCompagnie { get; set; } = null!;
+        public string Adresse { get; set; } = null!;
+        public string Cp { get; set; } = null!;
+        public string Ville { get; set; } = null!;
+        public string Pays { get; set; } = null!;
+        public string Mail { get; set; } = null!;
+        public string? Telephone { get; set; }
+        public string CompteBancaire { get; set; } = null!;
+
+        // Optionally include collections if needed
+        public ICollection<string> ActiviteNoms { get; set; } = new List<string>();
+        public ICollection<string> LogementNoms { get; set; } = new List<string>();
+        public ICollection<string> TransportNoms { get; set; } = new List<string>();
     }
 }
