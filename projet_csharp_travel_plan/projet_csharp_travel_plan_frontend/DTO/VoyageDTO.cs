@@ -10,5 +10,4 @@ namespace projet_csharp_travel_plan_frontend.DTO
         public List<PayDTO> Pays { get; set; } = new List<PayDTO>(); // Initialiser la liste des pays
         public int SelectedPayId { get; set; }  // Propriété pour stocker le pays sélectionné
     }
-
 }

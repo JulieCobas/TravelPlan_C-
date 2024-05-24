@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using projet_csharp_travel_plan_frontend.DTO;
 using projet_csharp_travel_plan_frontend.Models;
@@ -7,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace projet_csharp_travel_plan_frontend.Controllers
 {
@@ -15,33 +15,33 @@ namespace projet_csharp_travel_plan_frontend.Controllers
         private readonly HttpClient _client;
         private const string API_URL = "https://localhost:7287/api/Transports/";
 
-        public TransportsController(HttpClient client)
+        public TransportsController(IHttpClientFactory httpClientFactory)
         {
-            _client = client;
+            _client = httpClientFactory.CreateClient("default");
         }
 
         // GET: Transports
         public async Task<IActionResult> Index(string category = null)
         {
             var response = await _client.GetAsync(API_URL);
-            List<TransportDto> transportDtos = new List<TransportDto>();
             if (response.IsSuccessStatusCode)
             {
                 var json = await response.Content.ReadAsStringAsync();
-                transportDtos = JsonConvert.DeserializeObject<List<TransportDto>>(json);
+                var transportDtos = JsonConvert.DeserializeObject<List<TransportDto>>(json);
 
                 if (!string.IsNullOrEmpty(category))
                 {
                     transportDtos = transportDtos.Where(t => t.CategorieTransportNom == category).ToList();
                 }
-            }
-            else
-            {
-                return View("Error");
+
+                ViewData["SelectedCategory"] = category;
+                return View(transportDtos);
             }
 
-            ViewData["SelectedCategory"] = category;
-            return View(transportDtos);
+            // Handle error
+            var errorMessage = await response.Content.ReadAsStringAsync();
+            var errorModel = new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier, ErrorMessage = errorMessage };
+            return View("Error", errorModel);
         }
 
         public async Task<IActionResult> Details(int id)
@@ -53,7 +53,11 @@ namespace projet_csharp_travel_plan_frontend.Controllers
                 var transportDto = JsonConvert.DeserializeObject<TransportDto>(json);
                 return View(transportDto);
             }
-            return View("Error");
+
+            // Handle error
+            var errorMessage = await response.Content.ReadAsStringAsync();
+            var errorModel = new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier, ErrorMessage = errorMessage };
+            return View("Error", errorModel);
         }
 
         [HttpPost]
@@ -63,7 +67,9 @@ namespace projet_csharp_travel_plan_frontend.Controllers
             var response = await _client.GetAsync($"{API_URL}{IdTransport}");
             if (!response.IsSuccessStatusCode)
             {
-                return View("Error");
+                var errorMessage = await response.Content.ReadAsStringAsync();
+                var errorModel = new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier, ErrorMessage = errorMessage };
+                return View("Error", errorModel);
             }
 
             var json = await response.Content.ReadAsStringAsync();
@@ -77,7 +83,9 @@ namespace projet_csharp_travel_plan_frontend.Controllers
             var updateResponse = await _client.PutAsJsonAsync($"{API_URL}{transportDto.IdTransport}", transportDto);
             if (!updateResponse.IsSuccessStatusCode)
             {
-                return View("Error");
+                var errorMessage = await updateResponse.Content.ReadAsStringAsync();
+                var errorModel = new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier, ErrorMessage = errorMessage };
+                return View("Error", errorModel);
             }
 
             return RedirectToAction("Reservations");
@@ -106,6 +114,6 @@ namespace projet_csharp_travel_plan_frontend.Controllers
         public bool BagageEnSoute { get; set; }
         public bool BagageLarge { get; set; }
         public bool Speedyboarding { get; set; }
-        public int IdTransport { get; set; }  // Ensure we have the IdTransport for each option set
+        public int IdTransport { get; set; }
     }
 }

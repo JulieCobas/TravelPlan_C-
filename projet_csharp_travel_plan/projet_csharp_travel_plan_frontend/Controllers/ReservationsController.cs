@@ -4,7 +4,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
-using projet_csharp_travel_plan_frontend.DTO; // Utilisation du DTO local au frontend
+using projet_csharp_travel_plan_frontend.DTO;
+using projet_csharp_travel_plan_frontend.Models;
+using System.Diagnostics;
 
 namespace projet_csharp_travel_plan_frontend.Controllers
 {
@@ -14,9 +16,9 @@ namespace projet_csharp_travel_plan_frontend.Controllers
         private const string API_URL = "https://localhost:7287/api/Reservations/";
         private const string PAYS_API_URL = "https://localhost:7287/api/Pay/";
 
-        public ReservationsController(HttpClient client)
+        public ReservationsController(IHttpClientFactory httpClientFactory)
         {
-            _client = client;
+            _client = httpClientFactory.CreateClient("default");
         }
 
         // GET: Reservations
@@ -26,10 +28,14 @@ namespace projet_csharp_travel_plan_frontend.Controllers
             if (response.IsSuccessStatusCode)
             {
                 var json = await response.Content.ReadAsStringAsync();
-                var reservations = JsonConvert.DeserializeObject<List<ReservationDTO>>(json); // Utilisation du DTO local au frontend
+                var reservations = JsonConvert.DeserializeObject<List<ReservationDTO>>(json);
                 return View(reservations);
             }
-            return View("Error");
+
+            // Handle error
+            var errorMessage = await response.Content.ReadAsStringAsync();
+            var errorModel = new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier, ErrorMessage = errorMessage };
+            return View("Error", errorModel);
         }
 
         // GET: Reservations/Create
@@ -47,7 +53,10 @@ namespace projet_csharp_travel_plan_frontend.Controllers
                 return View();
             }
 
-            return View("Error");
+            // Handle error
+            var errorMessage = await response.Content.ReadAsStringAsync();
+            var errorModel = new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier, ErrorMessage = errorMessage };
+            return View("Error", errorModel);
         }
 
         // POST: Reservations/Create
