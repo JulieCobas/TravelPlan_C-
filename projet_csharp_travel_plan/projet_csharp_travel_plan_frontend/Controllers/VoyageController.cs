@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using projet_csharp_travel_plan_frontend.DTO;
+using projet_csharp_travel_plan_frontend.Models;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,50 +15,50 @@ namespace projet_csharp_travel_plan_frontend.Controllers
         private readonly HttpClient _client;
         private const string API_URL = "https://localhost:7287/api/Voyages/";
 
-        public VoyageController(HttpClient client)
+        public VoyageController(IHttpClientFactory httpClientFactory)
         {
-            _client = client;
+            _client = httpClientFactory.CreateClient("default");
         }
 
         // GET: Voyage
         public async Task<IActionResult> Index()
         {
             var response = await _client.GetAsync(API_URL);
-            List<VoyageDTO> voyageDtos = new List<VoyageDTO>();
-
             if (response.IsSuccessStatusCode)
             {
                 var json = await response.Content.ReadAsStringAsync();
-                voyageDtos = JsonConvert.DeserializeObject<List<VoyageDTO>>(json);
-            }
-            else
-            {
-                return View("Error");
+                var voyageDtos = JsonConvert.DeserializeObject<List<VoyageDTO>>(json);
+                return View(voyageDtos);
             }
 
-            return View(voyageDtos);
+            // Handle error
+            var errorMessage = await response.Content.ReadAsStringAsync();
+            var errorModel = new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier, ErrorMessage = errorMessage };
+            return View("Error", errorModel);
         }
 
         // GET: Voyage/Create
         public async Task<IActionResult> Create()
         {
             var paysResponse = await _client.GetAsync($"{API_URL}Pays");
-            List<PayDTO> pays = new List<PayDTO>();
-
             if (paysResponse.IsSuccessStatusCode)
             {
                 var jsonPays = await paysResponse.Content.ReadAsStringAsync();
-                pays = JsonConvert.DeserializeObject<List<PayDTO>>(jsonPays);
+                var pays = JsonConvert.DeserializeObject<List<PayDTO>>(jsonPays);
+                var voyageDto = new VoyageDTO
+                {
+                    DateDebut = DateOnly.FromDateTime(DateTime.Now),
+                    DateFin = DateOnly.FromDateTime(DateTime.Now.AddDays(7)),
+                    Pays = pays
+                };
+
+                return View(voyageDto);
             }
 
-            var voyageDto = new VoyageDTO
-            {
-                DateDebut = DateOnly.FromDateTime(DateTime.Now),
-                DateFin = DateOnly.FromDateTime(DateTime.Now.AddDays(7)),
-                Pays = pays
-            };
-
-            return View(voyageDto);
+            // Handle error
+            var errorMessage = await paysResponse.Content.ReadAsStringAsync();
+            var errorModel = new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier, ErrorMessage = errorMessage };
+            return View("Error", errorModel);
         }
 
         // POST: Voyage/Create
@@ -74,19 +76,22 @@ namespace projet_csharp_travel_plan_frontend.Controllers
                 {
                     return RedirectToAction("Index");
                 }
+
+                // Handle error
+                var errorMessage = await response.Content.ReadAsStringAsync();
+                var errorModel = new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier, ErrorMessage = errorMessage };
+                return View("Error", errorModel);
             }
 
             // Si la validation échoue, rechargez la liste des pays
             var paysResponse = await _client.GetAsync($"{API_URL}Pays");
-            List<PayDTO> pays = new List<PayDTO>();
-
             if (paysResponse.IsSuccessStatusCode)
             {
                 var jsonPays = await paysResponse.Content.ReadAsStringAsync();
-                pays = JsonConvert.DeserializeObject<List<PayDTO>>(jsonPays);
+                var pays = JsonConvert.DeserializeObject<List<PayDTO>>(jsonPays);
+                voyage.Pays = pays;
             }
 
-            voyage.Pays = pays;
             return View(voyage);
         }
     }

@@ -1,13 +1,11 @@
-
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using projet_csharp_travel_plan_frontend.Areas.Identity.Data;
 using projet_csharp_travel_plan_frontend.Models;
-
+using projet_csharp_travel_plan_frontend.Authentication;
 
 namespace projet_csharp_travel_plan_frontend
-{ 
+{
     public class Program
     {
         public static void Main(String[] args)
@@ -25,7 +23,12 @@ namespace projet_csharp_travel_plan_frontend
 
             builder.Services.AddControllersWithViews();
             builder.Services.AddRazorPages();
-            builder.Services.AddHttpClient();
+
+            // Add HttpClient globally with ApiKeyHandler
+            builder.Services.AddTransient<ApiKeyHandler>();
+            builder.Services.AddHttpClient("default")
+                .AddHttpMessageHandler<ApiKeyHandler>();
+
             builder.Services.AddAuthorization();
 
             var app = builder.Build();
@@ -50,6 +53,5 @@ namespace projet_csharp_travel_plan_frontend
 
             app.Run();
         }
-
     }
 }

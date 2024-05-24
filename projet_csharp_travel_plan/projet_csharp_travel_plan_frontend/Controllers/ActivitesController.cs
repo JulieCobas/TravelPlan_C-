@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using projet_csharp_travel_plan_frontend.DTO;
+using projet_csharp_travel_plan_frontend.Models;
 
 namespace projet_csharp_travel_plan_frontend.Controllers
 {
@@ -12,9 +14,9 @@ namespace projet_csharp_travel_plan_frontend.Controllers
         private readonly HttpClient _client;
         private const string API_URL = "https://localhost:7287/api/Activites/";
 
-        public ActivitesController(HttpClient client)
+        public ActivitesController(IHttpClientFactory httpClientFactory)
         {
-            _client = client;
+            _client = httpClientFactory.CreateClient("default");
         }
 
         // GET: Activites
@@ -27,7 +29,11 @@ namespace projet_csharp_travel_plan_frontend.Controllers
                 var activites = JsonConvert.DeserializeObject<List<ActiviteDTO>>(json);
                 return View(activites);
             }
-            return View("Error");
+
+            // Handle error
+            var errorMessage = await response.Content.ReadAsStringAsync();
+            var errorModel = new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier, ErrorMessage = errorMessage };
+            return View("Error", errorModel);
         }
 
         // GET: Activites/Details/5
@@ -40,7 +46,11 @@ namespace projet_csharp_travel_plan_frontend.Controllers
                 var activite = JsonConvert.DeserializeObject<ActiviteDTO>(json);
                 return View(activite);
             }
-            return View("Error");
+
+            // Handle error
+            var errorMessage = await response.Content.ReadAsStringAsync();
+            var errorModel = new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier, ErrorMessage = errorMessage };
+            return View("Error", errorModel);
         }
     }
 }
