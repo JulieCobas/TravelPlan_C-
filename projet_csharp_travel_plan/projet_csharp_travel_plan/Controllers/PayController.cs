@@ -16,23 +16,63 @@ namespace projet_csharp_travel_plan.Controllers
     {
         private readonly TravelPlanContext _context;
 
-            public PayController(TravelPlanContext context)
+        public PayController(TravelPlanContext context)
+        {
+            _context = context;
+        }
+
+        // GET: api/Pays
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<PayDTO>>> GetPays()
+        {
+            return await _context.Pays
+                .Include(p => p.Activites)
+                .Include(p => p.Logements)
+                .Include(p => p.Regions)
+                .Include(p => p.Transports)
+                .Include(p => p.IdVoyages)
+                .Select(p => new PayDTO
+                {
+                    IdPays = p.IdPays,
+                    Nom = p.Nom,
+                    Activites = p.Activites.Select(a => a.Nom).ToList(),
+                    Logements = p.Logements.Select(l => l.Nom).ToList(),
+                    Regions = p.Regions.Select(r => r.Nom).ToList(),
+                    Transports = p.Transports.Select(t => t.LieuDepart).ToList(), // Assuming Transport has a property "LieuDepart"
+                    Voyages = p.IdVoyages.Select(v => v.DateDebut.ToString()).ToList() // Assuming Voyage has a property "DateDebut"
+                })
+                .ToListAsync();
+        }
+
+        // GET: api/Pays/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<PayDTO>> GetPay(short id)
+        {
+            var pay = await _context.Pays
+                .Include(p => p.Activites)
+                .Include(p => p.Logements)
+                .Include(p => p.Regions)
+                .Include(p => p.Transports)
+                .Include(p => p.IdVoyages)
+                .FirstOrDefaultAsync(p => p.IdPays == id);
+
+            if (pay == null)
             {
-                _context = context;
+                return NotFound();
             }
 
-            // GET: api/Pays
-            [HttpGet]
-            public async Task<ActionResult<IEnumerable<PayDTO>>> GetPays()
+            var payDTO = new PayDTO
             {
-                return await _context.Pays
-                    .Select(p => new PayDTO
-                    {
-                        Nom = p.Nom,
-                        // Autres propriétés de PayDTO si nécessaire
-                    })
-                    .ToListAsync();
-            }
+                IdPays = pay.IdPays,
+                Nom = pay.Nom,
+                Activites = pay.Activites.Select(a => a.Nom).ToList(),
+                Logements = pay.Logements.Select(l => l.Nom).ToList(),
+                Regions = pay.Regions.Select(r => r.Nom).ToList(),
+                Transports = pay.Transports.Select(t => t.LieuDepart).ToList(), // Assuming Transport has a property "LieuDepart"
+                Voyages = pay.IdVoyages.Select(v => v.DateDebut.ToString()).ToList() // Assuming Voyage has a property "DateDebut"
+            };
+
+            return payDTO;
+        }
     }
 }
-
