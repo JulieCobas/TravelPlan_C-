@@ -65,14 +65,14 @@
                             <td>@item.VehiculeLocNbSiege</td>
                             <td>@item.PrixTransportPrix</td>
                             <td>
-                                <button type="submit" name="confirmTransport" value="@item.IdTransport" class="btn btn-primary">Confirmer et passer à la réservation de logement</button>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Reservations" asp-action="Index">Reservation</a>
                             </td>
                         }
                         else if (selectedCategory == "Cyclable")
                         {
                             <td>@item.PrixTransportPrix</td>
                             <td>
-                                <button type="submit" name="confirmTransport" value="@item.IdTransport" class="btn btn-primary">Confirmer et passer à la réservation de logement</button>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Reservations" asp-action="Index">Reservation</a>
                             </td>
                         }
                     </tr>
@@ -81,9 +81,3 @@
         </table>
     </form>
 }
-
-<!-- Form to skip transport selection and proceed to lodging -->
-<form method="post" asp-action="ProceedToLodging">
-    @Html.AntiForgeryToken()
-    <button type="submit" class="btn btn-secondary">Passer à la réservation de logement sans sélectionner de transport</button>
-</form>

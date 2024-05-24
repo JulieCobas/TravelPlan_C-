@@ -23,14 +23,22 @@ namespace projet_csharp_travel_plan.Controllers
 
         // GET: api/Activites
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ActiviteDTO>>> GetActivites()
+        public async Task<ActionResult<IEnumerable<ActiviteDTO>>> GetActivites([FromQuery] string country = null)
         {
-            var activites = await _context.Activites
+            var query = _context.Activites
                 .Include(a => a.IdCatActivNavigation)
                 .Include(a => a.IdFournisseurNavigation)
                 .Include(a => a.IdOptionActiviteNavigation)
                 .Include(a => a.IdPaysNavigation)
                 .Include(a => a.IdPrixActiviteNavigation)
+                .AsQueryable();
+
+            if (!string.IsNullOrEmpty(country))
+            {
+                query = query.Where(a => a.IdPaysNavigation.Nom == country);
+            }
+
+            var activites = await query
                 .Select(a => new ActiviteDTO
                 {
                     Id = a.IdActivite,
@@ -39,7 +47,6 @@ namespace projet_csharp_travel_plan.Controllers
                     Note = a.Note,
                     NbEvaluation = a.NbEvaluation,
                     HeuresMoyennes = a.HeuresMoyennes.HasValue ? TimeSpan.FromHours(a.HeuresMoyennes.Value.Hour) : (TimeSpan?)null,
-                    // Ajoutez d'autres propriétés de l'activité selon vos besoins
                     NomFournisseur = a.IdFournisseurNavigation.NomCompagnie,
                     NomCategorie = a.IdCatActivNavigation.Nom,
                     EquipementInclu = a.IdOptionActiviteNavigation.EquipementInclu,

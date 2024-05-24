@@ -22,22 +22,20 @@ namespace projet_csharp_travel_plan.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<LogementDTO>>> GetLogements()
+        public async Task<ActionResult<IEnumerable<LogementDTO>>> GetLogements([FromQuery] string country)
         {
             var logements = await _context.Logements
                 .Include(l => l.IdFournisseurNavigation)
                 .Include(l => l.IdLogementCategorieNavigation)
                 .Include(l => l.IdPaysNavigation)
+                .Where(l => l.IdPaysNavigation.Nom == country)
                 .Select(l => new LogementDTO
                 {
                     Id = l.IdLogement,
                     Nom = l.Nom,
-                    // Autres propriétés du logement
                     Details = l.Details,
                     Note = l.Note,
                     NbEvaluation = l.NbEvaluation,
-                    // Ajoutez d'autres propriétés du logement selon vos besoins
-
                     NomFournisseur = l.IdFournisseurNavigation.NomCompagnie,
                     NomCategorie = l.IdLogementCategorieNavigation.Nom,
                     NomPays = l.IdPaysNavigation.Nom
