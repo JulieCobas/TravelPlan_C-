@@ -2,8 +2,12 @@
 {
     public class PayDTO
     {
+        public short IdPays { get; set; }
         public string Nom { get; set; }
-        public string Region { get; set; }
-        public string Ville { get; set; }
+        public List<string> Activites { get; set; }
+        public List<string> Logements { get; set; }
+        public List<string> Regions { get; set; }
+        public List<string> Transports { get; set; }
+        public List<string> Voyages { get; set; }
     }
 }
