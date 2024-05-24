@@ -5,17 +5,19 @@ namespace projet_csharp_travel_plan.Models;
 
 public partial class Paiement
 {
-    public int IdPaiement { get; set; }
+    public short IdPaiement { get; set; }
 
-    public int IdUtilisateur { get; set; }
+    public short? IdClient { get; set; }
+
+    public short IdUtilisateur { get; set; }
 
     public string TypeCarteBancaire { get; set; } = null!;
 
-    public int NumeroCarteBancaire { get; set; }
+    public short NumeroCarteBancaire { get; set; }
 
-    public DateOnly DateExpiration { get; set; }
+    public DateTime DateExpiration { get; set; }
 
-    public short Crypto { get; set; }
+    public byte Crypto { get; set; }
 
-    public virtual Client IdUtilisateurNavigation { get; set; } = null!;
+    public virtual Client? IdClientNavigation { get; set; }
 }

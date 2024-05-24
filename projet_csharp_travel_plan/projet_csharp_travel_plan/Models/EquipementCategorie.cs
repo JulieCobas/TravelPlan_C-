@@ -5,7 +5,7 @@ namespace projet_csharp_travel_plan.Models;
 
 public partial class EquipementCategorie
 {
-    public int IdCatEquipement { get; set; }
+    public short IdCatEquipement { get; set; }
 
     public string Nom { get; set; } = null!;
 

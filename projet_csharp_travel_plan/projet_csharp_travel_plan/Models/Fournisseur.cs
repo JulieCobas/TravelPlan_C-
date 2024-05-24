@@ -5,7 +5,7 @@ namespace projet_csharp_travel_plan.Models;
 
 public partial class Fournisseur
 {
-    public int IdFournisseur { get; set; }
+    public short IdFournisseur { get; set; }
 
     public string NomCompagnie { get; set; } = null!;
 

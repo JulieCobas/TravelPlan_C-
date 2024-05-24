@@ -5,13 +5,13 @@ namespace projet_csharp_travel_plan.Models;
 
 public partial class VehiculeLocation
 {
-    public int IdVehiculeLoc { get; set; }
+    public short IdVehiculeLoc { get; set; }
 
     public string Marque { get; set; } = null!;
 
     public string TypeVehicule { get; set; } = null!;
 
-    public short NbSiege { get; set; }
+    public byte NbSiege { get; set; }
 
     public string TypeConducteur { get; set; } = null!;
 

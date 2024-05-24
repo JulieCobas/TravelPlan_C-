@@ -104,6 +104,16 @@ namespace projet_csharp_travel_plan.Controllers
             return transportDto;
         }
 
+        // New method to get transport categories
+        [HttpGet("categories")]
+        public async Task<ActionResult<IEnumerable<string>>> GetTransportCategories()
+        {
+            var categories = await _context.TransportCategories
+                .Select(c => c.Nom)
+                .ToListAsync();
+            return Ok(categories);
+        }
+
         [HttpPut("{id}")]
         public async Task<IActionResult> PutTransport(int id, TransportDto dto)
         {

@@ -5,11 +5,11 @@ namespace projet_csharp_travel_plan.Models;
 
 public partial class ActivitePrix
 {
-    public int IdPrixActivite { get; set; }
+    public short IdPrixActivite { get; set; }
 
-    public DateOnly DateDebutValidite { get; set; }
+    public DateTime DateDebutValidite { get; set; }
 
-    public DateOnly DateFinValidite { get; set; }
+    public DateTime DateFinValidite { get; set; }
 
     public decimal Prix { get; set; }
 

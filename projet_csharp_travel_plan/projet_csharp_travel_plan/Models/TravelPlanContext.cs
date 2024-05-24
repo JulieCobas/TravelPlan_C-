@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
-using projet_csharp_travel_plan.DTO;
 
 namespace projet_csharp_travel_plan.Models;
 
@@ -24,17 +23,17 @@ public partial class TravelPlanContext : DbContext
 
     public virtual DbSet<ActivitePrix> ActivitePrixes { get; set; }
 
-    public virtual DbSet<AspNetRole> AspNetRoles { get; set; }
+    public virtual DbSet<Aspnetrole> Aspnetroles { get; set; }
 
-    public virtual DbSet<AspNetRoleClaim> AspNetRoleClaims { get; set; }
+    public virtual DbSet<Aspnetroleclaim> Aspnetroleclaims { get; set; }
 
-    public virtual DbSet<AspNetUser> AspNetUsers { get; set; }
+    public virtual DbSet<Aspnetuser> Aspnetusers { get; set; }
 
-    public virtual DbSet<AspNetUserClaim> AspNetUserClaims { get; set; }
+    public virtual DbSet<Aspnetuserclaim> Aspnetuserclaims { get; set; }
 
-    public virtual DbSet<AspNetUserLogin> AspNetUserLogins { get; set; }
+    public virtual DbSet<Aspnetuserlogin> Aspnetuserlogins { get; set; }
 
-    public virtual DbSet<AspNetUserToken> AspNetUserTokens { get; set; }
+    public virtual DbSet<Aspnetusertoken> Aspnetusertokens { get; set; }
 
     public virtual DbSet<CategoriePrix> CategoriePrixes { get; set; }
 
@@ -46,17 +45,21 @@ public partial class TravelPlanContext : DbContext
 
     public virtual DbSet<Client> Clients { get; set; }
 
+    public virtual DbSet<DisponibiliteLogement> DisponibiliteLogements { get; set; }
+
+    public virtual DbSet<DisponibiliteTransport> DisponibiliteTransports { get; set; }
+
     public virtual DbSet<EquipementCategorie> EquipementCategories { get; set; }
 
     public virtual DbSet<Fournisseur> Fournisseurs { get; set; }
 
     public virtual DbSet<Invite> Invites { get; set; }
 
-    public virtual DbSet<LocationLogement> LocationLogements { get; set; }
-
     public virtual DbSet<Logement> Logements { get; set; }
 
     public virtual DbSet<LogementCategorie> LogementCategories { get; set; }
+
+    public virtual DbSet<NumChambre> NumChambres { get; set; }
 
     public virtual DbSet<Paiement> Paiements { get; set; }
 
@@ -64,7 +67,11 @@ public partial class TravelPlanContext : DbContext
 
     public virtual DbSet<PrixLogement> PrixLogements { get; set; }
 
+    public virtual DbSet<Region> Regions { get; set; }
+
     public virtual DbSet<Reservation> Reservations { get; set; }
+
+    public virtual DbSet<Siege> Sieges { get; set; }
 
     public virtual DbSet<Transport> Transports { get; set; }
 
@@ -76,32 +83,38 @@ public partial class TravelPlanContext : DbContext
 
     public virtual DbSet<VehiculeLocation> VehiculeLocations { get; set; }
 
+    public virtual DbSet<Ville> Villes { get; set; }
+
     public virtual DbSet<Voyage> Voyages { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-
-    }
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+        => optionsBuilder.UseSqlServer("Data Source=localhost\\SQLDevelopper; Initial Catalog=TravelPlan;Trusted_Connection=True;TrustServerCertificate=True");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Activite>(entity =>
         {
-            entity.HasKey(e => e.IdActivite);
+            entity.HasKey(e => e.IdActivite).HasName("PK__ACTIVITE__BE6F3312906BB75B");
 
             entity.ToTable("ACTIVITE");
 
             entity.Property(e => e.IdActivite).HasColumnName("ID_ACTIVITE");
+            entity.Property(e => e.CapaciteMax).HasColumnName("CAPACITE_MAX");
             entity.Property(e => e.Details)
                 .HasColumnType("text")
                 .HasColumnName("DETAILS");
-            entity.Property(e => e.HeuresMoyennes).HasColumnName("HEURES_MOYENNES");
+            entity.Property(e => e.HeuresMoyennes)
+                .HasColumnType("datetime")
+                .HasColumnName("HEURES_MOYENNES");
             entity.Property(e => e.IdCatActiv).HasColumnName("ID_CAT_ACTIV");
             entity.Property(e => e.IdFournisseur).HasColumnName("ID_FOURNISSEUR");
             entity.Property(e => e.IdOptionActivite).HasColumnName("ID_OPTION_ACTIVITE");
             entity.Property(e => e.IdPays).HasColumnName("ID_PAYS");
             entity.Property(e => e.IdPrixActivite).HasColumnName("ID_PRIX_ACTIVITE");
-            entity.Property(e => e.Img).HasColumnName("IMG");
+            entity.Property(e => e.Img)
+                .HasColumnType("image")
+                .HasColumnName("IMG");
             entity.Property(e => e.NbEvaluation).HasColumnName("NB_EVALUATION");
             entity.Property(e => e.Nom)
                 .HasMaxLength(60)
@@ -136,7 +149,7 @@ public partial class TravelPlanContext : DbContext
 
         modelBuilder.Entity<ActiviteCategorie>(entity =>
         {
-            entity.HasKey(e => e.IdCatActiv);
+            entity.HasKey(e => e.IdCatActiv).HasName("PK__ACTIVITE__8AED20E3BA235D5E");
 
             entity.ToTable("ACTIVITE_CATEGORIE");
 
@@ -149,115 +162,196 @@ public partial class TravelPlanContext : DbContext
 
         modelBuilder.Entity<ActiviteOption>(entity =>
         {
-            entity.HasKey(e => e.IdOptionActivite);
+            entity.HasKey(e => e.IdOptionActivite).HasName("PK__ACTIVITE__F19E116B52F69CF2");
 
             entity.ToTable("ACTIVITE_OPTION");
 
             entity.Property(e => e.IdOptionActivite).HasColumnName("ID_OPTION_ACTIVITE");
-            entity.Property(e => e.EquipementInclu).HasColumnName("EQUIPEMENT_INCLU");
             entity.Property(e => e.GuideAudio).HasColumnName("GUIDE_AUDIO");
+            entity.Property(e => e.PrixGuideAudio).HasColumnName("PRIX_GUIDE_AUDIO");
+            entity.Property(e => e.PrixVisiteGuide).HasColumnName("PRIX_VISITE_GUIDE");
             entity.Property(e => e.VisiteGuidee).HasColumnName("VISITE_GUIDEE");
         });
 
         modelBuilder.Entity<ActivitePrix>(entity =>
         {
-            entity.HasKey(e => e.IdPrixActivite);
+            entity.HasKey(e => e.IdPrixActivite).HasName("PK__ACTIVITE__D00D170BFB7C7872");
 
             entity.ToTable("ACTIVITE_PRIX");
 
             entity.Property(e => e.IdPrixActivite).HasColumnName("ID_PRIX_ACTIVITE");
-            entity.Property(e => e.DateDebutValidite).HasColumnName("DATE_DEBUT_VALIDITE");
-            entity.Property(e => e.DateFinValidite).HasColumnName("DATE_FIN_VALIDITE");
+            entity.Property(e => e.DateDebutValidite)
+                .HasColumnType("datetime")
+                .HasColumnName("DATE_DEBUT_VALIDITE");
+            entity.Property(e => e.DateFinValidite)
+                .HasColumnType("datetime")
+                .HasColumnName("DATE_FIN_VALIDITE");
             entity.Property(e => e.Prix)
                 .HasColumnType("decimal(10, 2)")
                 .HasColumnName("PRIX");
         });
 
-        modelBuilder.Entity<AspNetRole>(entity =>
+        modelBuilder.Entity<Aspnetrole>(entity =>
         {
-            entity.HasIndex(e => e.NormalizedName, "RoleNameIndex")
+            entity.HasKey(e => e.Id).HasName("PK__ASPNETRO__3214EC2746E37EAF");
+
+            entity.ToTable("ASPNETROLES");
+
+            entity.HasIndex(e => e.Normalizedname, "ROLENAMEINDEX")
                 .IsUnique()
                 .HasFilter("([NormalizedName] IS NOT NULL)");
 
-            entity.Property(e => e.Name).HasMaxLength(256);
-            entity.Property(e => e.NormalizedName).HasMaxLength(256);
+            entity.Property(e => e.Id).HasColumnName("ID");
+            entity.Property(e => e.Concurrencystamp).HasColumnName("CONCURRENCYSTAMP");
+            entity.Property(e => e.Name)
+                .HasMaxLength(256)
+                .HasColumnName("NAME");
+            entity.Property(e => e.Normalizedname)
+                .HasMaxLength(256)
+                .HasColumnName("NORMALIZEDNAME");
         });
 
-        modelBuilder.Entity<AspNetRoleClaim>(entity =>
+        modelBuilder.Entity<Aspnetroleclaim>(entity =>
         {
-            entity.HasIndex(e => e.RoleId, "IX_AspNetRoleClaims_RoleId");
+            entity.HasKey(e => e.Id).HasName("PK__ASPNETRO__3214EC275DA4596D");
 
-            entity.HasOne(d => d.Role).WithMany(p => p.AspNetRoleClaims).HasForeignKey(d => d.RoleId);
+            entity.ToTable("ASPNETROLECLAIMS");
+
+            entity.HasIndex(e => e.Roleid, "IX_ASPNETROLECLAIMS_ROLEID");
+
+            entity.Property(e => e.Id).HasColumnName("ID");
+            entity.Property(e => e.Claimtype).HasColumnName("CLAIMTYPE");
+            entity.Property(e => e.Claimvalue).HasColumnName("CLAIMVALUE");
+            entity.Property(e => e.Roleid).HasColumnName("ROLEID");
+
+            entity.HasOne(d => d.Role).WithMany(p => p.Aspnetroleclaims)
+                .HasForeignKey(d => d.Roleid)
+                .HasConstraintName("FK_AspNetRoleClaims_AspNetRoles_RoleId");
         });
 
-        modelBuilder.Entity<AspNetUser>(entity =>
+        modelBuilder.Entity<Aspnetuser>(entity =>
         {
-            entity.HasIndex(e => e.NormalizedEmail, "EmailIndex");
+            entity.HasKey(e => e.Id).HasName("PK__ASPNETUS__3214EC27D4E390BC");
 
-            entity.HasIndex(e => e.NormalizedUserName, "UserNameIndex")
+            entity.ToTable("ASPNETUSERS");
+
+            entity.HasIndex(e => e.Normalizedemail, "EMAILINDEX");
+
+            entity.HasIndex(e => e.Normalizedusername, "USERNAMEINDEX")
                 .IsUnique()
                 .HasFilter("([NormalizedUserName] IS NOT NULL)");
 
-            entity.Property(e => e.Email).HasMaxLength(256);
+            entity.Property(e => e.Id).HasColumnName("ID");
+            entity.Property(e => e.Accessfailedcount).HasColumnName("ACCESSFAILEDCOUNT");
+            entity.Property(e => e.Concurrencystamp).HasColumnName("CONCURRENCYSTAMP");
+            entity.Property(e => e.Email)
+                .HasMaxLength(256)
+                .HasColumnName("EMAIL");
+            entity.Property(e => e.Emailconfirmed).HasColumnName("EMAILCONFIRMED");
             entity.Property(e => e.IdInvitee).HasColumnName("ID_INVITEE");
-            entity.Property(e => e.IdUtilisateur).HasColumnName("ID_UTILISATEUR");
-            entity.Property(e => e.NormalizedEmail).HasMaxLength(256);
-            entity.Property(e => e.NormalizedUserName).HasMaxLength(256);
-            entity.Property(e => e.UserName).HasMaxLength(256);
+            entity.Property(e => e.Lockoutenabled).HasColumnName("LOCKOUTENABLED");
+            entity.Property(e => e.Lockoutend).HasColumnName("LOCKOUTEND");
+            entity.Property(e => e.Normalizedemail)
+                .HasMaxLength(256)
+                .HasColumnName("NORMALIZEDEMAIL");
+            entity.Property(e => e.Normalizedusername)
+                .HasMaxLength(256)
+                .HasColumnName("NORMALIZEDUSERNAME");
+            entity.Property(e => e.Passwordhash).HasColumnName("PASSWORDHASH");
+            entity.Property(e => e.Phonenumber).HasColumnName("PHONENUMBER");
+            entity.Property(e => e.Phonenumberconfirmed).HasColumnName("PHONENUMBERCONFIRMED");
+            entity.Property(e => e.Securitystamp).HasColumnName("SECURITYSTAMP");
+            entity.Property(e => e.Twofactorenabled).HasColumnName("TWOFACTORENABLED");
+            entity.Property(e => e.Username)
+                .HasMaxLength(256)
+                .HasColumnName("USERNAME");
 
-            entity.HasOne(d => d.IdInviteeNavigation).WithMany(p => p.AspNetUsers)
+            entity.HasOne(d => d.IdInviteeNavigation).WithMany(p => p.Aspnetusers)
                 .HasForeignKey(d => d.IdInvitee)
                 .HasConstraintName("FK_ASPNETUS_REFERENCE_INVITE");
 
-            entity.HasOne(d => d.IdUtilisateurNavigation).WithMany(p => p.AspNetUsers)
-                .HasForeignKey(d => d.IdUtilisateur)
-                .HasConstraintName("FK_ASPNETUS_REFERENCE_CLIENT");
-
             entity.HasMany(d => d.Roles).WithMany(p => p.Users)
                 .UsingEntity<Dictionary<string, object>>(
-                    "AspNetUserRole",
-                    r => r.HasOne<AspNetRole>().WithMany().HasForeignKey("RoleId"),
-                    l => l.HasOne<AspNetUser>().WithMany().HasForeignKey("UserId"),
+                    "Aspnetuserrole",
+                    r => r.HasOne<Aspnetrole>().WithMany()
+                        .HasForeignKey("Roleid")
+                        .HasConstraintName("FK_AspNetUserRoles_AspNetRoles_RoleId"),
+                    l => l.HasOne<Aspnetuser>().WithMany()
+                        .HasForeignKey("Userid")
+                        .HasConstraintName("FK_AspNetUserRoles_AspNetUsers_UserId"),
                     j =>
                     {
-                        j.HasKey("UserId", "RoleId");
-                        j.ToTable("AspNetUserRoles");
-                        j.HasIndex(new[] { "RoleId" }, "IX_AspNetUserRoles_RoleId");
+                        j.HasKey("Userid", "Roleid").HasName("PK__ASPNETUS__FB9829BB6F4D71AC");
+                        j.ToTable("ASPNETUSERROLES");
+                        j.HasIndex(new[] { "Roleid" }, "IX_ASPNETUSERROLES_ROLEID");
+                        j.IndexerProperty<string>("Userid").HasColumnName("USERID");
+                        j.IndexerProperty<string>("Roleid").HasColumnName("ROLEID");
                     });
         });
 
-        modelBuilder.Entity<AspNetUserClaim>(entity =>
+        modelBuilder.Entity<Aspnetuserclaim>(entity =>
         {
-            entity.HasIndex(e => e.UserId, "IX_AspNetUserClaims_UserId");
+            entity.HasKey(e => e.Id).HasName("PK__ASPNETUS__3214EC27A2F9F7B0");
 
-            entity.HasOne(d => d.User).WithMany(p => p.AspNetUserClaims).HasForeignKey(d => d.UserId);
+            entity.ToTable("ASPNETUSERCLAIMS");
+
+            entity.HasIndex(e => e.Userid, "IX_ASPNETUSERCLAIMS_USERID");
+
+            entity.Property(e => e.Id).HasColumnName("ID");
+            entity.Property(e => e.Claimtype).HasColumnName("CLAIMTYPE");
+            entity.Property(e => e.Claimvalue).HasColumnName("CLAIMVALUE");
+            entity.Property(e => e.Userid).HasColumnName("USERID");
+
+            entity.HasOne(d => d.User).WithMany(p => p.Aspnetuserclaims)
+                .HasForeignKey(d => d.Userid)
+                .HasConstraintName("FK_AspNetUserClaims_AspNetUsers_UserId");
         });
 
-        modelBuilder.Entity<AspNetUserLogin>(entity =>
+        modelBuilder.Entity<Aspnetuserlogin>(entity =>
         {
-            entity.HasKey(e => new { e.LoginProvider, e.ProviderKey });
+            entity.HasKey(e => new { e.Loginprovider, e.Providerkey }).HasName("PK__ASPNETUS__1412E97EFC8987D8");
 
-            entity.HasIndex(e => e.UserId, "IX_AspNetUserLogins_UserId");
+            entity.ToTable("ASPNETUSERLOGINS");
 
-            entity.Property(e => e.LoginProvider).HasMaxLength(128);
-            entity.Property(e => e.ProviderKey).HasMaxLength(128);
+            entity.HasIndex(e => e.Userid, "IX_ASPNETUSERLOGINS_USERID");
 
-            entity.HasOne(d => d.User).WithMany(p => p.AspNetUserLogins).HasForeignKey(d => d.UserId);
+            entity.Property(e => e.Loginprovider)
+                .HasMaxLength(128)
+                .HasColumnName("LOGINPROVIDER");
+            entity.Property(e => e.Providerkey)
+                .HasMaxLength(128)
+                .HasColumnName("PROVIDERKEY");
+            entity.Property(e => e.Providerdisplayname).HasColumnName("PROVIDERDISPLAYNAME");
+            entity.Property(e => e.Userid).HasColumnName("USERID");
+
+            entity.HasOne(d => d.User).WithMany(p => p.Aspnetuserlogins)
+                .HasForeignKey(d => d.Userid)
+                .HasConstraintName("FK_AspNetUserLogins_AspNetUsers_UserId");
         });
 
-        modelBuilder.Entity<AspNetUserToken>(entity =>
+        modelBuilder.Entity<Aspnetusertoken>(entity =>
         {
-            entity.HasKey(e => new { e.UserId, e.LoginProvider, e.Name });
+            entity.HasKey(e => new { e.Userid, e.Loginprovider, e.Name }).HasName("PK__ASPNETUS__B542FEFED0984329");
 
-            entity.Property(e => e.LoginProvider).HasMaxLength(128);
-            entity.Property(e => e.Name).HasMaxLength(128);
+            entity.ToTable("ASPNETUSERTOKENS");
 
-            entity.HasOne(d => d.User).WithMany(p => p.AspNetUserTokens).HasForeignKey(d => d.UserId);
+            entity.Property(e => e.Userid).HasColumnName("USERID");
+            entity.Property(e => e.Loginprovider)
+                .HasMaxLength(128)
+                .HasColumnName("LOGINPROVIDER");
+            entity.Property(e => e.Name)
+                .HasMaxLength(128)
+                .HasColumnName("NAME");
+            entity.Property(e => e.Value).HasColumnName("VALUE");
+
+            entity.HasOne(d => d.User).WithMany(p => p.Aspnetusertokens)
+                .HasForeignKey(d => d.Userid)
+                .HasConstraintName("FK_AspNetUserTokens_AspNetUsers_UserId");
         });
 
         modelBuilder.Entity<CategoriePrix>(entity =>
         {
-            entity.HasKey(e => e.IdCategoriePrix);
+            entity.HasKey(e => e.IdCategoriePrix).HasName("PK__CATEGORI__252DB365B19F299B");
 
             entity.ToTable("CATEGORIE_PRIX");
 
@@ -280,10 +374,10 @@ public partial class TravelPlanContext : DbContext
                         .HasConstraintName("FK_SE_REFERE_LOGEMENT_CATEGORIE_PRIX"),
                     j =>
                     {
-                        j.HasKey("IdCategoriePrix", "IdLogementPrix");
+                        j.HasKey("IdCategoriePrix", "IdLogementPrix").HasName("PK__SE_REFER__90282C1DE60B0144");
                         j.ToTable("SE_REFERE_LOGEMENT");
-                        j.IndexerProperty<int>("IdCategoriePrix").HasColumnName("ID_CATEGORIE_PRIX");
-                        j.IndexerProperty<int>("IdLogementPrix").HasColumnName("ID_LOGEMENT_PRIX");
+                        j.IndexerProperty<short>("IdCategoriePrix").HasColumnName("ID_CATEGORIE_PRIX");
+                        j.IndexerProperty<short>("IdLogementPrix").HasColumnName("ID_LOGEMENT_PRIX");
                     });
 
             entity.HasMany(d => d.IdPrixActivites).WithMany(p => p.IdCategoriePrixes)
@@ -299,10 +393,10 @@ public partial class TravelPlanContext : DbContext
                         .HasConstraintName("FK_SE_REFERE_ACTIV_CATEGORIE_PRIX"),
                     j =>
                     {
-                        j.HasKey("IdCategoriePrix", "IdPrixActivite");
+                        j.HasKey("IdCategoriePrix", "IdPrixActivite").HasName("PK__SE_REFER__882D6215CEC56753");
                         j.ToTable("SE_REFERE_ACTIV");
-                        j.IndexerProperty<int>("IdCategoriePrix").HasColumnName("ID_CATEGORIE_PRIX");
-                        j.IndexerProperty<int>("IdPrixActivite").HasColumnName("ID_PRIX_ACTIVITE");
+                        j.IndexerProperty<short>("IdCategoriePrix").HasColumnName("ID_CATEGORIE_PRIX");
+                        j.IndexerProperty<short>("IdPrixActivite").HasColumnName("ID_PRIX_ACTIVITE");
                     });
 
             entity.HasMany(d => d.IdPrixTransports).WithMany(p => p.IdCategoriePrixes)
@@ -318,16 +412,16 @@ public partial class TravelPlanContext : DbContext
                         .HasConstraintName("FK_SE_REFERE_TRANSP_CATEGORIE_PRIX"),
                     j =>
                     {
-                        j.HasKey("IdCategoriePrix", "IdPrixTransport");
+                        j.HasKey("IdCategoriePrix", "IdPrixTransport").HasName("PK__SE_REFER__A9334B49E3FF335E");
                         j.ToTable("SE_REFERE_TRANSP");
-                        j.IndexerProperty<int>("IdCategoriePrix").HasColumnName("ID_CATEGORIE_PRIX");
-                        j.IndexerProperty<int>("IdPrixTransport").HasColumnName("ID_PRIX_TRANSPORT");
+                        j.IndexerProperty<short>("IdCategoriePrix").HasColumnName("ID_CATEGORIE_PRIX");
+                        j.IndexerProperty<short>("IdPrixTransport").HasColumnName("ID_PRIX_TRANSPORT");
                     });
         });
 
         modelBuilder.Entity<Chambre>(entity =>
         {
-            entity.HasKey(e => e.IdChambre);
+            entity.HasKey(e => e.IdChambre).HasName("PK__CHAMBRE__67377BD2E5097E8E");
 
             entity.ToTable("CHAMBRE");
 
@@ -376,16 +470,16 @@ public partial class TravelPlanContext : DbContext
                         .HasConstraintName("FK_CHAMBRE_EQUIPE_CHAMBRE"),
                     j =>
                     {
-                        j.HasKey("IdChambre", "IdEquipChambre");
+                        j.HasKey("IdChambre", "IdEquipChambre").HasName("PK__CHAMBRE___9BF2CF5B4E41F8B1");
                         j.ToTable("CHAMBRE_EQUIPE");
-                        j.IndexerProperty<int>("IdChambre").HasColumnName("ID_CHAMBRE");
-                        j.IndexerProperty<int>("IdEquipChambre").HasColumnName("ID_EQUIP_CHAMBRE");
+                        j.IndexerProperty<short>("IdChambre").HasColumnName("ID_CHAMBRE");
+                        j.IndexerProperty<short>("IdEquipChambre").HasColumnName("ID_EQUIP_CHAMBRE");
                     });
         });
 
         modelBuilder.Entity<ChambreEquipement>(entity =>
         {
-            entity.HasKey(e => e.IdEquipChambre);
+            entity.HasKey(e => e.IdEquipChambre).HasName("PK__CHAMBRE___CC5B489EB9EB977E");
 
             entity.ToTable("CHAMBRE_EQUIPEMENT");
 
@@ -398,25 +492,27 @@ public partial class TravelPlanContext : DbContext
 
         modelBuilder.Entity<ChambreOption>(entity =>
         {
-            entity.HasKey(e => e.IdChambreOption);
+            entity.HasKey(e => e.IdChambreOption).HasName("PK__CHAMBRE___06491AFFE13C382A");
 
             entity.ToTable("CHAMBRE_OPTION");
 
             entity.Property(e => e.IdChambreOption).HasColumnName("ID_CHAMBRE_OPTION");
             entity.Property(e => e.AnnulationGratuite).HasColumnName("ANNULATION_GRATUITE");
-            entity.Property(e => e.DateAnnulationGratuite).HasColumnName("DATE_ANNULATION_GRATUITE");
+            entity.Property(e => e.DateAnnulationGratuite)
+                .HasColumnType("datetime")
+                .HasColumnName("DATE_ANNULATION_GRATUITE");
             entity.Property(e => e.PetitDejeunerInclus).HasColumnName("PETIT_DEJEUNER_INCLUS");
         });
 
         modelBuilder.Entity<Client>(entity =>
         {
-            entity.HasKey(e => e.IdUtilisateur);
+            entity.HasKey(e => e.IdClient).HasName("PK__CLIENT__5556D89BCC250100");
 
             entity.ToTable("CLIENT");
 
-            entity.Property(e => e.IdUtilisateur)
+            entity.Property(e => e.IdClient)
                 .ValueGeneratedNever()
-                .HasColumnName("ID_UTILISATEUR");
+                .HasColumnName("ID_CLIENT");
             entity.Property(e => e.Addresse)
                 .HasMaxLength(60)
                 .IsUnicode(false)
@@ -425,7 +521,12 @@ public partial class TravelPlanContext : DbContext
                 .HasMaxLength(10)
                 .IsUnicode(false)
                 .HasColumnName("CP");
-            entity.Property(e => e.DateNaissance).HasColumnName("DATE_NAISSANCE");
+            entity.Property(e => e.DateNaissance)
+                .HasColumnType("datetime")
+                .HasColumnName("DATE_NAISSANCE");
+            entity.Property(e => e.Id)
+                .HasMaxLength(450)
+                .HasColumnName("ID");
             entity.Property(e => e.Mail)
                 .HasMaxLength(60)
                 .IsUnicode(false)
@@ -454,11 +555,57 @@ public partial class TravelPlanContext : DbContext
                 .HasMaxLength(40)
                 .IsUnicode(false)
                 .HasColumnName("VILLE");
+
+            entity.HasOne(d => d.IdNavigation).WithMany(p => p.Clients)
+                .HasForeignKey(d => d.Id)
+                .HasConstraintName("FK_CLIENT_REFERENCE_ASPNETUS");
+        });
+
+        modelBuilder.Entity<DisponibiliteLogement>(entity =>
+        {
+            entity.HasKey(e => new { e.IdChambre, e.IdNumChambre }).HasName("PK__DISPONIB__5FD28D3E7531AC17");
+
+            entity.ToTable("DISPONIBILITE_LOGEMENT");
+
+            entity.Property(e => e.IdChambre).HasColumnName("ID_CHAMBRE");
+            entity.Property(e => e.IdNumChambre).HasColumnName("ID_NUM_CHAMBRE");
+            entity.Property(e => e.Disponible).HasColumnName("DISPONIBLE");
+
+            entity.HasOne(d => d.IdChambreNavigation).WithMany(p => p.DisponibiliteLogements)
+                .HasForeignKey(d => d.IdChambre)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_DISPONIBILITE_LOGEMENT_CHAMBRE");
+
+            entity.HasOne(d => d.IdNumChambreNavigation).WithMany(p => p.DisponibiliteLogements)
+                .HasForeignKey(d => d.IdNumChambre)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_DISPONIBILITE_LOGEMENT_NUM_CHAMBRE");
+        });
+
+        modelBuilder.Entity<DisponibiliteTransport>(entity =>
+        {
+            entity.HasKey(e => new { e.IdSiege, e.IdTransport }).HasName("PK__DISPONIB__4A3158F09AA40ED0");
+
+            entity.ToTable("DISPONIBILITE_TRANSPORT");
+
+            entity.Property(e => e.IdSiege).HasColumnName("ID_SIEGE");
+            entity.Property(e => e.IdTransport).HasColumnName("ID_TRANSPORT");
+            entity.Property(e => e.Disponible).HasColumnName("DISPONIBLE");
+
+            entity.HasOne(d => d.IdSiegeNavigation).WithMany(p => p.DisponibiliteTransports)
+                .HasForeignKey(d => d.IdSiege)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_DISPONIBILITE_TRANSPORT_SIEGE");
+
+            entity.HasOne(d => d.IdTransportNavigation).WithMany(p => p.DisponibiliteTransports)
+                .HasForeignKey(d => d.IdTransport)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_DISPONIBILITE_TRANSPORT_TRANSPORT");
         });
 
         modelBuilder.Entity<EquipementCategorie>(entity =>
         {
-            entity.HasKey(e => e.IdCatEquipement);
+            entity.HasKey(e => e.IdCatEquipement).HasName("PK__EQUIPEME__6C4F33F8DF816594");
 
             entity.ToTable("EQUIPEMENT_CATEGORIE");
 
@@ -481,16 +628,16 @@ public partial class TravelPlanContext : DbContext
                         .HasConstraintName("FK_ASSOCIE_EQUIPEMENT_CATEGORIE_EQUIPEMENT_CATEGORIE"),
                     j =>
                     {
-                        j.HasKey("IdCatEquipement", "IdLogement");
+                        j.HasKey("IdCatEquipement", "IdLogement").HasName("PK__ASSOCIE___43D2558AF64F9B35");
                         j.ToTable("ASSOCIE_EQUIPEMENT_CATEGORIE");
-                        j.IndexerProperty<int>("IdCatEquipement").HasColumnName("ID_CAT_EQUIPEMENT");
-                        j.IndexerProperty<int>("IdLogement").HasColumnName("ID_LOGEMENT");
+                        j.IndexerProperty<short>("IdCatEquipement").HasColumnName("ID_CAT_EQUIPEMENT");
+                        j.IndexerProperty<short>("IdLogement").HasColumnName("ID_LOGEMENT");
                     });
         });
 
         modelBuilder.Entity<Fournisseur>(entity =>
         {
-            entity.HasKey(e => e.IdFournisseur);
+            entity.HasKey(e => e.IdFournisseur).HasName("PK__FOURNISS__F955D0EAD9EBE051");
 
             entity.ToTable("FOURNISSEUR");
 
@@ -531,13 +678,14 @@ public partial class TravelPlanContext : DbContext
 
         modelBuilder.Entity<Invite>(entity =>
         {
-            entity.HasKey(e => e.IdInvitee);
+            entity.HasKey(e => e.IdInvitee).HasName("PK__INVITE__D0E96D4ED35F95B3");
 
             entity.ToTable("INVITE");
 
             entity.Property(e => e.IdInvitee).HasColumnName("ID_INVITEE");
-            entity.Property(e => e.DateNaissance).HasColumnName("DATE_NAISSANCE");
-            entity.Property(e => e.IdUtilisateur).HasColumnName("ID_UTILISATEUR");
+            entity.Property(e => e.DateNaissance)
+                .HasColumnType("datetime")
+                .HasColumnName("DATE_NAISSANCE");
             entity.Property(e => e.Mail)
                 .HasMaxLength(60)
                 .IsUnicode(false)
@@ -564,35 +712,16 @@ public partial class TravelPlanContext : DbContext
                         .HasConstraintName("FK_PARTICIPE_INVITE"),
                     j =>
                     {
-                        j.HasKey("IdInvitee", "IdReservation");
+                        j.HasKey("IdInvitee", "IdReservation").HasName("PK__PARTICIP__73221ED63C3F94B0");
                         j.ToTable("PARTICIPE");
-                        j.IndexerProperty<int>("IdInvitee").HasColumnName("ID_INVITEE");
-                        j.IndexerProperty<int>("IdReservation").HasColumnName("ID_RESERVATION");
+                        j.IndexerProperty<short>("IdInvitee").HasColumnName("ID_INVITEE");
+                        j.IndexerProperty<short>("IdReservation").HasColumnName("ID_RESERVATION");
                     });
-        });
-
-        modelBuilder.Entity<LocationLogement>(entity =>
-        {
-            entity.HasKey(e => e.IdLogementLoc);
-
-            entity.ToTable("LOCATION_LOGEMENT");
-
-            entity.Property(e => e.IdLogementLoc).HasColumnName("ID_LOGEMENT_LOC");
-            entity.Property(e => e.IdLogementPrix).HasColumnName("ID_LOGEMENT_PRIX");
-            entity.Property(e => e.Nom)
-                .HasMaxLength(60)
-                .IsUnicode(false)
-                .HasColumnName("NOM");
-
-            entity.HasOne(d => d.IdLogementPrixNavigation).WithMany(p => p.LocationLogements)
-                .HasForeignKey(d => d.IdLogementPrix)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_LOCATION_LOGEMENT_PRIX_LOGEMENT");
         });
 
         modelBuilder.Entity<Logement>(entity =>
         {
-            entity.HasKey(e => e.IdLogement);
+            entity.HasKey(e => e.IdLogement).HasName("PK__LOGEMENT__F9D66723342B26FF");
 
             entity.ToTable("LOGEMENT");
 
@@ -600,11 +729,14 @@ public partial class TravelPlanContext : DbContext
             entity.Property(e => e.Details)
                 .HasColumnType("text")
                 .HasColumnName("DETAILS");
+            entity.Property(e => e.Disponibilite).HasColumnName("DISPONIBILITE");
             entity.Property(e => e.IdFournisseur).HasColumnName("ID_FOURNISSEUR");
             entity.Property(e => e.IdLogementCategorie).HasColumnName("ID_LOGEMENT_CATEGORIE");
-            entity.Property(e => e.IdLogementLoc).HasColumnName("ID_LOGEMENT_LOC");
+            entity.Property(e => e.IdLogementPrix).HasColumnName("ID_LOGEMENT_PRIX");
             entity.Property(e => e.IdPays).HasColumnName("ID_PAYS");
-            entity.Property(e => e.Img).HasColumnName("IMG");
+            entity.Property(e => e.Img)
+                .HasColumnType("image")
+                .HasColumnName("IMG");
             entity.Property(e => e.NbEvaluation).HasColumnName("NB_EVALUATION");
             entity.Property(e => e.Nom)
                 .HasMaxLength(50)
@@ -622,10 +754,10 @@ public partial class TravelPlanContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_LOGEMENT_LOGEMENT_CATEGORIE");
 
-            entity.HasOne(d => d.IdLogementLocNavigation).WithMany(p => p.Logements)
-                .HasForeignKey(d => d.IdLogementLoc)
+            entity.HasOne(d => d.IdLogementPrixNavigation).WithMany(p => p.Logements)
+                .HasForeignKey(d => d.IdLogementPrix)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_LOGEMENT_LOCATION_LOGEMENT");
+                .HasConstraintName("FK_LOGEMENT_PRIX_LOGEMENT");
 
             entity.HasOne(d => d.IdPaysNavigation).WithMany(p => p.Logements)
                 .HasForeignKey(d => d.IdPays)
@@ -635,7 +767,7 @@ public partial class TravelPlanContext : DbContext
 
         modelBuilder.Entity<LogementCategorie>(entity =>
         {
-            entity.HasKey(e => e.IdLogementCategorie);
+            entity.HasKey(e => e.IdLogementCategorie).HasName("PK__LOGEMENT__4CEB4680FA0F2233");
 
             entity.ToTable("LOGEMENT_CATEGORIE");
 
@@ -646,15 +778,28 @@ public partial class TravelPlanContext : DbContext
                 .HasColumnName("NOM");
         });
 
+        modelBuilder.Entity<NumChambre>(entity =>
+        {
+            entity.HasKey(e => e.IdNumChambre).HasName("PK__NUM_CHAM__8E5F6EC2220F465B");
+
+            entity.ToTable("NUM_CHAMBRE");
+
+            entity.Property(e => e.IdNumChambre).HasColumnName("ID_NUM_CHAMBRE");
+            entity.Property(e => e.NumeroChambre).HasColumnName("NUMERO_CHAMBRE");
+        });
+
         modelBuilder.Entity<Paiement>(entity =>
         {
-            entity.HasKey(e => e.IdPaiement);
+            entity.HasKey(e => e.IdPaiement).HasName("PK__PAIEMENT__2390D182AFA076E2");
 
             entity.ToTable("PAIEMENT");
 
             entity.Property(e => e.IdPaiement).HasColumnName("ID_PAIEMENT");
             entity.Property(e => e.Crypto).HasColumnName("CRYPTO");
-            entity.Property(e => e.DateExpiration).HasColumnName("DATE_EXPIRATION");
+            entity.Property(e => e.DateExpiration)
+                .HasColumnType("datetime")
+                .HasColumnName("DATE_EXPIRATION");
+            entity.Property(e => e.IdClient).HasColumnName("ID_CLIENT");
             entity.Property(e => e.IdUtilisateur).HasColumnName("ID_UTILISATEUR");
             entity.Property(e => e.NumeroCarteBancaire).HasColumnName("NUMERO_CARTE_BANCAIRE");
             entity.Property(e => e.TypeCarteBancaire)
@@ -662,15 +807,14 @@ public partial class TravelPlanContext : DbContext
                 .IsUnicode(false)
                 .HasColumnName("TYPE_CARTE_BANCAIRE");
 
-            entity.HasOne(d => d.IdUtilisateurNavigation).WithMany(p => p.Paiements)
-                .HasForeignKey(d => d.IdUtilisateur)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+            entity.HasOne(d => d.IdClientNavigation).WithMany(p => p.Paiements)
+                .HasForeignKey(d => d.IdClient)
                 .HasConstraintName("FK_PAIEMENT_CLIENT");
         });
 
         modelBuilder.Entity<Pay>(entity =>
         {
-            entity.HasKey(e => e.IdPays);
+            entity.HasKey(e => e.IdPays).HasName("PK__PAYS__B68ABC4D1CDADFEF");
 
             entity.ToTable("PAYS");
 
@@ -679,39 +823,65 @@ public partial class TravelPlanContext : DbContext
                 .HasMaxLength(40)
                 .IsUnicode(false)
                 .HasColumnName("NOM");
-            entity.Property(e => e.Region)
-                .HasMaxLength(40)
-                .IsUnicode(false)
-                .HasColumnName("REGION");
-            entity.Property(e => e.Ville)
-                .HasMaxLength(40)
-                .IsUnicode(false)
-                .HasColumnName("VILLE");
         });
 
         modelBuilder.Entity<PrixLogement>(entity =>
         {
-            entity.HasKey(e => e.IdLogementPrix);
+            entity.HasKey(e => e.IdLogementPrix).HasName("PK__PRIX_LOG__5059F78A8AC7941C");
 
             entity.ToTable("PRIX_LOGEMENT");
 
             entity.Property(e => e.IdLogementPrix).HasColumnName("ID_LOGEMENT_PRIX");
-            entity.Property(e => e.DateDebutValidite).HasColumnName("DATE_DEBUT_VALIDITE");
-            entity.Property(e => e.DateFinValidite).HasColumnName("DATE_FIN_VALIDITE");
+            entity.Property(e => e.DateDebutValidite)
+                .HasColumnType("datetime")
+                .HasColumnName("DATE_DEBUT_VALIDITE");
+            entity.Property(e => e.DateFinValidite)
+                .HasColumnType("datetime")
+                .HasColumnName("DATE_FIN_VALIDITE");
             entity.Property(e => e.Prix)
                 .HasColumnType("decimal(10, 2)")
                 .HasColumnName("PRIX");
         });
 
+        modelBuilder.Entity<Region>(entity =>
+        {
+            entity.HasKey(e => e.IdRegion).HasName("PK__REGION__D8BB64B03C9A7A7D");
+
+            entity.ToTable("REGION");
+
+            entity.Property(e => e.IdRegion).HasColumnName("ID_REGION");
+            entity.Property(e => e.IdPays).HasColumnName("ID_PAYS");
+            entity.Property(e => e.Nom)
+                .HasMaxLength(128)
+                .IsUnicode(false)
+                .HasColumnName("NOM");
+
+            entity.HasOne(d => d.IdPaysNavigation).WithMany(p => p.Regions)
+                .HasForeignKey(d => d.IdPays)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_REGION_PAYS");
+        });
+
         modelBuilder.Entity<Reservation>(entity =>
         {
-            entity.HasKey(e => e.IdReservation);
+            entity.HasKey(e => e.IdReservation).HasName("PK__RESERVAT__3CB7398B4DEF609F");
 
             entity.ToTable("RESERVATION");
 
             entity.Property(e => e.IdReservation).HasColumnName("ID_RESERVATION");
-            entity.Property(e => e.DateHeureDebut).HasColumnName("DATE_HEURE_DEBUT");
-            entity.Property(e => e.DateHeureFin).HasColumnName("DATE_HEURE_FIN");
+            entity.Property(e => e.DateDebut)
+                .HasColumnType("datetime")
+                .HasColumnName("DATE_DEBUT");
+            entity.Property(e => e.DateFin)
+                .HasColumnType("datetime")
+                .HasColumnName("DATE_FIN");
+            entity.Property(e => e.DateHeureDebut)
+                .HasColumnType("datetime")
+                .HasColumnName("DATE_HEURE_DEBUT");
+            entity.Property(e => e.DateHeureFin)
+                .HasColumnType("datetime")
+                .HasColumnName("DATE_HEURE_FIN");
+            entity.Property(e => e.Disponibilite).HasColumnName("DISPONIBILITE");
             entity.Property(e => e.IdActivite).HasColumnName("ID_ACTIVITE");
             entity.Property(e => e.IdLogement).HasColumnName("ID_LOGEMENT");
             entity.Property(e => e.IdTransport).HasColumnName("ID_TRANSPORT");
@@ -735,9 +905,23 @@ public partial class TravelPlanContext : DbContext
                 .HasConstraintName("FK_RESERVATION_VOYAGE");
         });
 
+        modelBuilder.Entity<Siege>(entity =>
+        {
+            entity.HasKey(e => e.IdSiege).HasName("PK__SIEGE__AB9BD2934FC30654");
+
+            entity.ToTable("SIEGE");
+
+            entity.Property(e => e.IdSiege).HasColumnName("ID_SIEGE");
+            entity.Property(e => e.NumeroSiege)
+                .HasMaxLength(32)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .HasColumnName("NUMERO_SIEGE");
+        });
+
         modelBuilder.Entity<Transport>(entity =>
         {
-            entity.HasKey(e => e.IdTransport);
+            entity.HasKey(e => e.IdTransport).HasName("PK__TRANSPOR__1AA8A63F84357DAC");
 
             entity.ToTable("TRANSPORT");
 
@@ -792,7 +976,7 @@ public partial class TravelPlanContext : DbContext
 
         modelBuilder.Entity<TransportCategorie>(entity =>
         {
-            entity.HasKey(e => e.IdCategorieTransport);
+            entity.HasKey(e => e.IdCategorieTransport).HasName("PK__TRANSPOR__8D9BA317F38AC089");
 
             entity.ToTable("TRANSPORT_CATEGORIE");
 
@@ -805,7 +989,7 @@ public partial class TravelPlanContext : DbContext
 
         modelBuilder.Entity<TransportOption>(entity =>
         {
-            entity.HasKey(e => e.IdOptionTransport);
+            entity.HasKey(e => e.IdOptionTransport).HasName("PK__TRANSPOR__46DC60A5B5F318C8");
 
             entity.ToTable("TRANSPORT_OPTION");
 
@@ -813,22 +997,26 @@ public partial class TravelPlanContext : DbContext
             entity.Property(e => e.BagageEnSoute).HasColumnName("BAGAGE_EN_SOUTE");
             entity.Property(e => e.BagageLarge).HasColumnName("BAGAGE_LARGE");
             entity.Property(e => e.BagageMain).HasColumnName("BAGAGE_MAIN");
-            entity.Property(e => e.NumeroSiege)
-                .HasMaxLength(10)
-                .IsUnicode(false)
-                .HasColumnName("NUMERO_SIEGE");
+            entity.Property(e => e.PrixBagagelarge).HasColumnName("PRIX_BAGAGELARGE");
+            entity.Property(e => e.PrixBagagemain).HasColumnName("PRIX_BAGAGEMAIN");
+            entity.Property(e => e.PrixBagagesoute).HasColumnName("PRIX_BAGAGESOUTE");
+            entity.Property(e => e.PrixSpeedyboarding).HasColumnName("PRIX_SPEEDYBOARDING");
             entity.Property(e => e.Speedyboarding).HasColumnName("SPEEDYBOARDING");
         });
 
         modelBuilder.Entity<TransportPrix>(entity =>
         {
-            entity.HasKey(e => e.IdPrixTransport);
+            entity.HasKey(e => e.IdPrixTransport).HasName("PK__TRANSPOR__C1EF82C951E7B2E7");
 
             entity.ToTable("TRANSPORT_PRIX");
 
             entity.Property(e => e.IdPrixTransport).HasColumnName("ID_PRIX_TRANSPORT");
-            entity.Property(e => e.DateDebutValidite).HasColumnName("DATE_DEBUT_VALIDITE");
-            entity.Property(e => e.DateFinValidite).HasColumnName("DATE_FIN_VALIDITE");
+            entity.Property(e => e.DateDebutValidite)
+                .HasColumnType("datetime")
+                .HasColumnName("DATE_DEBUT_VALIDITE");
+            entity.Property(e => e.DateFinValidite)
+                .HasColumnType("datetime")
+                .HasColumnName("DATE_FIN_VALIDITE");
             entity.Property(e => e.Prix)
                 .HasColumnType("decimal(10, 2)")
                 .HasColumnName("PRIX");
@@ -836,12 +1024,14 @@ public partial class TravelPlanContext : DbContext
 
         modelBuilder.Entity<VehiculeLocation>(entity =>
         {
-            entity.HasKey(e => e.IdVehiculeLoc);
+            entity.HasKey(e => e.IdVehiculeLoc).HasName("PK__VEHICULE__D287C08890C9DFA6");
 
             entity.ToTable("VEHICULE_LOCATION");
 
             entity.Property(e => e.IdVehiculeLoc).HasColumnName("ID_VEHICULE_LOC");
-            entity.Property(e => e.Img).HasColumnName("IMG");
+            entity.Property(e => e.Img)
+                .HasColumnType("image")
+                .HasColumnName("IMG");
             entity.Property(e => e.KillometreIllimite).HasColumnName("KILLOMETRE_ILLIMITE");
             entity.Property(e => e.Marque)
                 .HasMaxLength(40)
@@ -858,24 +1048,47 @@ public partial class TravelPlanContext : DbContext
                 .HasColumnName("TYPE_VEHICULE");
         });
 
+        modelBuilder.Entity<Ville>(entity =>
+        {
+            entity.HasKey(e => e.IdVille).HasName("PK__VILLE__1FFE7135F58D5F91");
+
+            entity.ToTable("VILLE");
+
+            entity.Property(e => e.IdVille).HasColumnName("ID_VILLE");
+            entity.Property(e => e.IdRegion).HasColumnName("ID_REGION");
+            entity.Property(e => e.Nom)
+                .HasMaxLength(128)
+                .IsUnicode(false)
+                .HasColumnName("NOM");
+
+            entity.HasOne(d => d.IdRegionNavigation).WithMany(p => p.Villes)
+                .HasForeignKey(d => d.IdRegion)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_VILLE_REGION");
+        });
+
         modelBuilder.Entity<Voyage>(entity =>
         {
-            entity.HasKey(e => e.IdVoyage);
+            entity.HasKey(e => e.IdVoyage).HasName("PK__VOYAGE__9E4C02B425AA1C0C");
 
             entity.ToTable("VOYAGE");
 
             entity.Property(e => e.IdVoyage).HasColumnName("ID_VOYAGE");
-            entity.Property(e => e.DateDebut).HasColumnName("DATE_DEBUT");
-            entity.Property(e => e.DateFin).HasColumnName("DATE_FIN");
+            entity.Property(e => e.DateDebut)
+                .HasColumnType("datetime")
+                .HasColumnName("DATE_DEBUT");
+            entity.Property(e => e.DateFin)
+                .HasColumnType("datetime")
+                .HasColumnName("DATE_FIN");
+            entity.Property(e => e.IdClient).HasColumnName("ID_CLIENT");
             entity.Property(e => e.IdUtilisateur).HasColumnName("ID_UTILISATEUR");
             entity.Property(e => e.PrixTotal)
                 .HasColumnType("decimal(10, 2)")
                 .HasColumnName("PRIX_TOTAL");
             entity.Property(e => e.StatutPaiement).HasColumnName("STATUT_PAIEMENT");
 
-            entity.HasOne(d => d.IdUtilisateurNavigation).WithMany(p => p.Voyages)
-                .HasForeignKey(d => d.IdUtilisateur)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+            entity.HasOne(d => d.IdClientNavigation).WithMany(p => p.Voyages)
+                .HasForeignKey(d => d.IdClient)
                 .HasConstraintName("FK_VOYAGE_CLIENT");
 
             entity.HasMany(d => d.IdPays).WithMany(p => p.IdVoyages)
@@ -891,10 +1104,10 @@ public partial class TravelPlanContext : DbContext
                         .HasConstraintName("FK_CHOISIR_VOYAGE"),
                     j =>
                     {
-                        j.HasKey("IdVoyage", "IdPays");
+                        j.HasKey("IdVoyage", "IdPays").HasName("PK__CHOISIR__5524A97085A87DA5");
                         j.ToTable("CHOISIR");
-                        j.IndexerProperty<int>("IdVoyage").HasColumnName("ID_VOYAGE");
-                        j.IndexerProperty<int>("IdPays").HasColumnName("ID_PAYS");
+                        j.IndexerProperty<short>("IdVoyage").HasColumnName("ID_VOYAGE");
+                        j.IndexerProperty<short>("IdPays").HasColumnName("ID_PAYS");
                     });
         });
 
@@ -902,6 +1115,4 @@ public partial class TravelPlanContext : DbContext
     }
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
-
-public DbSet<projet_csharp_travel_plan.DTO.ActiviteDTO> ActiviteDTO { get; set; } = default!;
 }

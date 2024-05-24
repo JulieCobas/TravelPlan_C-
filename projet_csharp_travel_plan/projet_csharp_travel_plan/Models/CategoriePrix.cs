@@ -5,7 +5,7 @@ namespace projet_csharp_travel_plan.Models;
 
 public partial class CategoriePrix
 {
-    public int IdCategoriePrix { get; set; }
+    public short IdCategoriePrix { get; set; }
 
     public string? Nom { get; set; }
 

@@ -5,29 +5,31 @@ namespace projet_csharp_travel_plan.Models;
 
 public partial class Activite
 {
-    public int IdActivite { get; set; }
+    public short IdActivite { get; set; }
 
-    public int? IdOptionActivite { get; set; }
+    public short? IdOptionActivite { get; set; }
 
-    public int IdPrixActivite { get; set; }
+    public short IdPrixActivite { get; set; }
 
-    public int IdPays { get; set; }
+    public short IdPays { get; set; }
 
-    public int IdFournisseur { get; set; }
+    public short IdFournisseur { get; set; }
 
-    public int IdCatActiv { get; set; }
+    public short IdCatActiv { get; set; }
 
     public string Nom { get; set; } = null!;
 
     public string Details { get; set; } = null!;
 
-    public short? Note { get; set; }
+    public byte? Note { get; set; }
 
-    public int? NbEvaluation { get; set; }
+    public short? NbEvaluation { get; set; }
 
-    public TimeOnly? HeuresMoyennes { get; set; }
+    public DateTime? HeuresMoyennes { get; set; }
 
-    public byte[] Img { get; set; } = null!;
+    public byte[]? Img { get; set; }
+
+    public int? CapaciteMax { get; set; }
 
     public virtual ActiviteCategorie IdCatActivNavigation { get; set; } = null!;
 

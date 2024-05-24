@@ -5,7 +5,7 @@ namespace projet_csharp_travel_plan.Models;
 
 public partial class ChambreEquipement
 {
-    public int IdEquipChambre { get; set; }
+    public short IdEquipChambre { get; set; }
 
     public string Nom { get; set; } = null!;
 

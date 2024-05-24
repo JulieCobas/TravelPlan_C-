@@ -5,7 +5,9 @@ namespace projet_csharp_travel_plan.Models;
 
 public partial class Client
 {
-    public int IdUtilisateur { get; set; }
+    public string? Id { get; set; }
+
+    public short IdClient { get; set; }
 
     public string Addresse { get; set; } = null!;
 
@@ -19,7 +21,7 @@ public partial class Client
 
     public string Prenom { get; set; } = null!;
 
-    public DateOnly DateNaissance { get; set; }
+    public DateTime DateNaissance { get; set; }
 
     public string MotDePasse { get; set; } = null!;
 
@@ -27,7 +29,7 @@ public partial class Client
 
     public string? Telephone { get; set; }
 
-    public virtual ICollection<AspNetUser> AspNetUsers { get; set; } = new List<AspNetUser>();
+    public virtual Aspnetuser? IdNavigation { get; set; }
 
     public virtual ICollection<Paiement> Paiements { get; set; } = new List<Paiement>();
 

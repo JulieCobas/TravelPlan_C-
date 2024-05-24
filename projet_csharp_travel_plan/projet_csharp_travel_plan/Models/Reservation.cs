@@ -5,19 +5,25 @@ namespace projet_csharp_travel_plan.Models;
 
 public partial class Reservation
 {
-    public int IdReservation { get; set; }
+    public short IdReservation { get; set; }
 
-    public int? IdLogement { get; set; }
+    public short? IdLogement { get; set; }
 
-    public int? IdActivite { get; set; }
+    public short? IdActivite { get; set; }
 
-    public int? IdTransport { get; set; }
+    public short? IdTransport { get; set; }
 
-    public int IdVoyage { get; set; }
+    public short IdVoyage { get; set; }
 
-    public DateOnly DateHeureDebut { get; set; }
+    public DateTime DateHeureDebut { get; set; }
 
-    public DateOnly? DateHeureFin { get; set; }
+    public DateTime? DateHeureFin { get; set; }
+
+    public DateTime? DateDebut { get; set; }
+
+    public DateTime? DateFin { get; set; }
+
+    public bool? Disponibilite { get; set; }
 
     public virtual Activite? IdActiviteNavigation { get; set; }
 

@@ -5,23 +5,25 @@ namespace projet_csharp_travel_plan.Models;
 
 public partial class Chambre
 {
-    public int IdChambre { get; set; }
+    public short IdChambre { get; set; }
 
-    public int IdLogementPrix { get; set; }
+    public short IdLogementPrix { get; set; }
 
-    public int IdLogement { get; set; }
+    public short IdLogement { get; set; }
 
-    public int? IdChambreOption { get; set; }
+    public short? IdChambreOption { get; set; }
 
     public string Nom { get; set; } = null!;
 
-    public string TypeDeChambre { get; set; } = null!;
+    public string? TypeDeChambre { get; set; }
 
-    public short Surface { get; set; }
+    public byte Surface { get; set; }
 
-    public short NbOccupants { get; set; }
+    public byte NbOccupants { get; set; }
 
     public string? DetailsChambre { get; set; }
+
+    public virtual ICollection<DisponibiliteLogement> DisponibiliteLogements { get; set; } = new List<DisponibiliteLogement>();
 
     public virtual ChambreOption? IdChambreOptionNavigation { get; set; }
 

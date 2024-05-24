@@ -5,19 +5,21 @@ namespace projet_csharp_travel_plan.Models;
 
 public partial class Voyage
 {
-    public int IdVoyage { get; set; }
+    public short IdVoyage { get; set; }
 
-    public int IdUtilisateur { get; set; }
+    public short? IdClient { get; set; }
 
-    public DateOnly DateDebut { get; set; }
+    public short IdUtilisateur { get; set; }
 
-    public DateOnly DateFin { get; set; }
+    public DateTime DateDebut { get; set; }
+
+    public DateTime DateFin { get; set; }
 
     public decimal PrixTotal { get; set; }
 
     public bool StatutPaiement { get; set; }
 
-    public virtual Client IdUtilisateurNavigation { get; set; } = null!;
+    public virtual Client? IdClientNavigation { get; set; }
 
     public virtual ICollection<Reservation> Reservations { get; set; } = new List<Reservation>();
 

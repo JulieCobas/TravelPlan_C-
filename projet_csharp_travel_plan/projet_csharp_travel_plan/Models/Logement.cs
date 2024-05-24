@@ -5,25 +5,27 @@ namespace projet_csharp_travel_plan.Models;
 
 public partial class Logement
 {
-    public int IdLogement { get; set; }
+    public short IdLogement { get; set; }
 
-    public int IdLogementLoc { get; set; }
+    public short IdFournisseur { get; set; }
 
-    public int IdFournisseur { get; set; }
+    public short IdLogementPrix { get; set; }
 
-    public int IdLogementCategorie { get; set; }
+    public short IdLogementCategorie { get; set; }
 
-    public int IdPays { get; set; }
+    public short IdPays { get; set; }
 
     public string Nom { get; set; } = null!;
 
     public string Details { get; set; } = null!;
 
-    public short? Note { get; set; }
+    public byte? Note { get; set; }
 
     public int? NbEvaluation { get; set; }
 
-    public byte[] Img { get; set; } = null!;
+    public byte[]? Img { get; set; }
+
+    public bool? Disponibilite { get; set; }
 
     public virtual ICollection<Chambre> Chambres { get; set; } = new List<Chambre>();
 
@@ -31,7 +33,7 @@ public partial class Logement
 
     public virtual LogementCategorie IdLogementCategorieNavigation { get; set; } = null!;
 
-    public virtual LocationLogement IdLogementLocNavigation { get; set; } = null!;
+    public virtual PrixLogement IdLogementPrixNavigation { get; set; } = null!;
 
     public virtual Pay IdPaysNavigation { get; set; } = null!;
 
