@@ -487,8 +487,4 @@ $RECYCLE.BIN/
 /projet_csharp_travel_plan/projet_csharp_travel_plan/projet_csharp_travel_plan/appsettings.json
 
 # Ignorer appsettings.json dans le frontend
-<<<<<<< Updated upstream
 /projet_csharp_travel_plan/projet_csharp_travel_plan/projet_csharp_travel_plan_frontend/appsettings.json
-=======
-/projet_csharp_travel_plan/projet_csharp_travel_plan/projet_csharp_travel_plan_frontend/appsettings.json
->>>>>>> Stashed changes
