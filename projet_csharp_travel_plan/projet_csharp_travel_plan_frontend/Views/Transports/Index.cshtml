@@ -8,13 +8,8 @@
 <h1>Liste des Transports</h1>
 
 <form method="get">
-    <select name="category" onchange="this.form.submit()">
+    <select id="categorySelect" name="category" onchange="this.form.submit()">
         <option value="" disabled selected>Sélectionner la catégorie de véhicule</option>
-        <option value="Aérien">Aérien</option>
-        <option value="Maritime">Maritime</option>
-        <option value="Terrestre - Voiture">Terrestre - Voiture</option>
-        <option value="Terrestre - Train">Terrestre - Train</option>
-        <option value="Cyclable">Cyclable</option>
     </select>
 </form>
 
@@ -65,14 +60,14 @@
                             <td>@item.VehiculeLocNbSiege</td>
                             <td>@item.PrixTransportPrix</td>
                             <td>
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Reservations" asp-action="Index">Reservation</a>
+                                <button type="submit" name="confirmTransport" value="@item.IdTransport" class="btn btn-primary">Confirmer et passer à la réservation de logement</button>
                             </td>
                         }
                         else if (selectedCategory == "Cyclable")
                         {
                             <td>@item.PrixTransportPrix</td>
                             <td>
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Reservations" asp-action="Index">Reservation</a>
+                                <button type="submit" name="confirmTransport" value="@item.IdTransport" class="btn btn-primary">Confirmer et passer à la réservation de logement</button>
                             </td>
                         }
                     </tr>
@@ -80,4 +75,28 @@
             </tbody>
         </table>
     </form>
+}
+
+<!-- Form to skip transport selection and proceed to lodging -->
+<form method="post" asp-action="ProceedToLodging">
+    @Html.AntiForgeryToken()
+    <button type="submit" class="btn btn-secondary">Passer à la réservation de logement sans sélectionner de transport</button>
+</form>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            fetch('/api/Transports/categories')
+                .then(response => response.json())
+                .then(data => {
+                    const categorySelect = document.getElementById("categorySelect");
+                    data.forEach(category => {
+                        const option = document.createElement("option");
+                        option.value = category;
+                        option.text = category;
+                        categorySelect.appendChild(option);
+                    });
+                });
+        });
+    </script>
 }
