@@ -38,9 +38,8 @@ namespace projet_csharp_travel_plan.Controllers
                     Activites = p.Activites.Select(a => a.Nom).ToList(),
                     Logements = p.Logements.Select(l => l.Nom).ToList(),
                     Regions = p.Regions.Select(r => r.Nom).ToList(),
-                    Transports = p.Transports.Select(t => t.LieuDepart).ToList(), // Assuming Transport has a property "LieuDepart"
-                    Voyages = p.IdVoyages.Select(v => v.DateDebut.ToString()).ToList() // Assuming Voyage has a property "DateDebut"
-                })
+                    Transports = p.Transports.Select(t => t.LieuDepart).ToList(), 
+                    Voyages = p.IdVoyages.Select(v => v.DateDebut.ToString()).ToList() })
                 .ToListAsync();
         }
 
@@ -68,8 +67,8 @@ namespace projet_csharp_travel_plan.Controllers
                 Activites = pay.Activites.Select(a => a.Nom).ToList(),
                 Logements = pay.Logements.Select(l => l.Nom).ToList(),
                 Regions = pay.Regions.Select(r => r.Nom).ToList(),
-                Transports = pay.Transports.Select(t => t.LieuDepart).ToList(), // Assuming Transport has a property "LieuDepart"
-                Voyages = pay.IdVoyages.Select(v => v.DateDebut.ToString()).ToList() // Assuming Voyage has a property "DateDebut"
+                Transports = pay.Transports.Select(t => t.LieuDepart).ToList(), 
+                Voyages = pay.IdVoyages.Select(v => v.DateDebut.ToString()).ToList() 
             };
 
             return payDTO;
