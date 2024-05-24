@@ -483,8 +483,7 @@ $RECYCLE.BIN/
 # Vim temporary swap files
 *.swp
 
-# Ignorer appsettings.json dans le backend
-/projet_csharp_travel_plan/projet_csharp_travel_plan/projet_csharp_travel_plan/appsettings.json
+# Ignore appsettings.json files
+projet_csharp_travel_plan/projet_csharp_travel_plan/appsettings.json
+projet_csharp_travel_plan/projet_csharp_travel_plan_frontend/appsettings.json
 
-# Ignorer appsettings.json dans le frontend
-/projet_csharp_travel_plan/projet_csharp_travel_plan/projet_csharp_travel_plan_frontend/appsettings.json
