@@ -8,5 +8,7 @@
         public decimal PrixTotal { get; set; }
         public bool StatutPaiement { get; set; }
         public ClientDTO Client { get; set; }
+
+        public PayDTO Pay { get; set; }
     }
 }
