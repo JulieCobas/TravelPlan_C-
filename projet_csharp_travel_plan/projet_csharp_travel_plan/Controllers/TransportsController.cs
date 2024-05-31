@@ -46,7 +46,6 @@ namespace projet_csharp_travel_plan.Controllers
                     OptionBagageEnSoute = t.IdOptionTransportNavigation.BagageEnSoute,
                     OptionBagageLarge = t.IdOptionTransportNavigation.BagageLarge,
                     OptionSpeedyboarding = t.IdOptionTransportNavigation.Speedyboarding,
-                    NumeroSiege = t.IdOptionTransportNavigation
                 })
                 .ToListAsync();
 
@@ -81,7 +80,6 @@ namespace projet_csharp_travel_plan.Controllers
                     OptionBagageEnSoute = t.IdOptionTransportNavigation.BagageEnSoute,
                     OptionBagageLarge = t.IdOptionTransportNavigation.BagageLarge,
                     OptionSpeedyboarding = t.IdOptionTransportNavigation.Speedyboarding,
-                    NumeroSiege = t.IdOptionTransportNavigation.NumeroSiege
                 })
                 .FirstOrDefaultAsync();
 
