@@ -2,7 +2,10 @@
 {
     public class LogementCategorieDTO
     {
-        public int IdLogementCategorie { get; set; }
-        public string Nom { get; set; }
+        public short IdLogementCategorie { get; set; }
+        public string Nom { get; set; } = null!;
+
+        // Navigation properties
+        public List<LogementDTO> Logements { get; set; } = new List<LogementDTO>();
     }
 }

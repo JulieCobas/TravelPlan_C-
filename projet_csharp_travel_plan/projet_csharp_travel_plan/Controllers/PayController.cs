@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using projet_csharp_travel_plan.Models;
-using projet_csharp_travel_plan_frontend.DTO;
+using projet_csharp_travel_plan.DTO;
 
 namespace projet_csharp_travel_plan.Controllers
 {

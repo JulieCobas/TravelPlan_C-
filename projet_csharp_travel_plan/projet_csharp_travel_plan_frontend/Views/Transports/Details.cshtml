@@ -1,4 +1,4 @@
-﻿@model projet_csharp_travel_plan_frontend.DTO.TransportDto
+﻿@model projet_csharp_travel_plan_frontend.DTO.TransportDTO
 
 @{
     ViewData["Title"] = "Details";
@@ -10,55 +10,34 @@
     <h4>Transport</h4>
     <hr />
     <dl class="row">
-        <dt class="col-sm-2">
-            Nom de la compagnie
-        </dt>
-        <dd class="col-sm-10">
-            @Model.FournisseurNomCompagnie
-        </dd>
-        <dt class="col-sm-2">
-            Numéro du siège
-        </dt>
-        <dd class="col-sm-10">
-            @Model.OptionTransportNumeroSiege
-        </dd>
-        <dt class="col-sm-2">
-            Bagage à main
-        </dt>
-        <dd class="col-sm-10">
-            <input type="checkbox" name="BagageMain" @(Model.OptionTransportBagageMain == true ? "checked" : "") />
-        </dd>
-        <dt class="col-sm-2">
-            Bagage en soute
-        </dt>
-        <dd class="col-sm-10">
-            <input type="checkbox" name="BagageEnSoute" @(Model.OptionTransportBagageEnSoute == true ? "checked" : "") />
-        </dd>
-        <dt class="col-sm-2">
-            Bagage large
-        </dt>
-        <dd class="col-sm-10">
-            <input type="checkbox" name="BagageLarge" @(Model.OptionTransportBagageLarge == true ? "checked" : "") />
-        </dd>
-        <dt class="col-sm-2">
-            Speedyboarding
-        </dt>
-        <dd class="col-sm-10">
-            <input type="checkbox" name="Speedyboarding" @(Model.OptionTransportSpeedyboarding == true ? "checked" : "") />
-        </dd>
-        <dt class="col-sm-2">
-            Prix
-        </dt>
-        <dd class="col-sm-10">
-            @Model.PrixTransportPrix
-        </dd>
+        <dt class="col-sm-2">Nom de la compagnie</dt>
+        <dd class="col-sm-10">@Model.FournisseurNomCompagnie</dd>
+        <dt class="col-sm-2">Numéro du siège</dt>
+        <dd class="col-sm-10">@Model.OptionTransportNumeroSiege</dd>
+        <dt class="col-sm-2">Bagage à main</dt>
+        <dd class="col-sm-10"><input type="checkbox" name="BagageMain" @(Model.OptionTransportBagageMain == true ? "checked" : "") /></dd>
+        <dt class="col-sm-2">Bagage en soute</dt>
+        <dd class="col-sm-10"><input type="checkbox" name="BagageEnSoute" @(Model.OptionTransportBagageEnSoute == true ? "checked" : "") /></dd>
+        <dt class="col-sm-2">Bagage large</dt>
+        <dd class="col-sm-10"><input type="checkbox" name="BagageLarge" @(Model.OptionTransportBagageLarge == true ? "checked" : "") /></dd>
+        <dt class="col-sm-2">Speedyboarding</dt>
+        <dd class="col-sm-10"><input type="checkbox" name="Speedyboarding" @(Model.OptionTransportSpeedyboarding == true ? "checked" : "") /></dd>
+        <dt class="col-sm-2">Prix</dt>
+        <dd class="col-sm-10">@Model.PrixTransportPrix</dd>
     </dl>
-</div>
-@* <form method="post" asp-action="ConfirmTransportSelection">
-    @Html.AntiForgeryToken()
-    <input type="hidden" name="IdTransport" value="@Model.IdTransport" />
-    <button type="submit" class="btn btn-primary">Confirmer et passer à la réservation de logement</button>
-</form>
-<a asp-action="Index" class="btn btn-secondary">Retour à la liste</a> *@
 
-    <a class="nav-link text-dark" asp-area="" asp-controller="Reservations" asp-action="Index">Reservation</a>
+    <form method="post" asp-action="ConfirmTransportSelection">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="IdTransport" value="@Model.IdTransport" />
+        <div class="form-group">
+            <label for="DateDebut">Date de début</label>
+            <input type="date" class="form-control" id="DateDebut" name="DateDebut" required />
+        </div>
+        <div class="form-group">
+            <label for="DateFin">Date de fin</label>
+            <input type="date" class="form-control" id="DateFin" name="DateFin" required />
+        </div>
+        <button type="submit" class="btn btn-primary">Confirmer et passer à la réservation de logement</button>
+    </form>
+    <a asp-action="Index" class="btn btn-secondary">Retour à la liste</a>
+</div>

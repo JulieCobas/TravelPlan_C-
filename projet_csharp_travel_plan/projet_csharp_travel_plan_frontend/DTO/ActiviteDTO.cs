@@ -1,4 +1,4 @@
-﻿namespace projet_csharp_travel_plan.DTO
+﻿namespace projet_csharp_travel_plan_frontend.DTO
 {
     public class ActiviteDTO
     {
@@ -17,9 +17,9 @@
         public int? CapaciteMax { get; set; }
 
         // Navigation properties
-        public string? CategorieActiviteNom { get; set; }
-        public string? FournisseurNom { get; set; }
-        public string? PaysNom { get; set; }
+        public string? NomCategorie { get; set; }
+        public string? NomFournisseur { get; set; }
+        public string? NomPays { get; set; }
         public decimal? PrixActivite { get; set; }
 
         // Option properties

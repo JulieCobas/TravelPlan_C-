@@ -9,12 +9,12 @@
         public string Ville { get; set; } = null!;
         public string Pays { get; set; } = null!;
         public string Mail { get; set; } = null!;
-        public string? Telephone { get; set; }
+        public string Telephone { get; set; }
         public string CompteBancaire { get; set; } = null!;
 
-        // Optionally include collections if needed
-        public ICollection<string> ActiviteNoms { get; set; } = new List<string>();
-        public ICollection<string> LogementNoms { get; set; } = new List<string>();
-        public ICollection<string> TransportNoms { get; set; } = new List<string>();
+        // Navigation properties
+        public List<TransportDTO> Transports { get; set; } = new List<TransportDTO>();
+        public List<LogementDTO> Logements { get; set; } = new List<LogementDTO>();
+        public List<ActiviteDTO> Activites { get; set; } = new List<ActiviteDTO>();
     }
 }

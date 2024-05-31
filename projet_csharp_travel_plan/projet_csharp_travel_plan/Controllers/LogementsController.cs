@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using projet_csharp_travel_plan.DTO;
 using projet_csharp_travel_plan.Models;
+using projet_csharp_travel_plan.DTO;
 
 namespace projet_csharp_travel_plan.Controllers
 {
@@ -28,26 +26,27 @@ namespace projet_csharp_travel_plan.Controllers
                 .Include(l => l.IdFournisseurNavigation)
                 .Include(l => l.IdLogementCategorieNavigation)
                 .Include(l => l.IdPaysNavigation)
+                .Include(l => l.IdLogementPrixNavigation)
                 .Where(l => l.IdPaysNavigation.Nom == country)
                 .Select(l => new LogementDTO
                 {
-                    Id = l.IdLogement,
+                    IdLogement = l.IdLogement,
                     Nom = l.Nom,
                     Details = l.Details,
                     Note = l.Note,
                     NbEvaluation = l.NbEvaluation,
+                    Img = l.Img,
+                    Disponibilite = l.Disponibilite,
                     NomFournisseur = l.IdFournisseurNavigation.NomCompagnie,
                     NomCategorie = l.IdLogementCategorieNavigation.Nom,
-                    NomPays = l.IdPaysNavigation.Nom
+                    NomPays = l.IdPaysNavigation.Nom,
+                    PrixLogement = l.IdLogementPrixNavigation.Prix
                 })
                 .ToListAsync();
 
             return logements;
         }
 
-
-
-        // GET: api/Logements/5
         [HttpGet("{id}")]
         public async Task<ActionResult<LogementDTO>> GetLogement(int id)
         {
@@ -55,20 +54,21 @@ namespace projet_csharp_travel_plan.Controllers
                 .Include(l => l.IdFournisseurNavigation)
                 .Include(l => l.IdLogementCategorieNavigation)
                 .Include(l => l.IdPaysNavigation)
+                .Include(l => l.IdLogementPrixNavigation)
                 .Where(l => l.IdLogement == id)
                 .Select(l => new LogementDTO
                 {
-                    Id = l.IdLogement,
+                    IdLogement = l.IdLogement,
                     Nom = l.Nom,
-                    // Autres propriétés du logement
                     Details = l.Details,
                     Note = l.Note,
                     NbEvaluation = l.NbEvaluation,
-                    // Ajoutez d'autres propriétés du logement selon vos besoins
-
+                    Img = l.Img,
+                    Disponibilite = l.Disponibilite,
                     NomFournisseur = l.IdFournisseurNavigation.NomCompagnie,
                     NomCategorie = l.IdLogementCategorieNavigation.Nom,
-                    NomPays = l.IdPaysNavigation.Nom
+                    NomPays = l.IdPaysNavigation.Nom,
+                    PrixLogement = l.IdLogementPrixNavigation.Prix
                 })
                 .FirstOrDefaultAsync();
 
@@ -80,16 +80,27 @@ namespace projet_csharp_travel_plan.Controllers
             return logement;
         }
 
-
-        // PUT: api/Logements/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutLogement(int id, Logement logement)
+        public async Task<IActionResult> PutLogement(int id, LogementDTO dto)
         {
-            if (id != logement.IdLogement)
+            if (id != dto.IdLogement)
             {
                 return BadRequest();
             }
+
+            var logement = await _context.Logements.FindAsync(id);
+            if (logement == null)
+            {
+                return NotFound();
+            }
+
+            logement.Nom = dto.Nom;
+            logement.Details = dto.Details;
+            logement.Note = dto.Note;
+            logement.NbEvaluation = dto.NbEvaluation;
+            logement.Img = dto.Img;
+            logement.Disponibilite = dto.Disponibilite;
+            // Update other fields if necessary
 
             _context.Entry(logement).State = EntityState.Modified;
 
@@ -108,33 +119,6 @@ namespace projet_csharp_travel_plan.Controllers
                     throw;
                 }
             }
-
-            return NoContent();
-        }
-
-        // POST: api/Logements
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<Logement>> PostLogement(Logement logement)
-        {
-            _context.Logements.Add(logement);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetLogement", new { id = logement.IdLogement }, logement);
-        }
-
-        // DELETE: api/Logements/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteLogement(int id)
-        {
-            var logement = await _context.Logements.FindAsync(id);
-            if (logement == null)
-            {
-                return NotFound();
-            }
-
-            _context.Logements.Remove(logement);
-            await _context.SaveChangesAsync();
 
             return NoContent();
         }

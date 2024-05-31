@@ -2,15 +2,19 @@
 {
     public class ReservationDTO
     {
-        public int Id { get; set; }
-        public int IdVoyage { get; set; }
-        public int? IdLogement { get; set; }
-        public int? IdActivite { get; set; }
-        public int? IdTransport { get; set; }
-        public DateOnly DateHeureDebut { get; set; }
-        public DateOnly? DateHeureFin { get; set; }
-        public LogementDTO Logement { get; set; }
-        public ActiviteDTO Activite { get; set; }
-        public TransportDto Transport { get; set; }
+        public short IdReservation { get; set; }
+        public short? IdLogement { get; set; }
+        public short? IdActivite { get; set; }
+        public short? IdTransport { get; set; }
+        public short IdVoyage { get; set; }
+        public DateTime DateHeureDebut { get; set; }
+        public DateTime? DateHeureFin { get; set; }
+        public bool? Disponibilite { get; set; }
+
+        // Navigation properties
+        public LogementDTO? Logement { get; set; }
+        public ActiviteDTO? Activite { get; set; }
+        public TransportDTO? Transport { get; set; }
+        public VoyageDTO Voyage { get; set; }
     }
 }

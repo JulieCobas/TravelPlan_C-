@@ -9,94 +9,43 @@
 <table class="table">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Id)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Nom)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Details)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Note)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.NbEvaluation)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.HeuresMoyennes)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.NomFournisseur)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.EquipementInclu)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.GuideAudio)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.VisiteGuidee)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.NomPays)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Prix)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.NomCategorie)
-            </th>
+            <th>@Html.DisplayNameFor(model => model.IdActivite)</th>
+            <th>@Html.DisplayNameFor(model => model.Nom)</th>
+            <th>@Html.DisplayNameFor(model => model.Details)</th>
+            <th>@Html.DisplayNameFor(model => model.Note)</th>
+            <th>@Html.DisplayNameFor(model => model.NbEvaluation)</th>
+            <th>@Html.DisplayNameFor(model => model.HeuresMoyennes)</th>
+            <th>@Html.DisplayNameFor(model => model.NomFournisseur)</th>
+            <th>@Html.DisplayNameFor(model => model.EquipementInclu)</th>
+            <th>@Html.DisplayNameFor(model => model.GuideAudio)</th>
+            <th>@Html.DisplayNameFor(model => model.VisiteGuidee)</th>
+            <th>@Html.DisplayNameFor(model => model.NomPays)</th>
+            <th>@Html.DisplayNameFor(model => model.Prix)</th>
+            <th>@Html.DisplayNameFor(model => model.NomCategorie)</th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Nom)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Details)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Note)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.NbEvaluation)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.HeuresMoyennes)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.NomFournisseur)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.EquipementInclu)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.GuideAudio)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.VisiteGuidee)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.NomPays)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Prix)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.NomCategorie)
-            </td>
-            <td>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.IdActivite)</td>
+                <td>@Html.DisplayFor(modelItem => item.Nom)</td>
+                <td>@Html.DisplayFor(modelItem => item.Details)</td>
+                <td>@Html.DisplayFor(modelItem => item.Note)</td>
+                <td>@Html.DisplayFor(modelItem => item.NbEvaluation)</td>
+                <td>@Html.DisplayFor(modelItem => item.HeuresMoyennes)</td>
+                <td>@Html.DisplayFor(modelItem => item.NomFournisseur)</td>
+                <td>@Html.DisplayFor(modelItem => item.EquipementInclu)</td>
+                <td>@Html.DisplayFor(modelItem => item.GuideAudio)</td>
+                <td>@Html.DisplayFor(modelItem => item.VisiteGuidee)</td>
+                <td>@Html.DisplayFor(modelItem => item.NomPays)</td>
+                <td>@Html.DisplayFor(modelItem => item.Prix)</td>
+                <td>@Html.DisplayFor(modelItem => item.NomCategorie)</td>
+                <td>
                     <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info">Voir détails</a>
-            </td>
-        </tr>
-}
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

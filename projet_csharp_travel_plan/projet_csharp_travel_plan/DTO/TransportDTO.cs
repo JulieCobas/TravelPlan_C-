@@ -9,19 +9,23 @@
         public short? IdOptionTransport { get; set; }
         public short IdFournisseur { get; set; }
         public short IdPays { get; set; }
-        public string LieuDepart { get; set; } = null!;
+        public string LieuDepart { get; set; }
         public DateTime HeureDepart { get; set; }
         public DateTime HeureArrivee { get; set; }
         public byte? Classe { get; set; }
 
         // Navigation properties
-        public TransportCategorieDTO CategorieTransport { get; set; }
-        public FournisseurDTO Fournisseur { get; set; }
-        public TransportOptionDTO? OptionTransport { get; set; }
-        public PayDTO Pays { get; set; }
-        public TransportPrixDTO PrixTransport { get; set; }
-        public VehiculeLocationDTO VehiculeLoc { get; set; }
-        public List<DisponibiliteTransportDTO> DisponibiliteTransports { get; set; } = new List<DisponibiliteTransportDTO>();
-        public List<ReservationDTO> Reservations { get; set; } = new List<ReservationDTO>();
+        public string NomCategorie { get; set; }
+        public string NomFournisseur { get; set; }
+        public string NomPays { get; set; }
+        public string MarqueVehicule { get; set; }
+        public string TypeVehicule { get; set; }
+        public int NbSiegesVehicule { get; set; }
+        public decimal PrixTransport { get; set; }
+        public bool? OptionBagageMain { get; set; }
+        public bool? OptionBagageEnSoute { get; set; }
+        public bool? OptionBagageLarge { get; set; }
+        public bool? OptionSpeedyboarding { get; set; }
+        public int? NumeroSiege { get; set; }
     }
 }

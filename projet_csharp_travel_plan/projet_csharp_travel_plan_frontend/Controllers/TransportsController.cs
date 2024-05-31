@@ -27,7 +27,7 @@ namespace projet_csharp_travel_plan_frontend.Controllers
             if (response.IsSuccessStatusCode)
             {
                 var json = await response.Content.ReadAsStringAsync();
-                var transportDtos = JsonConvert.DeserializeObject<List<TransportDto>>(json);
+                var transportDtos = JsonConvert.DeserializeObject<List<TransportDTO>>(json);
 
                 if (!string.IsNullOrEmpty(category))
                 {
@@ -50,7 +50,7 @@ namespace projet_csharp_travel_plan_frontend.Controllers
             if (response.IsSuccessStatusCode)
             {
                 var json = await response.Content.ReadAsStringAsync();
-                var transportDto = JsonConvert.DeserializeObject<TransportDto>(json);
+                var transportDto = JsonConvert.DeserializeObject<TransportDTO>(json);
                 return View(transportDto);
             }
 
@@ -73,7 +73,7 @@ namespace projet_csharp_travel_plan_frontend.Controllers
             }
 
             var json = await response.Content.ReadAsStringAsync();
-            var transportDto = JsonConvert.DeserializeObject<TransportDto>(json);
+            var transportDto = JsonConvert.DeserializeObject<TransportDTO>(json);
 
             transportDto.OptionTransportBagageMain = BagageMain;
             transportDto.OptionTransportBagageEnSoute = BagageEnSoute;
