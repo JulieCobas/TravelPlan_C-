@@ -21,7 +21,7 @@
             <td>@voyage.DateDebut.ToString("yyyy-MM-dd")</td>
             <td>@voyage.DateFin.ToString("yyyy-MM-dd")</td>
             <td>
-                @if (voyage.Pays != null && voyage.Pays.Count > 0)
+                @if (voyage.Pay != null && voyage.Pays.Count > 0)
                 {
                     <ul>
                     @foreach (var pays in voyage.Pays) 
