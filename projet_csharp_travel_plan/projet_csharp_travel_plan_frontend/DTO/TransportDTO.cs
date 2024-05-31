@@ -1,9 +1,12 @@
-﻿namespace projet_csharp_travel_plan_frontend.DTO
+﻿using System;
+using System.Collections.Generic;
+
+namespace projet_csharp_travel_plan_frontend.DTO
 {
     public class TransportDTO
     {
         public short IdTransport { get; set; }
-        public short IdVehiculeLoc { get; set; }
+        public short? IdVehiculeLoc { get; set; }
         public short IdCategorieTransport { get; set; }
         public short IdPrixTransport { get; set; }
         public short? IdOptionTransport { get; set; }
@@ -15,8 +18,8 @@
         public byte? Classe { get; set; }
 
         // Navigation properties
-        public string NomCategorie { get; set; }
         public string NomFournisseur { get; set; }
+        public string NomCategorie { get; set; }
         public string NomPays { get; set; }
         public string MarqueVehicule { get; set; }
         public string TypeVehicule { get; set; }
@@ -26,6 +29,12 @@
         public bool? OptionBagageEnSoute { get; set; }
         public bool? OptionBagageLarge { get; set; }
         public bool? OptionSpeedyboarding { get; set; }
-        public int? NumeroSiege { get; set; }
+        public string OptionTransportNumeroSiege { get; set; }
+
+        // Related entities
+        public TransportOptionDTO OptionTransport { get; set; }
+        public TransportPrixDTO Prix { get; set; }
+        public VehiculeLocationDTO VehiculeLoc { get; set; }
+        public List<SiegeDTO> Sieges { get; set; }
     }
 }

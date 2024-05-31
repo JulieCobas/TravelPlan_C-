@@ -16,11 +16,10 @@
             <th>@Html.DisplayNameFor(model => model.NbEvaluation)</th>
             <th>@Html.DisplayNameFor(model => model.HeuresMoyennes)</th>
             <th>@Html.DisplayNameFor(model => model.NomFournisseur)</th>
-            <th>@Html.DisplayNameFor(model => model.EquipementInclu)</th>
             <th>@Html.DisplayNameFor(model => model.GuideAudio)</th>
             <th>@Html.DisplayNameFor(model => model.VisiteGuidee)</th>
             <th>@Html.DisplayNameFor(model => model.NomPays)</th>
-            <th>@Html.DisplayNameFor(model => model.Prix)</th>
+            <th>@Html.DisplayNameFor(model => model.PrixActivite)</th>
             <th>@Html.DisplayNameFor(model => model.NomCategorie)</th>
             <th></th>
         </tr>
@@ -36,14 +35,13 @@
                 <td>@Html.DisplayFor(modelItem => item.NbEvaluation)</td>
                 <td>@Html.DisplayFor(modelItem => item.HeuresMoyennes)</td>
                 <td>@Html.DisplayFor(modelItem => item.NomFournisseur)</td>
-                <td>@Html.DisplayFor(modelItem => item.EquipementInclu)</td>
                 <td>@Html.DisplayFor(modelItem => item.GuideAudio)</td>
                 <td>@Html.DisplayFor(modelItem => item.VisiteGuidee)</td>
                 <td>@Html.DisplayFor(modelItem => item.NomPays)</td>
-                <td>@Html.DisplayFor(modelItem => item.Prix)</td>
+                <td>@Html.DisplayFor(modelItem => item.PrixActivite)</td>
                 <td>@Html.DisplayFor(modelItem => item.NomCategorie)</td>
                 <td>
-                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info">Voir détails</a>
+                    <a asp-action="Details" asp-route-id="@item.IdActivite" class="btn btn-info">Voir détails</a>
                 </td>
             </tr>
         }
