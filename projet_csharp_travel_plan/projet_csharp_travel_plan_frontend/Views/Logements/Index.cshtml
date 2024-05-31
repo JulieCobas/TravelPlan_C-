@@ -29,7 +29,7 @@
     </dl>
     <form method="post" asp-action="ConfirmReservation">
         @Html.AntiForgeryToken()
-        <input type="hidden" name="IdLogement" value="@Model.Id" />
+        <input type="hidden" name="IdLogement" value="@Model.IdLogement" />
         <div class="form-group">
             <label for="DateDebut">Date de début</label>
             <input type="date" class="form-control" id="DateDebut" name="DateDebut" required />
