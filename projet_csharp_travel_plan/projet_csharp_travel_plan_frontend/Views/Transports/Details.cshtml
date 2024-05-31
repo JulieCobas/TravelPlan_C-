@@ -11,19 +11,19 @@
     <hr />
     <dl class="row">
         <dt class="col-sm-2">Nom de la compagnie</dt>
-        <dd class="col-sm-10">@Model.FournisseurNomCompagnie</dd>
+        <dd class="col-sm-10">@Model.NomFournisseur</dd>
         <dt class="col-sm-2">Numéro du siège</dt>
-        <dd class="col-sm-10">@Model.OptionTransportNumeroSiege</dd>
+        <dd class="col-sm-10">@Model.OptionTransport.NumeroSiege</dd>
         <dt class="col-sm-2">Bagage à main</dt>
-        <dd class="col-sm-10"><input type="checkbox" name="BagageMain" @(Model.OptionTransportBagageMain == true ? "checked" : "") /></dd>
+        <dd class="col-sm-10"><input type="checkbox" name="BagageMain" @(Model.OptionTransport.BagageMain == true ? "checked" : "") /></dd>
         <dt class="col-sm-2">Bagage en soute</dt>
-        <dd class="col-sm-10"><input type="checkbox" name="BagageEnSoute" @(Model.OptionTransportBagageEnSoute == true ? "checked" : "") /></dd>
+        <dd class="col-sm-10"><input type="checkbox" name="BagageEnSoute" @(Model.OptionTransport.BagageEnSoute == true ? "checked" : "") /></dd>
         <dt class="col-sm-2">Bagage large</dt>
-        <dd class="col-sm-10"><input type="checkbox" name="BagageLarge" @(Model.OptionTransportBagageLarge == true ? "checked" : "") /></dd>
+        <dd class="col-sm-10"><input type="checkbox" name="BagageLarge" @(Model.OptionTransport.BagageLarge == true ? "checked" : "") /></dd>
         <dt class="col-sm-2">Speedyboarding</dt>
-        <dd class="col-sm-10"><input type="checkbox" name="Speedyboarding" @(Model.OptionTransportSpeedyboarding == true ? "checked" : "") /></dd>
+        <dd class="col-sm-10"><input type="checkbox" name="Speedyboarding" @(Model.OptionTransport.Speedyboarding == true ? "checked" : "") /></dd>
         <dt class="col-sm-2">Prix</dt>
-        <dd class="col-sm-10">@Model.PrixTransportPrix</dd>
+        <dd class="col-sm-10">@Model.Prix</dd>
     </dl>
 
     <form method="post" asp-action="ConfirmTransportSelection">
