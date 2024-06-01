@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -6,7 +7,6 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
 using projet_csharp_travel_plan_frontend.DTO;
 using projet_csharp_travel_plan_frontend.Models;
-using System.Diagnostics;
 
 namespace projet_csharp_travel_plan_frontend.Controllers
 {

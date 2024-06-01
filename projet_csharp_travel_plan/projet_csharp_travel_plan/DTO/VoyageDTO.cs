@@ -1,12 +1,12 @@
-﻿namespace projet_csharp_travel_plan.DTO
+﻿
+
+namespace projet_csharp_travel_plan.DTO
 {
     public class VoyageDTO
     {
-        public int IdVoyage { get; set; }
+        public short IdVoyage { get; set; }
         public DateTime DateDebut { get; set; }
         public DateTime DateFin { get; set; }
-        public decimal PrixTotal { get; set; }
-        public bool StatutPaiement { get; set; }
-        public ClientDTO Client { get; set; }
+        public List<string> Pays { get; set; } // This assumes Pays is directly related to Voyage
     }
 }

@@ -11,10 +11,8 @@
         public DateTime? DateHeureFin { get; set; }
         public bool? Disponibilite { get; set; }
 
-        // Navigation properties
         public LogementDTO? Logement { get; set; }
         public ActiviteDTO? Activite { get; set; }
         public TransportDTO? Transport { get; set; }
-        public VoyageDTO Voyage { get; set; }
     }
 }

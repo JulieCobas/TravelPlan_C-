@@ -1,168 +1,206 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using projet_csharp_travel_plan.DTO;
 using projet_csharp_travel_plan.Models;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace projet_csharp_travel_plan.Controllers
+[Route("api/[controller]")]
+[ApiController]
+public class ReservationsController : ControllerBase
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class ReservationsController : ControllerBase
+    private readonly TravelPlanContext _context;
+
+    public ReservationsController(TravelPlanContext context)
     {
-        private readonly TravelPlanContext _context;
+        _context = context;
+    }
 
-        public ReservationsController(TravelPlanContext context)
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<ReservationDTO>>> GetReservations()
+    {
+        var reservations = await _context.Reservations
+            .Include(r => r.IdLogementNavigation)
+            .Include(r => r.IdActiviteNavigation)
+            .Include(r => r.IdTransportNavigation)
+            .Select(r => new ReservationDTO
+            {
+                IdReservation = r.IdReservation,
+                IdLogement = r.IdLogement,
+                IdActivite = r.IdActivite,
+                IdTransport = r.IdTransport,
+                IdVoyage = r.IdVoyage,
+                DateHeureDebut = r.DateHeureDebut,
+                DateHeureFin = r.DateHeureFin,
+                Disponibilite = r.Disponibilite,
+                Logement = r.IdLogementNavigation != null ? new LogementDTO
+                {
+                    IdLogement = r.IdLogementNavigation.IdLogement,
+                    Nom = r.IdLogementNavigation.Nom,
+                    Details = r.IdLogementNavigation.Details,
+                    Note = r.IdLogementNavigation.Note,
+                    NbEvaluation = r.IdLogementNavigation.NbEvaluation,
+                    Img = r.IdLogementNavigation.Img,
+                    Disponibilite = r.IdLogementNavigation.Disponibilite,
+                    NomFournisseur = r.IdLogementNavigation.IdFournisseurNavigation.NomCompagnie,
+                    NomCategorie = r.IdLogementNavigation.IdLogementCategorieNavigation.Nom,
+                    NomPays = r.IdLogementNavigation.IdPaysNavigation.Nom
+                } : null,
+                Activite = r.IdActiviteNavigation != null ? new ActiviteDTO
+                {
+                    IdActivite = r.IdActiviteNavigation.IdActivite,
+                    Nom = r.IdActiviteNavigation.Nom,
+                    Details = r.IdActiviteNavigation.Details,
+                    Note = r.IdActiviteNavigation.Note,
+                    NbEvaluation = r.IdActiviteNavigation.NbEvaluation,
+                    HeuresMoyennes = r.IdActiviteNavigation.HeuresMoyennes,
+                    Img = r.IdActiviteNavigation.Img,
+                    CapaciteMax = r.IdActiviteNavigation.CapaciteMax,
+                    NomCategorie = r.IdActiviteNavigation.IdCatActivNavigation.Nom,
+                    NomFournisseur = r.IdActiviteNavigation.IdFournisseurNavigation.NomCompagnie,
+                    NomPays = r.IdActiviteNavigation.IdPaysNavigation.Nom,
+                    PrixActivite = r.IdActiviteNavigation.IdPrixActiviteNavigation.Prix,
+                    GuideAudio = r.IdActiviteNavigation.IdOptionActiviteNavigation.GuideAudio,
+                    PrixGuideAudio = r.IdActiviteNavigation.IdOptionActiviteNavigation.PrixGuideAudio,
+                    VisiteGuidee = r.IdActiviteNavigation.IdOptionActiviteNavigation.VisiteGuidee,
+                    PrixVisiteGuide = r.IdActiviteNavigation.IdOptionActiviteNavigation.PrixVisiteGuide
+                } : null,
+                Transport = r.IdTransportNavigation != null ? new TransportDTO
+                {
+                    IdTransport = r.IdTransportNavigation.IdTransport,
+                    NomFournisseur = r.IdTransportNavigation.IdFournisseurNavigation.NomCompagnie,
+                    BagageMain = (bool)r.IdTransportNavigation.IdOptionTransportNavigation.BagageMain,
+                    BagageEnSoute = (bool)r.IdTransportNavigation.IdOptionTransportNavigation.BagageEnSoute,
+                    BagageLarge = (bool)r.IdTransportNavigation.IdOptionTransportNavigation.BagageLarge,
+                    Speedyboarding = (bool)r.IdTransportNavigation.IdOptionTransportNavigation.Speedyboarding,
+                    Prix = r.IdTransportNavigation.IdPrixTransportNavigation.Prix,
+                    CategorieTransportNom = r.IdTransportNavigation.IdCategorieTransportNavigation.Nom
+                } : null
+            })
+            .ToListAsync();
+
+        return reservations;
+    }
+
+    [HttpGet("{id}")]
+    public async Task<ActionResult<ReservationDTO>> GetReservation(int id)
+    {
+        var reservation = await _context.Reservations
+            .Include(r => r.IdLogementNavigation)
+            .Include(r => r.IdActiviteNavigation)
+            .Include(r => r.IdTransportNavigation)
+            .Where(r => r.IdReservation == id)
+            .Select(r => new ReservationDTO
+            {
+                IdReservation = r.IdReservation,
+                IdLogement = r.IdLogement,
+                IdActivite = r.IdActivite,
+                IdTransport = r.IdTransport,
+                IdVoyage = r.IdVoyage,
+                DateHeureDebut = r.DateHeureDebut,
+                DateHeureFin = r.DateHeureFin,
+                Disponibilite = r.Disponibilite,
+                Logement = r.IdLogementNavigation != null ? new LogementDTO
+                {
+                    IdLogement = r.IdLogementNavigation.IdLogement,
+                    Nom = r.IdLogementNavigation.Nom,
+                    Details = r.IdLogementNavigation.Details,
+                    Note = r.IdLogementNavigation.Note,
+                    NbEvaluation = r.IdLogementNavigation.NbEvaluation,
+                    Img = r.IdLogementNavigation.Img,
+                    Disponibilite = r.IdLogementNavigation.Disponibilite,
+                    NomFournisseur = r.IdLogementNavigation.IdFournisseurNavigation.NomCompagnie,
+                    NomCategorie = r.IdLogementNavigation.IdLogementCategorieNavigation.Nom,
+                    NomPays = r.IdLogementNavigation.IdPaysNavigation.Nom
+                } : null,
+                Activite = r.IdActiviteNavigation != null ? new ActiviteDTO
+                {
+                    IdActivite = r.IdActiviteNavigation.IdActivite,
+                    Nom = r.IdActiviteNavigation.Nom,
+                    Details = r.IdActiviteNavigation.Details,
+                    Note = r.IdActiviteNavigation.Note,
+                    NbEvaluation = r.IdActiviteNavigation.NbEvaluation,
+                    HeuresMoyennes = r.IdActiviteNavigation.HeuresMoyennes,
+                    Img = r.IdActiviteNavigation.Img,
+                    CapaciteMax = r.IdActiviteNavigation.CapaciteMax,
+                    NomCategorie = r.IdActiviteNavigation.IdCatActivNavigation.Nom,
+                    NomFournisseur = r.IdActiviteNavigation.IdFournisseurNavigation.NomCompagnie,
+                    NomPays = r.IdActiviteNavigation.IdPaysNavigation.Nom,
+                    PrixActivite = r.IdActiviteNavigation.IdPrixActiviteNavigation.Prix,
+                    GuideAudio = r.IdActiviteNavigation.IdOptionActiviteNavigation.GuideAudio,
+                    PrixGuideAudio = r.IdActiviteNavigation.IdOptionActiviteNavigation.PrixGuideAudio,
+                    VisiteGuidee = r.IdActiviteNavigation.IdOptionActiviteNavigation.VisiteGuidee,
+                    PrixVisiteGuide = r.IdActiviteNavigation.IdOptionActiviteNavigation.PrixVisiteGuide
+                } : null,
+                Transport = r.IdTransportNavigation != null ? new TransportDTO
+                {
+                    IdTransport = r.IdTransportNavigation.IdTransport,
+                    NomFournisseur = r.IdTransportNavigation.IdFournisseurNavigation.NomCompagnie,
+                    BagageMain = (bool)r.IdTransportNavigation.IdOptionTransportNavigation.BagageMain,
+                    BagageEnSoute = (bool)r.IdTransportNavigation.IdOptionTransportNavigation.BagageEnSoute,
+                    BagageLarge = (bool)r.IdTransportNavigation.IdOptionTransportNavigation.BagageLarge,
+                    Speedyboarding = (bool)r.IdTransportNavigation.IdOptionTransportNavigation.Speedyboarding,
+                    Prix = r.IdTransportNavigation.IdPrixTransportNavigation.Prix,
+                    CategorieTransportNom = r.IdTransportNavigation.IdCategorieTransportNavigation.Nom
+                } : null
+            })
+            .FirstOrDefaultAsync();
+
+        if (reservation == null)
         {
-            _context = context;
+            return NotFound();
         }
 
-        // GET: api/Reservations
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<ReservationDTO>>> GetReservations()
-        {
-            var reservations = await _context.Reservations
-                .Include(r => r.IdLogementNavigation)
-                .Include(r => r.IdActiviteNavigation)
-                .Include(r => r.IdTransportNavigation)
-                .Select(r => new ReservationDTO
-                {
-                    IdReservation = r.IdReservation,
-                    IdVoyage = r.IdVoyage,
-                    IdLogement = r.IdLogement,
-                    IdActivite = r.IdActivite,
-                    IdTransport = r.IdTransport,
-                    DateHeureDebut = r.DateHeureDebut,
-                    DateHeureFin = r.DateHeureFin,
-                    Logement = r.IdLogementNavigation != null ? new LogementDTO
-                    {
-                        IdLogement = r.IdLogementNavigation.IdLogement,
-                        Nom = r.IdLogementNavigation.Nom,
-                        Details = r.IdLogementNavigation.Details,
-                        Note = r.IdLogementNavigation.Note,
-                        NbEvaluation = r.IdLogementNavigation.NbEvaluation,
-                        Fournisseur = new FournisseurDTO
-                        {
-                            NomCompagnie = r.IdLogementNavigation.IdFournisseurNavigation.NomCompagnie
-                        },
-                        LogementCategorie = new LogementCategorieDTO
-                        {
-                            Nom = r.IdLogementNavigation.IdLogementCategorieNavigation.Nom
-                        },
-                        Pays = new PayDTO
-                        {
-                            Nom = r.IdLogementNavigation.IdPaysNavigation.Nom
-                        }
-                    } : null,
-                    Activite = r.IdActiviteNavigation != null ? new ActiviteDTO
-                    {
-                        IdActivite = r.IdActiviteNavigation.IdActivite,
-                        Nom = r.IdActiviteNavigation.Nom,
-                        Details = r.IdActiviteNavigation.Details,
-                        Note = r.IdActiviteNavigation.Note,
-                        NbEvaluation = r.IdActiviteNavigation.NbEvaluation,
-                        CategorieActiviteNom = r.IdActiviteNavigation.IdCatActivNavigation != null ? r.IdActiviteNavigation.IdCatActivNavigation.Nom : null,
-                        FournisseurNom = r.IdActiviteNavigation.IdFournisseurNavigation != null ? r.IdActiviteNavigation.IdFournisseurNavigation.NomCompagnie : null,
-                        PaysNom = r.IdActiviteNavigation.IdPaysNavigation != null ? r.IdActiviteNavigation.IdPaysNavigation.Nom : null,
-                        PrixActivite = r.IdActiviteNavigation.IdPrixActiviteNavigation != null ? r.IdActiviteNavigation.IdPrixActiviteNavigation.Prix : (decimal?)null,
-                        GuideAudio = r.IdActiviteNavigation.IdOptionActiviteNavigation != null ? r.IdActiviteNavigation.IdOptionActiviteNavigation.GuideAudio : (bool?)null,
-                        PrixGuideAudio = r.IdActiviteNavigation.IdOptionActiviteNavigation != null ? r.IdActiviteNavigation.IdOptionActiviteNavigation.PrixGuideAudio : (int?)null,
-                        VisiteGuidee = r.IdActiviteNavigation.IdOptionActiviteNavigation != null ? r.IdActiviteNavigation.IdOptionActiviteNavigation.VisiteGuidee : (bool?)null,
-                        PrixVisiteGuide = r.IdActiviteNavigation.IdOptionActiviteNavigation != null ? r.IdActiviteNavigation.IdOptionActiviteNavigation.PrixVisiteGuide : (int?)null
-                    } : null,
-                    Transport = r.IdTransportNavigation != null ? new TransportDTO
-                    {
-                        IdTransport = r.IdTransportNavigation.IdTransport,
-                        LieuDepart = r.IdTransportNavigation.LieuDepart,
-                        HeureDepart = r.IdTransportNavigation.HeureDepart,
-                        HeureArrivee = r.IdTransportNavigation.HeureArrivee,
-                        Classe = r.IdTransportNavigation.Classe,
-                        CategorieTransport = new TransportCategorieDTO
-                        {
-                            Nom = r.IdTransportNavigation.IdCategorieTransportNavigation.Nom
-                        },
-                        Fournisseur = new FournisseurDTO
-                        {
-                            NomCompagnie = r.IdTransportNavigation.IdFournisseurNavigation.NomCompagnie
-                        },
-                        VehiculeLoc = new VehiculeLocationDTO
-                        {
-                            Marque = r.IdTransportNavigation.IdVehiculeLocNavigation.Marque,
-                            TypeVehicule = r.IdTransportNavigation.IdVehiculeLocNavigation.TypeVehicule,
-                            NbSiege = r.IdTransportNavigation.IdVehiculeLocNavigation.NbSiege
-                        },
-                        PrixTransport = new TransportPrixDTO
-                        {
-                            Prix = r.IdTransportNavigation.IdPrixTransportNavigation.Prix
-                        }
-                    } : null
-                })
-                .ToListAsync();
+        return reservation;
+    }
 
-            return reservations;
+    [HttpPut("{id}")]
+    public async Task<IActionResult> PutReservation(int id, ReservationDTO dto)
+    {
+        if (id != dto.IdReservation)
+        {
+            return BadRequest();
         }
 
-        // PUT: api/Reservations/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutReservation(int id, Reservation reservation)
+        var reservation = await _context.Reservations.FindAsync(id);
+        if (reservation == null)
         {
-            if (id != reservation.IdReservation)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(reservation).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ReservationExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
+            return NotFound();
         }
 
-        // POST: api/Reservations
-        [HttpPost]
-        public async Task<ActionResult<Reservation>> PostReservation(Reservation reservation)
+        reservation.IdLogement = dto.IdLogement;
+        reservation.IdActivite = dto.IdActivite;
+        reservation.IdTransport = dto.IdTransport;
+        reservation.IdVoyage = dto.IdVoyage;
+        reservation.DateHeureDebut = dto.DateHeureDebut;
+        reservation.DateHeureFin = dto.DateHeureFin;
+        reservation.Disponibilite = dto.Disponibilite;
+        // Update other fields if necessary
+
+        _context.Entry(reservation).State = EntityState.Modified;
+
+        try
         {
-            _context.Reservations.Add(reservation);
             await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetReservation", new { id = reservation.IdReservation }, reservation);
         }
-
-        // DELETE: api/Reservations/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteReservation(int id)
+        catch (DbUpdateConcurrencyException)
         {
-            var reservation = await _context.Reservations.FindAsync(id);
-            if (reservation == null)
+            if (!ReservationExists(id))
             {
                 return NotFound();
             }
-
-            _context.Reservations.Remove(reservation);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            else
+            {
+                throw;
+            }
         }
 
-        private bool ReservationExists(int id)
-        {
-            return _context.Reservations.Any(e => e.IdReservation == id);
-        }
+        return NoContent();
+    }
+
+    private bool ReservationExists(int id)
+    {
+        return _context.Reservations.Any(e => e.IdReservation == id);
     }
 }

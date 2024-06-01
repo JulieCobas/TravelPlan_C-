@@ -1,131 +1,123 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using projet_csharp_travel_plan.DTO;
+using projet_csharp_travel_plan.Models;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using projet_csharp_travel_plan.Models;
-using projet_csharp_travel_plan.DTO;
 
-namespace projet_csharp_travel_plan.Controllers
+[Route("api/[controller]")]
+[ApiController]
+public class LogementsController : ControllerBase
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class LogementsController : ControllerBase
+    private readonly TravelPlanContext _context;
+
+    public LogementsController(TravelPlanContext context)
     {
-        private readonly TravelPlanContext _context;
+        _context = context;
+    }
 
-        public LogementsController(TravelPlanContext context)
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<LogementDTO>>> GetLogements()
+    {
+        var logements = await _context.Logements
+            .Include(l => l.IdFournisseurNavigation)
+            .Include(l => l.IdLogementCategorieNavigation)
+            .Include(l => l.IdPaysNavigation)
+            .Select(l => new LogementDTO
+            {
+                IdLogement = l.IdLogement,
+                Nom = l.Nom,
+                Details = l.Details,
+                Note = l.Note,
+                NbEvaluation = l.NbEvaluation,
+                Img = l.Img,
+                Disponibilite = l.Disponibilite,
+                NomFournisseur = l.IdFournisseurNavigation.NomCompagnie,
+                NomCategorie = l.IdLogementCategorieNavigation.Nom,
+                NomPays = l.IdPaysNavigation.Nom
+            })
+            .ToListAsync();
+
+        return logements;
+    }
+
+    [HttpGet("{id}")]
+    public async Task<ActionResult<LogementDTO>> GetLogement(int id)
+    {
+        var logement = await _context.Logements
+            .Include(l => l.IdFournisseurNavigation)
+            .Include(l => l.IdLogementCategorieNavigation)
+            .Include(l => l.IdPaysNavigation)
+            .Where(l => l.IdLogement == id)
+            .Select(l => new LogementDTO
+            {
+                IdLogement = l.IdLogement,
+                Nom = l.Nom,
+                Details = l.Details,
+                Note = l.Note,
+                NbEvaluation = l.NbEvaluation,
+                Img = l.Img,
+                Disponibilite = l.Disponibilite,
+                NomFournisseur = l.IdFournisseurNavigation.NomCompagnie,
+                NomCategorie = l.IdLogementCategorieNavigation.Nom,
+                NomPays = l.IdPaysNavigation.Nom
+            })
+            .FirstOrDefaultAsync();
+
+        if (logement == null)
         {
-            _context = context;
+            return NotFound();
         }
 
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<LogementDTO>>> GetLogements([FromQuery] string country)
-        {
-            var logements = await _context.Logements
-                .Include(l => l.IdFournisseurNavigation)
-                .Include(l => l.IdLogementCategorieNavigation)
-                .Include(l => l.IdPaysNavigation)
-                .Include(l => l.IdLogementPrixNavigation)
-                .Where(l => l.IdPaysNavigation.Nom == country)
-                .Select(l => new LogementDTO
-                {
-                    IdLogement = l.IdLogement,
-                    Nom = l.Nom,
-                    Details = l.Details,
-                    Note = l.Note,
-                    NbEvaluation = l.NbEvaluation,
-                    Img = l.Img,
-                    Disponibilite = l.Disponibilite,
-                    NomFournisseur = l.IdFournisseurNavigation.NomCompagnie,
-                    NomCategorie = l.IdLogementCategorieNavigation.Nom,
-                    NomPays = l.IdPaysNavigation.Nom,
-                    PrixLogement = l.IdLogementPrixNavigation.Prix
-                })
-                .ToListAsync();
+        return logement;
+    }
 
-            return logements;
+    [HttpPut("{id}")]
+    public async Task<IActionResult> PutLogement(int id, LogementDTO dto)
+    {
+        if (id != dto.IdLogement)
+        {
+            return BadRequest();
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<LogementDTO>> GetLogement(int id)
+        var logement = await _context.Logements.FindAsync(id);
+        if (logement == null)
         {
-            var logement = await _context.Logements
-                .Include(l => l.IdFournisseurNavigation)
-                .Include(l => l.IdLogementCategorieNavigation)
-                .Include(l => l.IdPaysNavigation)
-                .Include(l => l.IdLogementPrixNavigation)
-                .Where(l => l.IdLogement == id)
-                .Select(l => new LogementDTO
-                {
-                    IdLogement = l.IdLogement,
-                    Nom = l.Nom,
-                    Details = l.Details,
-                    Note = l.Note,
-                    NbEvaluation = l.NbEvaluation,
-                    Img = l.Img,
-                    Disponibilite = l.Disponibilite,
-                    NomFournisseur = l.IdFournisseurNavigation.NomCompagnie,
-                    NomCategorie = l.IdLogementCategorieNavigation.Nom,
-                    NomPays = l.IdPaysNavigation.Nom,
-                    PrixLogement = l.IdLogementPrixNavigation.Prix
-                })
-                .FirstOrDefaultAsync();
+            return NotFound();
+        }
 
-            if (logement == null)
+        logement.Nom = dto.Nom;
+        logement.Details = dto.Details;
+        logement.Note = dto.Note;
+        logement.NbEvaluation = dto.NbEvaluation;
+        logement.Img = dto.Img;
+        logement.Disponibilite = dto.Disponibilite;
+        // Update other fields if necessary
+
+        _context.Entry(logement).State = EntityState.Modified;
+
+        try
+        {
+            await _context.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!LogementExists(id))
             {
                 return NotFound();
             }
-
-            return logement;
+            else
+            {
+                throw;
+            }
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutLogement(int id, LogementDTO dto)
-        {
-            if (id != dto.IdLogement)
-            {
-                return BadRequest();
-            }
+        return NoContent();
+    }
 
-            var logement = await _context.Logements.FindAsync(id);
-            if (logement == null)
-            {
-                return NotFound();
-            }
-
-            logement.Nom = dto.Nom;
-            logement.Details = dto.Details;
-            logement.Note = dto.Note;
-            logement.NbEvaluation = dto.NbEvaluation;
-            logement.Img = dto.Img;
-            logement.Disponibilite = dto.Disponibilite;
-            // Update other fields if necessary
-
-            _context.Entry(logement).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!LogementExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
-        private bool LogementExists(int id)
-        {
-            return _context.Logements.Any(e => e.IdLogement == id);
-        }
+    private bool LogementExists(int id)
+    {
+        return _context.Logements.Any(e => e.IdLogement == id);
     }
 }

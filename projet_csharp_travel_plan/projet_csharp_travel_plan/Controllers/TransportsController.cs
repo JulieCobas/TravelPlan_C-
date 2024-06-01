@@ -1,151 +1,126 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using projet_csharp_travel_plan.DTO;
+using projet_csharp_travel_plan.Models;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using projet_csharp_travel_plan.Models;
-using projet_csharp_travel_plan.DTO;
 
-namespace projet_csharp_travel_plan.Controllers
+[Route("api/[controller]")]
+[ApiController]
+public class TransportsController : ControllerBase
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class TransportsController : ControllerBase
+    private readonly TravelPlanContext _context;
+
+    public TransportsController(TravelPlanContext context)
     {
-        private readonly TravelPlanContext _context;
+        _context = context;
+    }
 
-        public TransportsController(TravelPlanContext context)
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<TransportDTO>>> GetTransports()
+    {
+        var transports = await _context.Transports
+            .Include(t => t.IdFournisseurNavigation)
+            .Include(t => t.IdOptionTransportNavigation)
+            .Include(t => t.IdCategorieTransportNavigation)
+            .Include(t => t.IdPrixTransportNavigation)
+            .Select(t => new TransportDTO
+            {
+                IdTransport = t.IdTransport,
+                NomFournisseur = t.IdFournisseurNavigation.NomCompagnie,
+                BagageMain = t.IdOptionTransportNavigation.BagageMain,
+                BagageEnSoute = t.IdOptionTransportNavigation.BagageEnSoute,
+                BagageLarge = t.IdOptionTransportNavigation.BagageLarge,
+                Speedyboarding = t.IdOptionTransportNavigation.Speedyboarding,
+                Prix = t.IdPrixTransportNavigation.Prix,
+                CategorieTransportNom = t.IdCategorieTransportNavigation.Nom,
+                VehiculeLocMarque = t.IdVehiculeLocNavigation.Marque,
+                VehiculeLocTypeVehicule = t.IdVehiculeLocNavigation.TypeVehicule,
+                VehiculeLocNbSiege = t.IdVehiculeLocNavigation.NbSiege
+            })
+            .ToListAsync();
+
+        return transports;
+    }
+
+    [HttpGet("{id}")]
+    public async Task<ActionResult<TransportDTO>> GetTransport(int id)
+    {
+        var transport = await _context.Transports
+            .Include(t => t.IdFournisseurNavigation)
+            .Include(t => t.IdOptionTransportNavigation)
+            .Include(t => t.IdCategorieTransportNavigation)
+            .Include(t => t.IdPrixTransportNavigation)
+            .Where(t => t.IdTransport == id)
+            .Select(t => new TransportDTO
+            {
+                IdTransport = t.IdTransport,
+                NomFournisseur = t.IdFournisseurNavigation.NomCompagnie,
+                BagageMain = t.IdOptionTransportNavigation.BagageMain,
+                BagageEnSoute = t.IdOptionTransportNavigation.BagageEnSoute,
+                BagageLarge = t.IdOptionTransportNavigation.BagageLarge,
+                Speedyboarding = t.IdOptionTransportNavigation.Speedyboarding,
+                Prix = t.IdPrixTransportNavigation.Prix,
+                CategorieTransportNom = t.IdCategorieTransportNavigation.Nom,
+                VehiculeLocMarque = t.IdVehiculeLocNavigation.Marque,
+                VehiculeLocTypeVehicule = t.IdVehiculeLocNavigation.TypeVehicule,
+                VehiculeLocNbSiege = t.IdVehiculeLocNavigation.NbSiege
+            })
+            .FirstOrDefaultAsync();
+
+        if (transport == null)
         {
-            _context = context;
+            return NotFound();
         }
 
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<TransportDTO>>> GetTransports()
-        {
-            var transports = await _context.Transports
-                .Include(t => t.IdCategorieTransportNavigation)
-                .Include(t => t.IdFournisseurNavigation)
-                .Include(t => t.IdOptionTransportNavigation)
-                .Include(t => t.IdPrixTransportNavigation)
-                .Include(t => t.IdVehiculeLocNavigation)
-                .Select(t => new TransportDTO
-                {
-                    IdTransport = t.IdTransport,
-                    LieuDepart = t.LieuDepart,
-                    HeureDepart = t.HeureDepart,
-                    HeureArrivee = t.HeureArrivee,
-                    Classe = t.Classe,
-                    NomCategorie = t.IdCategorieTransportNavigation.Nom,
-                    NomFournisseur = t.IdFournisseurNavigation.NomCompagnie,
-                    NomPays = t.IdPaysNavigation.Nom,
-                    MarqueVehicule = t.IdVehiculeLocNavigation.Marque,
-                    TypeVehicule = t.IdVehiculeLocNavigation.TypeVehicule,
-                    NbSiegesVehicule = t.IdVehiculeLocNavigation.NbSiege,
-                    PrixTransport = t.IdPrixTransportNavigation.Prix,
-                    OptionBagageMain = t.IdOptionTransportNavigation.BagageMain,
-                    OptionBagageEnSoute = t.IdOptionTransportNavigation.BagageEnSoute,
-                    OptionBagageLarge = t.IdOptionTransportNavigation.BagageLarge,
-                    OptionSpeedyboarding = t.IdOptionTransportNavigation.Speedyboarding,
-                    NumeroSiege = t.IdOptionTransportNavigation
-                })
-                .ToListAsync();
+        return transport;
+    }
 
-            return transports;
+
+    [HttpPut("{id}")]
+    public async Task<IActionResult> PutTransport(int id, TransportDTO dto)
+    {
+        if (id != dto.IdTransport)
+        {
+            return BadRequest();
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<TransportDTO>> GetTransport(int id)
+        var transport = await _context.Transports.FindAsync(id);
+        if (transport == null)
         {
-            var transport = await _context.Transports
-                .Include(t => t.IdCategorieTransportNavigation)
-                .Include(t => t.IdFournisseurNavigation)
-                .Include(t => t.IdOptionTransportNavigation)
-                .Include(t => t.IdPrixTransportNavigation)
-                .Include(t => t.IdVehiculeLocNavigation)
-                .Where(t => t.IdTransport == id)
-                .Select(t => new TransportDTO
-                {
-                    IdTransport = t.IdTransport,
-                    LieuDepart = t.LieuDepart,
-                    HeureDepart = t.HeureDepart,
-                    HeureArrivee = t.HeureArrivee,
-                    Classe = t.Classe,
-                    NomCategorie = t.IdCategorieTransportNavigation.Nom,
-                    NomFournisseur = t.IdFournisseurNavigation.NomCompagnie,
-                    NomPays = t.IdPaysNavigation.Nom,
-                    MarqueVehicule = t.IdVehiculeLocNavigation.Marque,
-                    TypeVehicule = t.IdVehiculeLocNavigation.TypeVehicule,
-                    NbSiegesVehicule = t.IdVehiculeLocNavigation.NbSiege,
-                    PrixTransport = t.IdPrixTransportNavigation.Prix,
-                    OptionBagageMain = t.IdOptionTransportNavigation.BagageMain,
-                    OptionBagageEnSoute = t.IdOptionTransportNavigation.BagageEnSoute,
-                    OptionBagageLarge = t.IdOptionTransportNavigation.BagageLarge,
-                    OptionSpeedyboarding = t.IdOptionTransportNavigation.Speedyboarding,
-                    NumeroSiege = t.IdOptionTransportNavigation.NumeroSiege
-                })
-                .FirstOrDefaultAsync();
+            return NotFound();
+        }
 
-            if (transport == null)
+        transport.IdOptionTransportNavigation.BagageMain = dto.BagageMain;
+        transport.IdOptionTransportNavigation.BagageEnSoute = dto.BagageEnSoute;
+        transport.IdOptionTransportNavigation.BagageLarge = dto.BagageLarge;
+        transport.IdOptionTransportNavigation.Speedyboarding = dto.Speedyboarding;
+        // Update other fields if necessary
+
+        _context.Entry(transport).State = EntityState.Modified;
+
+        try
+        {
+            await _context.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!TransportExists(id))
             {
                 return NotFound();
             }
-
-            return transport;
+            else
+            {
+                throw;
+            }
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutTransport(int id, TransportDTO dto)
-        {
-            if (id != dto.IdTransport)
-            {
-                return BadRequest();
-            }
+        return NoContent();
+    }
 
-            var transport = await _context.Transports
-                .Include(t => t.IdOptionTransportNavigation)
-                .FirstOrDefaultAsync(t => t.IdTransport == id);
-
-            if (transport == null)
-            {
-                return NotFound();
-            }
-
-            // Ensure the IdOptionTransportNavigation is not null
-            if (transport.IdOptionTransportNavigation == null)
-            {
-                transport.IdOptionTransportNavigation = new TransportOption();
-            }
-
-            // Update only the boolean properties
-            transport.IdOptionTransportNavigation.BagageMain = dto.OptionBagageMain;
-            transport.IdOptionTransportNavigation.BagageEnSoute = dto.OptionBagageEnSoute;
-            transport.IdOptionTransportNavigation.BagageLarge = dto.OptionBagageLarge;
-            transport.IdOptionTransportNavigation.Speedyboarding = dto.OptionSpeedyboarding;
-
-            _context.Entry(transport).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!TransportExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
-        private bool TransportExists(int id)
-        {
-            return _context.Transports.Any(e => e.IdTransport == id);
-        }
+    private bool TransportExists(int id)
+    {
+        return _context.Transports.Any(e => e.IdTransport == id);
     }
 }

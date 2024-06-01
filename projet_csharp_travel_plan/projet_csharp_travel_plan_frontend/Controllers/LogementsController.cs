@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using projet_csharp_travel_plan_frontend.DTO;
-using projet_csharp_travel_plan_frontend.Models; // Assurez-vous d'avoir le namespace approprié pour ErrorViewModel
+using projet_csharp_travel_plan_frontend.Models;
 
 namespace projet_csharp_travel_plan_frontend.Controllers
 {

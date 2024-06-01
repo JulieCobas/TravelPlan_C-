@@ -28,6 +28,16 @@ namespace projet_csharp_travel_plan_frontend.Controllers
             {
                 var json = await response.Content.ReadAsStringAsync();
                 var voyageDtos = JsonConvert.DeserializeObject<List<VoyageDTO>>(json);
+
+                // Fetch the list of countries
+                var paysResponse = await _client.GetAsync($"{API_URL}GetPays");
+                if (paysResponse.IsSuccessStatusCode)
+                {
+                    var paysJson = await paysResponse.Content.ReadAsStringAsync();
+                    var paysDtos = JsonConvert.DeserializeObject<List<PayDTO>>(paysJson);
+                    ViewBag.Pays = paysDtos;
+                }
+
                 return View(voyageDtos);
             }
 
@@ -47,9 +57,9 @@ namespace projet_csharp_travel_plan_frontend.Controllers
                 var pays = JsonConvert.DeserializeObject<List<PayDTO>>(jsonPays);
                 var voyageDto = new VoyageDTO
                 {
-                    DateDebut = DateOnly.FromDateTime(DateTime.Now),
-                    DateFin = DateOnly.FromDateTime(DateTime.Now.AddDays(7)),
-                    Pays = pays
+                    DateDebut = DateTime.Now,
+                    DateFin = DateTime.Now.AddDays(7),
+                    Pays = pays.Select(p => p.Nom).ToList()
                 };
 
                 return View(voyageDto);
@@ -89,7 +99,7 @@ namespace projet_csharp_travel_plan_frontend.Controllers
             {
                 var jsonPays = await paysResponse.Content.ReadAsStringAsync();
                 var pays = JsonConvert.DeserializeObject<List<PayDTO>>(jsonPays);
-                voyage.Pays = pays;
+                voyage.Pays = pays.Select(p => p.Nom).ToList();
             }
 
             return View(voyage);

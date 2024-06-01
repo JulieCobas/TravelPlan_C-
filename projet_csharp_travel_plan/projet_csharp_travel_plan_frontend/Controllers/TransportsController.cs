@@ -75,10 +75,10 @@ namespace projet_csharp_travel_plan_frontend.Controllers
             var json = await response.Content.ReadAsStringAsync();
             var transportDto = JsonConvert.DeserializeObject<TransportDTO>(json);
 
-            transportDto.OptionTransportBagageMain = BagageMain;
-            transportDto.OptionTransportBagageEnSoute = BagageEnSoute;
-            transportDto.OptionTransportBagageLarge = BagageLarge;
-            transportDto.OptionTransportSpeedyboarding = Speedyboarding;
+            transportDto.BagageMain = BagageMain;
+            transportDto.BagageEnSoute = BagageEnSoute;
+            transportDto.BagageLarge = BagageLarge;
+            transportDto.Speedyboarding = Speedyboarding;
 
             var updateResponse = await _client.PutAsJsonAsync($"{API_URL}{transportDto.IdTransport}", transportDto);
             if (!updateResponse.IsSuccessStatusCode)
@@ -99,21 +99,5 @@ namespace projet_csharp_travel_plan_frontend.Controllers
             // Here you can add any logic you need before redirecting
             return RedirectToAction("Index", "Logements");
         }
-    }
-
-    public class UpdateBooleanRequest
-    {
-        public int Id { get; set; }
-        public string Field { get; set; }
-        public bool Value { get; set; }
-    }
-
-    public class TransportOptionsViewModel
-    {
-        public bool BagageMain { get; set; }
-        public bool BagageEnSoute { get; set; }
-        public bool BagageLarge { get; set; }
-        public bool Speedyboarding { get; set; }
-        public int IdTransport { get; set; }
     }
 }

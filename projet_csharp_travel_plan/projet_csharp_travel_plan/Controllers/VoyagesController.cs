@@ -2,6 +2,9 @@
 using Microsoft.EntityFrameworkCore;
 using projet_csharp_travel_plan.DTO;
 using projet_csharp_travel_plan.Models;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 [Route("api/[controller]")]
 [ApiController]
@@ -14,52 +17,49 @@ public class VoyagesController : ControllerBase
         _context = context;
     }
 
-    // GET: api/Voyages
     [HttpGet]
     public async Task<ActionResult<IEnumerable<VoyageDTO>>> GetVoyages()
     {
         var voyages = await _context.Voyages
-            .Include(v => v.IdClientNavigation)
+            .Select(v => new VoyageDTO
+            {
+                IdVoyage = v.IdVoyage,
+                DateDebut = v.DateDebut,
+                DateFin = v.DateFin,
+                // Ne pas inclure les pays ici
+            })
             .ToListAsync();
 
-        var voyageDtos = voyages.Select(v => new VoyageDTO
-        {
-            IdVoyage = v.IdVoyage,
-            DateDebut = v.DateDebut,
-            DateFin = v.DateFin,
-            PrixTotal = v.PrixTotal,
-            StatutPaiement = v.StatutPaiement,
-            Client = new ClientDTO
-            {
-                IdClient = v.IdClientNavigation.IdClient,
-                Nom = v.IdClientNavigation.Nom,
-                Prenom = v.IdClientNavigation.Prenom
-            }
-        }).ToList();
-
-        return Ok(voyageDtos);
+        return voyages;
     }
 
-    // GET: api/Voyages/5
+    [HttpGet("GetPays")]
+    public async Task<ActionResult<IEnumerable<PayDTO>>> GetPays()
+    {
+        var pays = await _context.Pays
+            .Select(p => new PayDTO
+            {
+                IdPays = p.IdPays,
+                Nom = p.Nom
+            })
+            .ToListAsync();
+
+        return pays;
+    }
+
+
     [HttpGet("{id}")]
     public async Task<ActionResult<VoyageDTO>> GetVoyage(int id)
     {
         var voyage = await _context.Voyages
-            .Include(v => v.IdClientNavigation)
             .Where(v => v.IdVoyage == id)
             .Select(v => new VoyageDTO
             {
                 IdVoyage = v.IdVoyage,
                 DateDebut = v.DateDebut,
                 DateFin = v.DateFin,
-                PrixTotal = v.PrixTotal,
-                StatutPaiement = v.StatutPaiement,
-                Client = new ClientDTO
-                {
-                    IdClient = v.IdClientNavigation.IdClient,
-                    Nom = v.IdClientNavigation.Nom,
-                    Prenom = v.IdClientNavigation.Prenom
-                }
+                // Update the Pays property if it's directly related to Voyage
+                Pays = v.IdPays.Select(p => p.Nom).ToList()
             })
             .FirstOrDefaultAsync();
 
@@ -71,14 +71,23 @@ public class VoyagesController : ControllerBase
         return voyage;
     }
 
-    // PUT: api/Voyages/5
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutVoyage(int id, Voyage voyage)
+    public async Task<IActionResult> PutVoyage(int id, VoyageDTO dto)
     {
-        if (id != voyage.IdVoyage)
+        if (id != dto.IdVoyage)
         {
             return BadRequest();
         }
+
+        var voyage = await _context.Voyages.FindAsync(id);
+        if (voyage == null)
+        {
+            return NotFound();
+        }
+
+        voyage.DateDebut = dto.DateDebut;
+        voyage.DateFin = dto.DateFin;
+        // Update other fields if necessary
 
         _context.Entry(voyage).State = EntityState.Modified;
 
@@ -101,7 +110,6 @@ public class VoyagesController : ControllerBase
         return NoContent();
     }
 
-    // POST: api/Voyages
     [HttpPost]
     public async Task<ActionResult<Voyage>> PostVoyage(Voyage voyage)
     {
@@ -111,7 +119,6 @@ public class VoyagesController : ControllerBase
         return CreatedAtAction("GetVoyage", new { id = voyage.IdVoyage }, voyage);
     }
 
-    // DELETE: api/Voyages/5
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteVoyage(int id)
     {

@@ -2,47 +2,41 @@
 
 @{
     ViewData["Title"] = "Voyages en cours";
+    var paysList = ViewBag.Pays as List<projet_csharp_travel_plan_frontend.DTO.PayDTO>;
 }
 
 <h1>Voyages en cours</h1>
 
 <table class="table table-striped">
     <thead>
-    <tr>
-        <th>Date de Début</th>
-        <th>Date de Fin</th>
-        <th>Pays</th>
-    </tr>
+        <tr>
+            <th>Date de Début</th>
+            <th>Date de Fin</th>
+            <th>Pays</th>
+        </tr>
     </thead>
     <tbody>
-    @foreach (var voyage in Model)
-    {
-        <tr>
-            <td>@voyage.DateDebut.ToString("yyyy-MM-dd")</td>
-            <td>@voyage.DateFin.ToString("yyyy-MM-dd")</td>
-            <td>
-                @if (voyage.Pays != null && voyage.Pays.Count > 0)
-                {
-                    <ul>
-                    @foreach (var pays in voyage.Pays) 
+        @foreach (var voyage in Model)
+        {
+            <tr>
+                <td>@voyage.DateDebut.ToString("yyyy-MM-dd")</td>
+                <td>@voyage.DateFin.ToString("yyyy-MM-dd")</td>
+                <td>
+                    @if (paysList != null && paysList.Count > 0)
                     {
-                        <li>@pays.Nom</li>
+                        <ul>
+                            @foreach (var pays in paysList)
+                            {
+                                <li>@pays.Nom</li>
+                            }
+                        </ul>
                     }
-                    </ul>
-                }
-                else
-                {
-                    <span>Pas de pays disponible</span>
-                }
-            </td>
-        </tr>
-    }
+                    else
+                    {
+                        <span>Pas de pays disponible</span>
+                    }
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
-
-<div>
-    <a asp-action="Create" asp-controller="Voyage" class="btn btn-primary">Ajouter un nouveau voyage</a>
-</div>
-<div>
-    <a asp-action="Index" asp-controller="Home" class="btn btn-secondary">Retour à l'accueil</a>
-</div>
