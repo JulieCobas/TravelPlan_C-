@@ -1,44 +1,41 @@
-﻿@model projet_csharp_travel_plan_frontend.DTO.LogementDTO
+﻿@model IEnumerable<projet_csharp_travel_plan_frontend.DTO.LogementDTO>
 
 @{
-    ViewData["Title"] = "Détails du Logement";
+    ViewData["Title"] = $"Logements en {ViewData["SelectedCountry"]}";
 }
 
 <h1>@ViewData["Title"]</h1>
 
-<div>
-    <h4>Nom: @Model.Nom</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">Fournisseur</dt>
-        <dd class="col-sm-10">@Model.NomFournisseur</dd>
-        <dt class="col-sm-2">Catégorie</dt>
-        <dd class="col-sm-10">@Model.NomCategorie</dd>
-        <dt class="col-sm-2">Pays</dt>
-        <dd class="col-sm-10">@Model.NomPays</dd>
-        <dt class="col-sm-2">Détails</dt>
-        <dd class="col-sm-10">@Model.Details</dd>
-        <dt class="col-sm-2">Note</dt>
-        <dd class="col-sm-10">@Model.Note</dd>
-        <dt class="col-sm-2">Nombre d'évaluations</dt>
-        <dd class="col-sm-10">@Model.NbEvaluation</dd>
-        <dt class="col-sm-2">Image</dt>
-        <dd class="col-sm-10">
-            <!-- Vous devez décider comment afficher l'image -->
-        </dd>
-    </dl>
-    <form method="post" asp-action="ConfirmReservation">
-        @Html.AntiForgeryToken()
-        <input type="hidden" name="IdLogement" value="@Model.IdLogement" />
-        <div class="form-group">
-            <label for="DateDebut">Date de début</label>
-            <input type="date" class="form-control" id="DateDebut" name="DateDebut" required />
-        </div>
-        <div class="form-group">
-            <label for="DateFin">Date de fin</label>
-            <input type="date" class="form-control" id="DateFin" name="DateFin" required />
-        </div>
-        <button type="submit" class="btn btn-primary">Confirmer la réservation</button>
-    </form>
-    <a class="nav-link text-dark" asp-area="" asp-controller="Reservations" asp-action="Index">Reservation</a>
-</div>
+<table class="table">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.IdLogement)</th>
+            <th>@Html.DisplayNameFor(model => model.Nom)</th>
+            <th>@Html.DisplayNameFor(model => model.Details)</th>
+            <th>@Html.DisplayNameFor(model => model.Note)</th>
+            <th>@Html.DisplayNameFor(model => model.NbEvaluation)</th>
+            <th>@Html.DisplayNameFor(model => model.NomFournisseur)</th>
+            <th>@Html.DisplayNameFor(model => model.NomCategorie)</th>
+            <th>@Html.DisplayNameFor(model => model.NomPays)</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.IdLogement)</td>
+                <td>@Html.DisplayFor(modelItem => item.Nom)</td>
+                <td>@Html.DisplayFor(modelItem => item.Details)</td>
+                <td>@Html.DisplayFor(modelItem => item.Note)</td>
+                <td>@Html.DisplayFor(modelItem => item.NbEvaluation)</td>
+                <td>@Html.DisplayFor(modelItem => item.NomFournisseur)</td>
+                <td>@Html.DisplayFor(modelItem => item.NomCategorie)</td>
+                <td>@Html.DisplayFor(modelItem => item.NomPays)</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.IdLogement" class="btn btn-info">Voir détails</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

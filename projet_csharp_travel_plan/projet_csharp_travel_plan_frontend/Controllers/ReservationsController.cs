@@ -66,6 +66,9 @@ namespace projet_csharp_travel_plan_frontend.Controllers
         {
             if (string.IsNullOrEmpty(selectedCountry) || string.IsNullOrEmpty(selectedOption))
             {
+                // Load countries and options again if validation fails
+                ViewBag.Countries = new SelectList(new List<PayDTO>(), "Nom", "Nom");
+                ViewBag.Options = new SelectList(new List<string> { "Logement", "Activité", "Transport" });
                 return View();
             }
 
