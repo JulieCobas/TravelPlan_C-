@@ -9,8 +9,6 @@ public partial class Voyage
 
     public short? IdClient { get; set; }
 
-    public short IdUtilisateur { get; set; }
-
     public DateTime DateDebut { get; set; }
 
     public DateTime DateFin { get; set; }
@@ -18,10 +16,6 @@ public partial class Voyage
     public decimal PrixTotal { get; set; }
 
     public bool StatutPaiement { get; set; }
-
-    public virtual Client? IdClientNavigation { get; set; }
-
-    public virtual ICollection<Reservation> Reservations { get; set; } = new List<Reservation>();
 
     public virtual ICollection<Pay> IdPays { get; set; } = new List<Pay>();
 }

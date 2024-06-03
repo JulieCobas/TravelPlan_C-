@@ -5,9 +5,9 @@ namespace projet_csharp_travel_plan.Models;
 
 public partial class Client
 {
-    public string? Id { get; set; }
-
     public short IdClient { get; set; }
+
+    public string? Id { get; set; }
 
     public string Addresse { get; set; } = null!;
 
@@ -22,12 +22,6 @@ public partial class Client
     public string Prenom { get; set; } = null!;
 
     public DateTime DateNaissance { get; set; }
-
-    public string MotDePasse { get; set; } = null!;
-
-    public string Mail { get; set; } = null!;
-
-    public string? Telephone { get; set; }
 
     public virtual Aspnetuser? IdNavigation { get; set; }
 

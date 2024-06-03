@@ -9,13 +9,5 @@ public partial class Pay
 
     public string Nom { get; set; } = null!;
 
-    public virtual ICollection<Activite> Activites { get; set; } = new List<Activite>();
-
-    public virtual ICollection<Logement> Logements { get; set; } = new List<Logement>();
-
-    public virtual ICollection<Region> Regions { get; set; } = new List<Region>();
-
-    public virtual ICollection<Transport> Transports { get; set; } = new List<Transport>();
-
     public virtual ICollection<Voyage> IdVoyages { get; set; } = new List<Voyage>();
 }

@@ -528,14 +528,6 @@ public partial class TravelPlanContext : DbContext
             entity.Property(e => e.Id)
                 .HasMaxLength(450)
                 .HasColumnName("ID");
-            entity.Property(e => e.Mail)
-                .HasMaxLength(60)
-                .IsUnicode(false)
-                .HasColumnName("MAIL");
-            entity.Property(e => e.MotDePasse)
-                .HasMaxLength(80)
-                .IsUnicode(false)
-                .HasColumnName("MOT_DE_PASSE");
             entity.Property(e => e.Nom)
                 .HasMaxLength(60)
                 .IsUnicode(false)
@@ -548,10 +540,6 @@ public partial class TravelPlanContext : DbContext
                 .HasMaxLength(60)
                 .IsUnicode(false)
                 .HasColumnName("PRENOM");
-            entity.Property(e => e.Telephone)
-                .HasMaxLength(15)
-                .IsUnicode(false)
-                .HasColumnName("TELEPHONE");
             entity.Property(e => e.Ville)
                 .HasMaxLength(40)
                 .IsUnicode(false)
@@ -870,12 +858,6 @@ public partial class TravelPlanContext : DbContext
             entity.ToTable("RESERVATION");
 
             entity.Property(e => e.IdReservation).HasColumnName("ID_RESERVATION");
-            entity.Property(e => e.DateDebut)
-                .HasColumnType("datetime")
-                .HasColumnName("DATE_DEBUT");
-            entity.Property(e => e.DateFin)
-                .HasColumnType("datetime")
-                .HasColumnName("DATE_FIN");
             entity.Property(e => e.DateHeureDebut)
                 .HasColumnType("datetime")
                 .HasColumnName("DATE_HEURE_DEBUT");
@@ -1082,12 +1064,10 @@ public partial class TravelPlanContext : DbContext
                 .HasColumnType("datetime")
                 .HasColumnName("DATE_FIN");
             entity.Property(e => e.IdClient).HasColumnName("ID_CLIENT");
-            entity.Property(e => e.IdUtilisateur).HasColumnName("ID_UTILISATEUR");
             entity.Property(e => e.PrixTotal)
                 .HasColumnType("decimal(10, 2)")
                 .HasColumnName("PRIX_TOTAL");
             entity.Property(e => e.StatutPaiement).HasColumnName("STATUT_PAIEMENT");
-
             entity.HasOne(d => d.IdClientNavigation).WithMany(p => p.Voyages)
                 .HasForeignKey(d => d.IdClient)
                 .HasConstraintName("FK_VOYAGE_CLIENT");

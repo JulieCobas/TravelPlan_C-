@@ -7,7 +7,7 @@ public partial class Transport
 {
     public short IdTransport { get; set; }
 
-    public short IdVehiculeLoc { get; set; }
+    public short? IdVehiculeLoc { get; set; }
 
     public short IdCategorieTransport { get; set; }
 
@@ -39,7 +39,7 @@ public partial class Transport
 
     public virtual TransportPrix IdPrixTransportNavigation { get; set; } = null!;
 
-    public virtual VehiculeLocation IdVehiculeLocNavigation { get; set; } = null!;
+    public virtual VehiculeLocation? IdVehiculeLocNavigation { get; set; }
 
     public virtual ICollection<Reservation> Reservations { get; set; } = new List<Reservation>();
 }
