@@ -2,10 +2,12 @@
 
 @{
     ViewData["Title"] = "Nouveau Voyage";
+    var paysList = ViewBag.Pays as List<projet_csharp_travel_plan_frontend.DTO.PayDTO>;
 }
 
 <h1>Nouveau Voyage</h1>
 
+<br />
 <form id="voyageForm" asp-action="Create" method="post">
     <div class="form-group row">
         <label class="col-sm-2 col-form-label">Date de Début</label>
@@ -21,19 +23,22 @@
             <span asp-validation-for="DateFin" class="text-danger"></span>
         </div>
     </div>
+
     <div class="form-group row">
-        <label class="col-sm-2 col-form-label">P</label>
+        <label class="col-sm-2 col-form-label">Pays</label>
         <div class="col-sm-10">
-            <select class="form-select" aria-label="Default select example">
-                <option selected>Open this select menu</option>
-                <option value="1">One</option>
-                <option value="2">Two</option>
-                <option value="3">Three</option>
+            <select id="paysSelect" name="IdPays" class="form-select" aria-label="Sélectionner un pays">
+                <option value="">Sélectionnez un pays</option>
+                @foreach (var pays in paysList)
+                {
+                    <option value="@pays.Nom">@pays.Nom</option>
+                }
             </select>
+            <span asp-validation-for="IdPays" class="text-danger"></span>
         </div>
     </div>
 
-
+    <br />
     <div class="form-group">
         <!-- Vos champs de formulaire ici -->
         <button type="submit" class="btn btn-primary">Soumettre</button>
@@ -43,7 +48,7 @@
 
 
 
-@* @section Scripts {
+@section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
@@ -71,4 +76,4 @@
         });
     </script>
 }
- *@
+

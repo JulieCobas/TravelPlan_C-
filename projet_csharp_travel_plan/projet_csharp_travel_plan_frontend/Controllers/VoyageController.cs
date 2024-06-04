@@ -60,9 +60,10 @@ namespace projet_csharp_travel_plan_frontend.Controllers
                 {
                     DateDebut = DateTime.Now,
                     DateFin = DateTime.Now.AddDays(7),
-                    Pays = pays.Select(p => p.Nom).ToList()
+                    Pays = pays
                 };
 
+                ViewBag.Pays = pays;
                 return View(voyageDto);
             }
 
@@ -100,7 +101,7 @@ namespace projet_csharp_travel_plan_frontend.Controllers
             {
                 var jsonPays = await paysResponse.Content.ReadAsStringAsync();
                 var pays = JsonConvert.DeserializeObject<List<PayDTO>>(jsonPays);
-                voyage.Pays = pays.Select(p => p.Nom).ToList();
+                voyage.Pays = pays;
             }
 
             return View(voyage);
