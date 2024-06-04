@@ -10,9 +10,9 @@ using System.Threading.Tasks;
 [ApiController]
 public class TransportsController : ControllerBase
 {
-    private readonly TravelPlanContext _context;
+    private readonly TravelPlanNewDbContext _context;
 
-    public TransportsController(TravelPlanContext context)
+    public TransportsController(TravelPlanNewDbContext context)
     {
         _context = context;
     }

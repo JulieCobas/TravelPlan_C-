@@ -10,30 +10,27 @@
     <h4>ActiviteDTO</h4>
     <hr />
     <dl class="row">
-        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.IdActivite)</dt>
-        <dd class="col-sm-10">@Html.DisplayFor(model => model.IdActivite)</dd>
-        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Nom)</dt>
-        <dd class="col-sm-10">@Html.DisplayFor(model => model.Nom)</dd>
-        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Details)</dt>
-        <dd class="col-sm-10">@Html.DisplayFor(model => model.Details)</dd>
-        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Note)</dt>
-        <dd class="col-sm-10">@Html.DisplayFor(model => model.Note)</dd>
-        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.NbEvaluation)</dt>
-        <dd class="col-sm-10">@Html.DisplayFor(model => model.NbEvaluation)</dd>
-        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.HeuresMoyennes)</dt>
-        <dd class="col-sm-10">@Html.DisplayFor(model => model.HeuresMoyennes)</dd>
-        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.NomFournisseur)</dt>
+        <dt class="col-sm-2">Fournisseur</dt>
         <dd class="col-sm-10">@Html.DisplayFor(model => model.NomFournisseur)</dd>
-        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.GuideAudio)</dt>
-        <dd class="col-sm-10">@Html.DisplayFor(model => model.GuideAudio)</dd>
-        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.VisiteGuidee)</dt>
-        <dd class="col-sm-10">@Html.DisplayFor(model => model.VisiteGuidee)</dd>
-        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.NomPays)</dt>
-        <dd class="col-sm-10">@Html.DisplayFor(model => model.NomPays)</dd>
-        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.PrixActivite)</dt>
-        <dd class="col-sm-10">@Html.DisplayFor(model => model.PrixActivite)</dd>
-        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.NomCategorie)</dt>
+        <dt class="col-sm-2">Catégorie</dt>
         <dd class="col-sm-10">@Html.DisplayFor(model => model.NomCategorie)</dd>
+        <dt class="col-sm-2">Pays</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.NomPays)</dd>
+        <dt class="col-sm-2">Description</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.Details)</dd>
+        <dt class="col-sm-2">Durée</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.HeuresMoyennes)</dd>
+        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Note)</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.Note)/10</dd>
+        <dt class="col-sm-2">Nombre d'évaluations</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.NbEvaluation)</dd>
+        <dt class="col-sm-2">Désirez-vous un guide audio ?</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.GuideAudio)</dd>
+        <dt class="col-sm-2">Désirez-vous une visite guidée ?</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.VisiteGuidee)</dd>
+        <dt class="col-sm-2">Prix</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.PrixActivite) CHF</dd>
+
     </dl>
     <form method="post" asp-action="ConfirmActiviteSelection">
         @Html.AntiForgeryToken()

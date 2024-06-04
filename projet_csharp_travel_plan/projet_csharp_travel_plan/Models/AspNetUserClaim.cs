@@ -3,15 +3,15 @@ using System.Collections.Generic;
 
 namespace projet_csharp_travel_plan.Models;
 
-public partial class Aspnetuserclaim
+public partial class AspNetUserClaim
 {
     public int Id { get; set; }
 
-    public string Userid { get; set; } = null!;
+    public string UserId { get; set; } = null!;
 
-    public string? Claimtype { get; set; }
+    public string? ClaimType { get; set; }
 
-    public string? Claimvalue { get; set; }
+    public string? ClaimValue { get; set; }
 
-    public virtual Aspnetuser User { get; set; } = null!;
+    public virtual AspNetUser User { get; set; } = null!;
 }
