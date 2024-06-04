@@ -4,16 +4,20 @@
     ViewData["Title"] = "Nouvelle Réservation";
 }
 
-<h1>Nouvelle Réservation</h1>
+<h1 class="text-center">Nouvelle Réservation</h1>
 
-<form asp-action="Create" method="post">
-    <div class="form-group">
-        <label for="selectedCountry">Pays</label>
-        <select asp-for="SelectedCountry" asp-items="ViewBag.Countries" class="form-control" id="selectedCountry"></select>
+<div class="d-flex justify-content-center">
+    <div class="card p-4 shadow-lg">
+        <form asp-action="Create" method="post">
+            <div class="form-group">
+                <label for="selectedCountry">Pays</label>
+                <select asp-for="SelectedCountry" asp-items="ViewBag.Countries" class="form-control" id="selectedCountry"></select>
+            </div>
+            <div class="form-group">
+                <label for="selectedOption">Option</label>
+                <select asp-for="SelectedOption" asp-items="ViewBag.Options" class="form-control" id="selectedOption"></select>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block mt-3">Suivant</button>
+        </form>
     </div>
-    <div class="form-group">
-        <label for="selectedOption">Option</label>
-        <select asp-for="SelectedOption" asp-items="ViewBag.Options" class="form-control" id="selectedOption"></select>
-    </div>
-    <button type="submit" class="btn btn-primary">Suivant</button>
-</form>
+</div>

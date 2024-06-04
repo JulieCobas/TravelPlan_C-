@@ -10,7 +10,7 @@ using projet_csharp_travel_plan.Models;
 
 namespace projet_csharp_travel_plan.Migrations
 {
-    [DbContext(typeof(TravelPlanContext))]
+    [DbContext(typeof(TravelPlanNewDbContext))]
     partial class TravelPlanContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

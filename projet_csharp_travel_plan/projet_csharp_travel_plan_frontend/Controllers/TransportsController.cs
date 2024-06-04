@@ -21,20 +21,14 @@ namespace projet_csharp_travel_plan_frontend.Controllers
         }
 
         // GET: Transports
-        public async Task<IActionResult> Index(string category = null)
+        public async Task<IActionResult> Index(string country)
         {
-            var response = await _client.GetAsync(API_URL);
+            var response = await _client.GetAsync($"{API_URL}?country={country}");
             if (response.IsSuccessStatusCode)
             {
                 var json = await response.Content.ReadAsStringAsync();
                 var transportDtos = JsonConvert.DeserializeObject<List<TransportDTO>>(json);
-
-                if (!string.IsNullOrEmpty(category))
-                {
-                    transportDtos = transportDtos.Where(t => t.CategorieTransportNom == category).ToList();
-                }
-
-                ViewData["SelectedCategory"] = category;
+                ViewData["SelectedCountry"] = country;
                 return View(transportDtos);
             }
 
@@ -44,6 +38,7 @@ namespace projet_csharp_travel_plan_frontend.Controllers
             return View("Error", errorModel);
         }
 
+        // GET: Transports/Details/5
         public async Task<IActionResult> Details(int id)
         {
             var response = await _client.GetAsync($"{API_URL}{id}");

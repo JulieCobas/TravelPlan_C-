@@ -14,9 +14,9 @@ namespace projet_csharp_travel_plan.Controllers
     [ApiController]
     public class PayController : ControllerBase
     {
-        private readonly TravelPlanContext _context;
+        private readonly TravelPlanNewDbContext _context;
 
-        public PayController(TravelPlanContext context)
+        public PayController(TravelPlanNewDbContext context)
         {
             _context = context;
         }

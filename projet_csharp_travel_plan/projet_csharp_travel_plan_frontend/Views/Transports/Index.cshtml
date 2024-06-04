@@ -2,101 +2,38 @@
 
 @{
     ViewData["Title"] = "Transports";
-    var selectedCategory = ViewData["SelectedCategory"] as string;
+    var selectedCountry = ViewData["SelectedCountry"] as string;
 }
 
-<h1>Liste des Transports</h1>
+<h1>Transports en @selectedCountry</h1>
 
-<form method="get">
-    <select id="categorySelect" name="category" onchange="this.form.submit()">
-        <option value="" disabled selected>Sélectionner la catégorie de véhicule</option>
-    </select>
-</form>
+<table class="table">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.IdTransport)</th>
+            <th>@Html.DisplayNameFor(model => model.CategorieTransportNom)</th>
+            <th>@Html.DisplayNameFor(model => model.NomFournisseur)</th>
+            <th>@Html.DisplayNameFor(model => model.Prix)</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.IdTransport)</td>
+                <td>@Html.DisplayFor(modelItem => item.CategorieTransportNom)</td>
+                <td>@Html.DisplayFor(modelItem => item.NomFournisseur)</td>
+                <td>@Html.DisplayFor(modelItem => item.Prix)</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.IdTransport" class="btn btn-info">Voir détails</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
 
-@if (!string.IsNullOrEmpty(selectedCategory))
-{
-    <form method="post" asp-action="ConfirmSelection">
-        @Html.AntiForgeryToken()
-
-        <table class="table">
-            <thead>
-                <tr>
-                    @if (selectedCategory == "Aérien" || selectedCategory == "Maritime" || selectedCategory == "Terrestre - Train")
-                    {
-                        <th>Nom de la compagnie</th>
-                        <th>Prix</th>
-                        <th>Actions</th>
-                    }
-                    else if (selectedCategory == "Terrestre - Voiture")
-                    {
-                        <th>Marque</th>
-                        <th>Type</th>
-                        <th>Nombre de siège</th>
-                        <th>Prix</th>
-                    }
-                    else if (selectedCategory == "Cyclable")
-                    {
-                        <th>Prix</th>
-                    }
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
-                    <tr>
-                        <input type="hidden" name="options[@item.IdTransport].IdTransport" value="@item.IdTransport" />
-                        @if (selectedCategory == "Aérien" || selectedCategory == "Maritime" || selectedCategory == "Terrestre - Train")
-                        {
-                            <td>@item.NomFournisseur</td>
-                            <td>@item.Prix</td>
-                            <td>
-                                <a asp-action="Details" asp-route-id="@item.IdTransport" class="btn btn-info">Voir détails</a>
-                            </td>
-                        }
-                        else if (selectedCategory == "Terrestre - Voiture")
-                        {
-                            <td>@item.VehiculeLocMarque</td>
-                            <td>@item.VehiculeLocTypeVehicule</td>
-                            <td>@item.VehiculeLocNbSiege</td>
-                            <td>@item.Prix</td>
-                            <td>
-                                <button type="submit" name="confirmTransport" value="@item.IdTransport" class="btn btn-primary">Confirmer et passer à la réservation de logement</button>
-                            </td>
-                        }
-                        else if (selectedCategory == "Cyclable")
-                        {
-                            <td>@item.Prix</td>
-                            <td>
-                                <button type="submit" name="confirmTransport" value="@item.IdTransport" class="btn btn-primary">Confirmer et passer à la réservation de logement</button>
-                            </td>
-                        }
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </form>
-}
-
-<!-- Form to skip transport selection and proceed to lodging -->
 <form method="post" asp-action="ProceedToLodging">
     @Html.AntiForgeryToken()
     <button type="submit" class="btn btn-secondary">Passer à la réservation de logement sans sélectionner de transport</button>
 </form>
-
-@section Scripts {
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            fetch('/api/Transports/categories')
-                .then(response => response.json())
-                .then(data => {
-                    const categorySelect = document.getElementById("categorySelect");
-                    data.forEach(category => {
-                        const option = document.createElement("option");
-                        option.value = category;
-                        option.text = category;
-                        categorySelect.appendChild(option);
-                    });
-                });
-        });
-    </script>
-}

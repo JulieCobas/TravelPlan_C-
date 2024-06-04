@@ -3,17 +3,17 @@ using System.Collections.Generic;
 
 namespace projet_csharp_travel_plan.Models;
 
-public partial class Aspnetrole
+public partial class AspNetRole
 {
     public string Id { get; set; } = null!;
 
     public string? Name { get; set; }
 
-    public string? Normalizedname { get; set; }
+    public string? NormalizedName { get; set; }
 
-    public string? Concurrencystamp { get; set; }
+    public string? ConcurrencyStamp { get; set; }
 
-    public virtual ICollection<Aspnetroleclaim> Aspnetroleclaims { get; set; } = new List<Aspnetroleclaim>();
+    public virtual ICollection<AspNetRoleClaim> AspNetRoleClaims { get; set; } = new List<AspNetRoleClaim>();
 
-    public virtual ICollection<Aspnetuser> Users { get; set; } = new List<Aspnetuser>();
+    public virtual ICollection<AspNetUser> Users { get; set; } = new List<AspNetUser>();
 }

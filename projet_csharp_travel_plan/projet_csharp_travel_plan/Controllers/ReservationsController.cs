@@ -2,17 +2,14 @@
 using Microsoft.EntityFrameworkCore;
 using projet_csharp_travel_plan.DTO;
 using projet_csharp_travel_plan.Models;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 [Route("api/[controller]")]
 [ApiController]
 public class ReservationsController : ControllerBase
 {
-    private readonly TravelPlanContext _context;
+    private readonly TravelPlanNewDbContext _context;
 
-    public ReservationsController(TravelPlanContext context)
+    public ReservationsController(TravelPlanNewDbContext context)
     {
         _context = context;
     }
@@ -199,8 +196,32 @@ public class ReservationsController : ControllerBase
         return NoContent();
     }
 
+    [HttpPost]
+    public async Task<ActionResult<ReservationDTO>> PostReservation(ReservationDTO dto)
+    {
+        var reservation = new Reservation
+        {
+            IdLogement = dto.IdLogement,
+            IdActivite = dto.IdActivite,
+            IdTransport = dto.IdTransport,
+            IdVoyage = dto.IdVoyage,
+            DateHeureDebut = dto.DateHeureDebut,
+            DateHeureFin = dto.DateHeureFin,
+            Disponibilite = dto.Disponibilite
+        };
+
+        _context.Reservations.Add(reservation);
+        await _context.SaveChangesAsync();
+
+        dto.IdReservation = reservation.IdReservation;
+
+        return CreatedAtAction(nameof(GetReservation), new { id = reservation.IdReservation }, dto);
+    }
+
     private bool ReservationExists(int id)
     {
         return _context.Reservations.Any(e => e.IdReservation == id);
     }
+
+
 }
