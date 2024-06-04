@@ -9,14 +9,14 @@
 <br />
 <form id="voyageForm" asp-action="Create" asp-controller="Voyage" method="post">
     <div class="form-group row">
-        <label class="col-sm-2 col-form-label">Date de Début</label>
+        <label class="col-sm-2 col-form-label">Date d'arrivée</label>
         <div class="col-sm-10">
             <input type="date" asp-for="DateDebut" class="form-control" />
             <span asp-validation-for="DateDebut" class="text-danger"></span>
         </div>
     </div>
     <div class="form-group row">
-        <label class="col-sm-2 col-form-label">Date de Fin</label>
+        <label class="col-sm-2 col-form-label">Date de départ</label>
         <div class="col-sm-10">
             <input type="date" asp-for="DateFin" class="form-control" />
             <span asp-validation-for="DateFin" class="text-danger"></span>
@@ -24,7 +24,7 @@
     </div>
 
     <div class="form-group row">
-        <label class="col-sm-2 col-form-label">Pays</label>
+        <label class="col-sm-2 col-form-label">Où aller-vous ?</label>
         <div class="col-sm-10">
             <select id="paysSelect" asp-for="IdPays" class="form-select" aria-label="Sélectionner un pays">
                 <option value="">Sélectionnez un pays</option>
@@ -94,8 +94,11 @@ body {
 }
 
 h1 {
-  color: #333;
-  margin-bottom: 20px;
+    color: #333;
+    margin-top : 20px;
+    margin-bottom: 20px;
+    font-weight: bold;
+    text-align: center; /* Centrer horizontalement */
 }
 
 .form-group {
