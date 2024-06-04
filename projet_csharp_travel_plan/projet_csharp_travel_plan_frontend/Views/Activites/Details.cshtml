@@ -46,7 +46,19 @@
             <label for="DateFin">Date de fin</label>
             <input type="date" class="form-control" id="DateFin" name="DateFin" required />
         </div>
-        <button type="submit" class="btn btn-primary">Confirmer et passer à la réservation de logement</button>
+        <div class="form-group">
+            <label for="HeureDebut">Heure de début</label>
+            <input type="time" class="form-control" id="HeureDebut" name="HeureDebut" required />
+        </div>
+        <div class="form-group">
+            <label for="GuideAudio">Guide Audio</label>
+            <input type="checkbox" class="form-control" id="GuideAudio" name="GuideAudio" value="true" />
+        </div>
+        <div class="form-group">
+            <label for="VisiteGuidee">Visite Guidée</label>
+            <input type="checkbox" class="form-control" id="VisiteGuidee" name="VisiteGuidee" value="true" />
+        </div>
+        <button type="submit" class="btn btn-primary">Réservation</button>
     </form>
     <a asp-action="Index">Retour à la liste des activités</a>
 </div>
