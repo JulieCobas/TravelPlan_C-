@@ -53,7 +53,6 @@
         var form = document.getElementById('voyageForm');
         if (form) {
             form.addEventListener('submit', function (event) {
-
                 event.preventDefault(); // Empêche l'envoi du formulaire pour l'instant
 
                 // Supprimer les classes is-invalid pour les champs
@@ -68,63 +67,55 @@
                 var selectedPayText = document.querySelector('[name="IdPays"] option:checked').text;
 
                 // Validation : Vérifier si les champs dates sont vides
-                if (!dateDebut || !dateFin ) {
+                if (!dateDebut) {
                     document.querySelector('[name="DateDebut"]').classList.add('is-invalid');
                     document.querySelector('[data-name="DateDebut"]').textContent = "Veuillez remplir tous les champs du formulaire.";
+                }
+                if (!dateFin) {
                     document.querySelector('[name="DateFin"]').classList.add('is-invalid');
                     document.querySelector('[data-name="DateFin"]').textContent = "Veuillez remplir tous les champs du formulaire.";
-                    return; // Arrêtez l'exécution si un champ est vide
                 }
 
                 // Validation : Vérifier si les dates sont dans le passé
                 var currentDate = new Date();
-                if (new Date(dateDebut) < currentDate || new Date(dateFin) < currentDate) {
+                currentDate.setHours(0, 0, 0, 0); // Réinitialiser les heures pour avoir la possibilité de sélectionner la date d'aujourd'hui
+                if (new Date(dateDebut) < currentDate) {
                     document.querySelector('[name="DateDebut"]').classList.add('is-invalid');
-                    document.querySelector('[data-name="DateDebut"]').textContent = "Les dates ne peuvent pas être dans le passé.";
+                    document.querySelector('[data-name="DateDebut"]').textContent = "La date d'arrivée ne peut pas être dans le passé.";
+                }
+                if (new Date(dateFin) < currentDate) {
                     document.querySelector('[name="DateFin"]').classList.add('is-invalid');
-                    document.querySelector('[data-name="DateFin"]').textContent = "Les dates ne peuvent pas être dans le passé.";
-                    return; // Arrêtez l'exécution si une date est dans le passé
+                    document.querySelector('[data-name="DateFin"]').textContent = "La date de départ ne pas être dans le passé.";
                 }
 
                 // Validation : Vérifier si la date de fin est postérieure à la date de début
                 if (new Date(dateFin) <= new Date(dateDebut)) {
                     document.querySelector('[name="DateFin"]').classList.add('is-invalid');
                     document.querySelector('[data-name="DateFin"]').textContent = "La date de fin doit être postérieure à la date de début.";
-                    return; // Arrêtez l'exécution si la date de fin est inférieure ou égale à la date de début
                 }
 
                 // Validation : Vérifier si un pays a été sélectionné
                 if (selectedPayId === "") {
                     document.querySelector('[name="IdPays"]').classList.add('is-invalid');
                     document.querySelector('[data-name="IdPays"]').textContent = "Veuillez sélectionner un pays.";
-                    return; // Arrêtez l'exécution si aucun pays n'a été sélectionné
                 }
 
-                // Stockez les données dans un objet JavaScript
-                var formData = {
-                    DateDebut: dateDebut,
-                    DateFin: dateFin,
-                    IdPays: selectedPayId,
-                    SelectedPayText: selectedPayText
-                };
-
-                // Affichez les valeurs dans la console
-                console.log("Date de Début:", dateDebut);
-                console.log("Date de Fin:", dateFin);
-                console.log("Pays Sélectionné:", selectedPayId);
-                console.log("Pays Sélectionné Nom:", selectedPayText);
+                // Si des champs sont invalides, arrêtez l'exécution
+                if (form.querySelectorAll('.is-invalid').length > 0) {
+                    return;
+                }
 
                 // Si toutes les validations passent, envoyez le formulaire
                 form.submit();
 
                 // Redirection après la soumission du formulaire
-                window.location.href = '@Url.Action("Create", "Reservations")' + '?dateDebut=' + formData.DateDebut + '&dateFin=' + formData.DateFin + '&selectedPayId=' + formData.IdPays + '&selectedPayText=' + formData.SelectedPayText;
-
+                window.location.href = '@Url.Action("Create", "Reservations")' + '?dateDebut=' + dateDebut + '&dateFin=' + dateFin + '&selectedPayId=' + selectedPayId + '&selectedPayText=' + selectedPayText;
             });
         } else {
             console.error("Form with ID 'voyageForm' not found.");
         }
     });
+
 </script>
 
 <style>
