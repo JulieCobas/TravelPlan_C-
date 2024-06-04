@@ -2,7 +2,6 @@
 
 @{
     ViewData["Title"] = "Nouveau Voyage";
-    var paysList = ViewBag.Pays as List<projet_csharp_travel_plan_frontend.DTO.PayDTO>;
 }
 
 <h1>Nouveau Voyage</h1>
@@ -29,9 +28,9 @@
         <div class="col-sm-10">
             <select id="paysSelect" asp-for="IdPays" class="form-select" aria-label="Sélectionner un pays">
                 <option value="">Sélectionnez un pays</option>
-                @if (paysList != null)
+                @if (Model.Pays != null)
                 {
-                    @foreach (var pays in paysList)
+                    @foreach (var pays in Model.Pays)
                     {
                         <option value="@pays.IdPays">@pays.Nom</option>
                     }
