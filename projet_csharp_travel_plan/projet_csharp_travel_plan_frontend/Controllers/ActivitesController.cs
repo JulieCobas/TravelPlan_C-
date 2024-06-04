@@ -8,6 +8,7 @@ public class ActivitesController : Controller
 {
     private readonly HttpClient _client;
     private const string API_URL = "https://localhost:7287/api/Activites/";
+    private const string RESERVATION_API_URL = "https://localhost:7287/api/Reservations/";
 
     public ActivitesController(IHttpClientFactory httpClientFactory)
     {
@@ -22,13 +23,11 @@ public class ActivitesController : Controller
         {
             var json = await response.Content.ReadAsStringAsync();
             var activites = JsonConvert.DeserializeObject<List<ActiviteDTO>>(json);
-            // Filtrer les activités par pays si ce n'est pas déjà fait par l'API
             activites = activites.Where(a => a.NomPays == country).ToList();
-            ViewData["SelectedCountry"] = country; // Passer le pays sélectionné à la vue
+            ViewData["SelectedCountry"] = country;
             return View(activites);
         }
 
-        // Handle error
         var errorMessage = await response.Content.ReadAsStringAsync();
         var errorModel = new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier, ErrorMessage = errorMessage };
         return View("Error", errorModel);
@@ -45,9 +44,33 @@ public class ActivitesController : Controller
             return View(activite);
         }
 
-        // Handle error
         var errorMessage = await response.Content.ReadAsStringAsync();
         var errorModel = new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier, ErrorMessage = errorMessage };
         return View("Error", errorModel);
     }
+
+    // POST: Activites/ConfirmActiviteSelection
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> ConfirmActiviteSelection(short IdActivite, DateTime DateDebut, DateTime DateFin, TimeSpan HeureDebut, bool GuideAudio, bool VisiteGuidee)
+    {
+        var reservation = new ReservationDTO
+        {
+            IdActivite = IdActivite,
+            DateHeureDebut = DateDebut.Add(HeureDebut),
+            DateHeureFin = DateFin,
+            Disponibilite = true
+        };
+
+        var response = await _client.PostAsJsonAsync("https://localhost:7287/api/Reservations", reservation);
+        if (response.IsSuccessStatusCode)
+        {
+            return RedirectToAction("Index", "Reservations");
+        }
+
+        var errorMessage = await response.Content.ReadAsStringAsync();
+        var errorModel = new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier, ErrorMessage = errorMessage };
+        return View("Error", errorModel);
+    }
+
 }

@@ -858,6 +858,206 @@ public partial class TravelPlanNewDbContext : DbContext
                 .HasColumnName("NOM");
         });
 
+        modelBuilder.Entity<PrixLogement>(entity =>
+        {
+            entity.HasKey(e => e.IdLogementPrix).HasName("PK__PRIX_LOG__5059F78AA5C3E682");
+
+            entity.ToTable("PRIX_LOGEMENT");
+
+            entity.Property(e => e.IdLogementPrix).HasColumnName("ID_LOGEMENT_PRIX");
+            entity.Property(e => e.DateDebutValidite)
+                .HasColumnType("datetime")
+                .HasColumnName("DATE_DEBUT_VALIDITE");
+            entity.Property(e => e.DateFinValidite)
+                .HasColumnType("datetime")
+                .HasColumnName("DATE_FIN_VALIDITE");
+            entity.Property(e => e.Prix)
+                .HasColumnType("decimal(10, 2)")
+                .HasColumnName("PRIX");
+        });
+
+        modelBuilder.Entity<Region>(entity =>
+        {
+            entity.HasKey(e => e.IdRegion).HasName("PK__REGION__D8BB64B09BF23A17");
+
+            entity.ToTable("REGION");
+
+            entity.HasIndex(e => e.IdPays, "IX_REGION_ID_PAYS");
+
+            entity.Property(e => e.IdRegion).HasColumnName("ID_REGION");
+            entity.Property(e => e.IdPays).HasColumnName("ID_PAYS");
+            entity.Property(e => e.Nom)
+                .HasMaxLength(128)
+                .IsUnicode(false)
+                .HasColumnName("NOM");
+
+            entity.HasOne(d => d.IdPaysNavigation).WithMany(p => p.Regions)
+                .HasForeignKey(d => d.IdPays)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_REGION_PAYS");
+        });
+
+        modelBuilder.Entity<TransportOption>(entity =>
+        {
+            entity.HasKey(e => e.IdOptionTransport).HasName("PK__TRANSPOR__46DC60A5FF69360E");
+
+            entity.ToTable("TRANSPORT_OPTION");
+
+            entity.Property(e => e.IdOptionTransport).HasColumnName("ID_OPTION_TRANSPORT");
+            entity.Property(e => e.BagageEnSoute).HasColumnName("BAGAGE_EN_SOUTE");
+            entity.Property(e => e.BagageLarge).HasColumnName("BAGAGE_LARGE");
+            entity.Property(e => e.BagageMain).HasColumnName("BAGAGE_MAIN");
+            entity.Property(e => e.PrixBagagelarge).HasColumnName("PRIX_BAGAGELARGE");
+            entity.Property(e => e.PrixBagagemain).HasColumnName("PRIX_BAGAGEMAIN");
+            entity.Property(e => e.PrixBagagesoute).HasColumnName("PRIX_BAGAGESOUTE");
+            entity.Property(e => e.PrixSpeedyboarding).HasColumnName("PRIX_SPEEDYBOARDING");
+            entity.Property(e => e.Speedyboarding).HasColumnName("SPEEDYBOARDING");
+        });
+
+        modelBuilder.Entity<Reservation>(entity =>
+        {
+            entity.HasKey(e => e.IdReservation).HasName("PK__RESERVAT__3CB7398B9A29C2AD");
+
+            entity.ToTable("RESERVATION");
+
+            entity.HasIndex(e => e.IdActivite, "IX_RESERVATION_ID_ACTIVITE");
+
+            entity.HasIndex(e => e.IdLogement, "IX_RESERVATION_ID_LOGEMENT");
+
+            entity.HasIndex(e => e.IdTransport, "IX_RESERVATION_ID_TRANSPORT");
+
+            entity.HasIndex(e => e.IdVoyage, "IX_RESERVATION_ID_VOYAGE");
+
+            entity.Property(e => e.IdReservation).HasColumnName("ID_RESERVATION");
+            entity.Property(e => e.DateDebut)
+                .HasColumnType("datetime")
+                .HasColumnName("DATE_DEBUT");
+            entity.Property(e => e.DateFin)
+                .HasColumnType("datetime")
+                .HasColumnName("DATE_FIN");
+            entity.Property(e => e.DateHeureDebut)
+                .HasColumnType("datetime")
+                .HasColumnName("DATE_HEURE_DEBUT");
+            entity.Property(e => e.DateHeureFin)
+                .HasColumnType("datetime")
+                .HasColumnName("DATE_HEURE_FIN");
+            entity.Property(e => e.Disponibilite).HasColumnName("DISPONIBILITE");
+            entity.Property(e => e.IdActivite).HasColumnName("ID_ACTIVITE");
+            entity.Property(e => e.IdLogement).HasColumnName("ID_LOGEMENT");
+            entity.Property(e => e.IdTransport).HasColumnName("ID_TRANSPORT");
+            entity.Property(e => e.IdVoyage).HasColumnName("ID_VOYAGE");
+
+            entity.HasOne(d => d.IdActiviteNavigation).WithMany(p => p.Reservations)
+                .HasForeignKey(d => d.IdActivite)
+                .HasConstraintName("FK_RESERVATION_ACTIVITE");
+
+            entity.HasOne(d => d.IdLogementNavigation).WithMany(p => p.Reservations)
+                .HasForeignKey(d => d.IdLogement)
+                .HasConstraintName("FK_RESERVATION_LOGEMENT");
+
+            entity.HasOne(d => d.IdTransportNavigation).WithMany(p => p.Reservations)
+                .HasForeignKey(d => d.IdTransport)
+                .HasConstraintName("FK_RESERVATION_TRANSPORT");
+
+            entity.HasOne(d => d.IdVoyageNavigation).WithMany(p => p.Reservations)
+                .HasForeignKey(d => d.IdVoyage)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_RESERVATION_VOYAGE");
+        });
+
+        modelBuilder.Entity<Siege>(entity =>
+        {
+            entity.HasKey(e => e.IdSiege).HasName("PK__SIEGE__AB9BD2939262F3B0");
+
+            entity.ToTable("SIEGE");
+
+            entity.Property(e => e.IdSiege).HasColumnName("ID_SIEGE");
+            entity.Property(e => e.NumeroSiege)
+                .HasMaxLength(32)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .HasColumnName("NUMERO_SIEGE");
+        });
+
+        modelBuilder.Entity<Transport>(entity =>
+        {
+            entity.HasKey(e => e.IdTransport).HasName("PK__TRANSPOR__1AA8A63F96E632ED");
+
+            entity.ToTable("TRANSPORT");
+
+            entity.HasIndex(e => e.IdCategorieTransport, "IX_TRANSPORT_ID_CATEGORIE_TRANSPORT");
+
+            entity.HasIndex(e => e.IdFournisseur, "IX_TRANSPORT_ID_FOURNISSEUR");
+
+            entity.HasIndex(e => e.IdOptionTransport, "IX_TRANSPORT_ID_OPTION_TRANSPORT");
+
+            entity.HasIndex(e => e.IdPays, "IX_TRANSPORT_ID_PAYS");
+
+            entity.HasIndex(e => e.IdPrixTransport, "IX_TRANSPORT_ID_PRIX_TRANSPORT");
+
+            entity.HasIndex(e => e.IdVehiculeLoc, "IX_TRANSPORT_ID_VEHICULE_LOC");
+
+            entity.Property(e => e.IdTransport).HasColumnName("ID_TRANSPORT");
+            entity.Property(e => e.Classe).HasColumnName("CLASSE");
+            entity.Property(e => e.HeureArrivee)
+                .HasColumnType("datetime")
+                .HasColumnName("HEURE_ARRIVEE");
+            entity.Property(e => e.HeureDepart)
+                .HasColumnType("datetime")
+                .HasColumnName("HEURE_DEPART");
+            entity.Property(e => e.IdCategorieTransport).HasColumnName("ID_CATEGORIE_TRANSPORT");
+            entity.Property(e => e.IdFournisseur).HasColumnName("ID_FOURNISSEUR");
+            entity.Property(e => e.IdOptionTransport).HasColumnName("ID_OPTION_TRANSPORT");
+            entity.Property(e => e.IdPays).HasColumnName("ID_PAYS");
+            entity.Property(e => e.IdPrixTransport).HasColumnName("ID_PRIX_TRANSPORT");
+            entity.Property(e => e.IdVehiculeLoc).HasColumnName("ID_VEHICULE_LOC");
+            entity.Property(e => e.LieuDepart)
+                .HasMaxLength(60)
+                .IsUnicode(false)
+                .HasColumnName("LIEU_DEPART");
+
+            entity.HasOne(d => d.IdCategorieTransportNavigation).WithMany(p => p.Transports)
+                .HasForeignKey(d => d.IdCategorieTransport)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_TRANSPORT_TRANSPORT_CATEGORIE");
+
+            entity.HasOne(d => d.IdFournisseurNavigation).WithMany(p => p.Transports)
+                .HasForeignKey(d => d.IdFournisseur)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_TRANSPORT_FOURNISSEUR");
+
+            entity.HasOne(d => d.IdOptionTransportNavigation).WithMany(p => p.Transports)
+                .HasForeignKey(d => d.IdOptionTransport)
+                .HasConstraintName("FK_TRANSPORT_TRANSPORT_OPTION");
+
+            entity.HasOne(d => d.IdPaysNavigation).WithMany(p => p.Transports)
+                .HasForeignKey(d => d.IdPays)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_TRANSPORT_PAYS");
+
+            entity.HasOne(d => d.IdPrixTransportNavigation).WithMany(p => p.Transports)
+                .HasForeignKey(d => d.IdPrixTransport)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_TRANSPORT_TRANSPORT_PRIX");
+
+            entity.HasOne(d => d.IdVehiculeLocNavigation).WithMany(p => p.Transports)
+                .HasForeignKey(d => d.IdVehiculeLoc)
+                .HasConstraintName("FK_TRANSPORT_VEHICULE_LOCATION");
+        });
+
+        modelBuilder.Entity<TransportCategorie>(entity =>
+        {
+            entity.HasKey(e => e.IdCategorieTransport).HasName("PK__TRANSPOR__8D9BA317A25FA442");
+
+            entity.ToTable("TRANSPORT_CATEGORIE");
+
+            entity.Property(e => e.IdCategorieTransport).HasColumnName("ID_CATEGORIE_TRANSPORT");
+            entity.Property(e => e.Nom)
+                .HasMaxLength(40)
+                .IsUnicode(false)
+                .HasColumnName("NOM");
+        });
+
         modelBuilder.Entity<TransportOption>(entity =>
         {
             entity.HasKey(e => e.IdOptionTransport).HasName("PK__TRANSPOR__46DC60A5FF69360E");

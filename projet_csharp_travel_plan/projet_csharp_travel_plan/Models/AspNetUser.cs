@@ -3,49 +3,43 @@ using System.Collections.Generic;
 
 namespace projet_csharp_travel_plan.Models;
 
-public partial class Aspnetuser
+public partial class AspNetUser
 {
     public string Id { get; set; } = null!;
 
-    public short? IdInvitee { get; set; }
+    public string? UserName { get; set; }
 
-    public string? Username { get; set; }
-
-    public string? Normalizedusername { get; set; }
+    public string? NormalizedUserName { get; set; }
 
     public string? Email { get; set; }
 
-    public string? Normalizedemail { get; set; }
+    public string? NormalizedEmail { get; set; }
 
-    public bool Emailconfirmed { get; set; }
+    public bool EmailConfirmed { get; set; }
 
-    public string? Passwordhash { get; set; }
+    public string? PasswordHash { get; set; }
 
-    public string? Securitystamp { get; set; }
+    public string? SecurityStamp { get; set; }
 
-    public string? Concurrencystamp { get; set; }
+    public string? ConcurrencyStamp { get; set; }
 
-    public string? Phonenumber { get; set; }
+    public string? PhoneNumber { get; set; }
 
-    public bool Phonenumberconfirmed { get; set; }
+    public bool PhoneNumberConfirmed { get; set; }
 
-    public bool Twofactorenabled { get; set; }
+    public bool TwoFactorEnabled { get; set; }
 
-    public DateTimeOffset? Lockoutend { get; set; }
+    public DateTimeOffset? LockoutEnd { get; set; }
 
-    public bool Lockoutenabled { get; set; }
+    public bool LockoutEnabled { get; set; }
 
-    public int Accessfailedcount { get; set; }
+    public int AccessFailedCount { get; set; }
 
-    public virtual ICollection<Aspnetuserclaim> Aspnetuserclaims { get; set; } = new List<Aspnetuserclaim>();
+    public virtual ICollection<AspNetUserClaim> AspNetUserClaims { get; set; } = new List<AspNetUserClaim>();
 
-    public virtual ICollection<Aspnetuserlogin> Aspnetuserlogins { get; set; } = new List<Aspnetuserlogin>();
+    public virtual ICollection<AspNetUserLogin> AspNetUserLogins { get; set; } = new List<AspNetUserLogin>();
 
-    public virtual ICollection<Aspnetusertoken> Aspnetusertokens { get; set; } = new List<Aspnetusertoken>();
+    public virtual ICollection<AspNetUserToken> AspNetUserTokens { get; set; } = new List<AspNetUserToken>();
 
-    public virtual ICollection<Client> Clients { get; set; } = new List<Client>();
-
-    public virtual Invite? IdInviteeNavigation { get; set; }
-
-    public virtual ICollection<Aspnetrole> Roles { get; set; } = new List<Aspnetrole>();
+    public virtual ICollection<AspNetRole> Roles { get; set; } = new List<AspNetRole>();
 }
