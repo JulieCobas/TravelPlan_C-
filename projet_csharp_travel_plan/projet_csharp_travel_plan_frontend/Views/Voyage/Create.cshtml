@@ -7,6 +7,7 @@
 
 <h1>Nouveau Voyage</h1>
 
+<br />
 <form id="voyageForm" asp-action="Create" method="post">
     <div class="form-group row">
         <label class="col-sm-2 col-form-label">Date de Début</label>
@@ -37,7 +38,7 @@
         </div>
     </div>
 
-
+    <br />
     <div class="form-group">
         <!-- Vos champs de formulaire ici -->
         <button type="submit" class="btn btn-primary">Soumettre</button>
@@ -47,7 +48,7 @@
 
 
 
-@* @section Scripts {
+@section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
@@ -75,4 +76,4 @@
         });
     </script>
 }
- *@
+
