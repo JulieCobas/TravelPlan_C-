@@ -20,24 +20,25 @@
                         {
                             <h5 class="card-title">@item.Logement.Nom</h5>
                             <p class="card-text">
-                                <strong>Adresse:</strong> @item.Logement.Details<br />
-                                <strong>Prix:</strong> @item.Logement.Details<br />
-                                <strong>Note:</strong> @item.Logement.Note / 10<br />
+                                <strong>Description :</strong> @item.Logement.Details<br />
+                                <strong>Prix :</strong> @item.Logement.Details<br />
+                                <strong>Note :</strong> @item.Logement.Note / 10<br />
                             </p>
                         }
                         else if (item.Activite != null)
                         {
                             <h5 class="card-title">@item.Activite.Nom</h5>
                             <p class="card-text">
-                                <strong>Details:</strong> @item.Activite.Details<br />
-                                <strong>Prix:</strong> @item.Activite.PrixActivite €<br />
+                                <strong>Description :</strong> @item.Activite.Details<br />
+                                <strong>Prix :</strong> @item.Activite.PrixActivite CHF<br />
                             </p>
                         }
                         else if (item.Transport != null)
                         {
                             <h5 class="card-title">@item.Transport.CategorieTransportNom</h5>
                             <p class="card-text">
-                                <strong>Prix:</strong> @item.Transport.Prix €<br />
+                                <strong>Fournisseur</strong> @item.Transport.NomFournisseur<br />
+                                <strong>Prix :</strong> @item.Transport.Prix CHF<br />
                             </p>
                         }
                         else

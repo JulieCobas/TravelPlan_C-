@@ -7,9 +7,9 @@ using projet_csharp_travel_plan.Models;
 [ApiController]
 public class ReservationsController : ControllerBase
 {
-    private readonly TravelPlanContext _context;
+    private readonly TravelPlanNewDbContext _context;
 
-    public ReservationsController(TravelPlanContext context)
+    public ReservationsController(TravelPlanNewDbContext context)
     {
         _context = context;
     }

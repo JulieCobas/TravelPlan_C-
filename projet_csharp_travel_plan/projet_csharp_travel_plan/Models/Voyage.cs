@@ -9,8 +9,6 @@ public partial class Voyage
 
     public short? IdClient { get; set; }
 
-    public short IdUtilisateur { get; set; }
-
     public DateTime DateDebut { get; set; }
 
     public DateTime DateFin { get; set; }

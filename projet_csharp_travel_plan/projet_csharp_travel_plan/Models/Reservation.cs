@@ -19,6 +19,10 @@ public partial class Reservation
 
     public DateTime? DateHeureFin { get; set; }
 
+    public DateTime? DateDebut { get; set; }
+
+    public DateTime? DateFin { get; set; }
+
     public bool? Disponibilite { get; set; }
 
     public virtual Activite? IdActiviteNavigation { get; set; }
