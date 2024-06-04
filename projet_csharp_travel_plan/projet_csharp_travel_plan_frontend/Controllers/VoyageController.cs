@@ -84,9 +84,9 @@ namespace projet_csharp_travel_plan_frontend.Controllers
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
 
                 var response = await _client.PostAsync(API_URL, content);
-                if (response.IsSuccessStatusCode)
+               if (response.IsSuccessStatusCode)
                 {
-                    return RedirectToAction("Index");
+                    return RedirectToAction("Create", "Reservations", new { voyage.IdPays, voyage.IdVoyage });
                 }
 
                 // Handle error
@@ -96,7 +96,7 @@ namespace projet_csharp_travel_plan_frontend.Controllers
             }
 
             // Si la validation échoue, rechargez la liste des pays
-            var paysResponse = await _client.GetAsync($"{API_URL}Pays");
+            var paysResponse = await _client.GetAsync(PAYS_API_URL);
             if (paysResponse.IsSuccessStatusCode)
             {
                 var jsonPays = await paysResponse.Content.ReadAsStringAsync();
