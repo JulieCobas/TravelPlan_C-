@@ -63,6 +63,14 @@
                 var selectedPayId = document.querySelector('[name="IdPays"]').value;
                 var selectedPayText = document.querySelector('[name="IdPays"] option:checked').text;
 
+                // Stockez les données dans un objet JavaScript
+                var formData = {
+                    DateDebut: dateDebut,
+                    DateFin: dateFin,
+                    IdPays: selectedPayId,
+                    SelectedPayText: selectedPayText
+                };
+
                 // Affichez les valeurs dans la console
                 console.log("Date de Début:", dateDebut);
                 console.log("Date de Fin:", dateFin);
@@ -70,7 +78,7 @@
                 console.log("Pays Sélectionné Nom:", selectedPayText);
 
                 // Redirection après la soumission du formulaire
-                window.location.href = '@Url.Action("Create", "Reservations")';
+                window.location.href = '@Url.Action("Create", "Reservations")' + '?dateDebut=' + formData.DateDebut + '&dateFin=' + formData.DateFin + '&selectedPayId=' + formData.IdPays + '&selectedPayText=' + formData.SelectedPayText;
 
             });
         } else {
