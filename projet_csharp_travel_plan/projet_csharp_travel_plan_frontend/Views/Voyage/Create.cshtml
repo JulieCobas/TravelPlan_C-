@@ -69,13 +69,16 @@
                 console.log("Pays Sélectionné:", selectedPayId);
                 console.log("Pays Sélectionné Nom:", selectedPayText);
 
-                // Le formulaire sera automatiquement soumis
+                // Redirection après la soumission du formulaire
+                window.location.href = '@Url.Action("Create", "Reservations")';
+
             });
         } else {
             console.error("Form with ID 'voyageForm' not found.");
         }
     });
 </script>
+
 <style>
     
 body {
