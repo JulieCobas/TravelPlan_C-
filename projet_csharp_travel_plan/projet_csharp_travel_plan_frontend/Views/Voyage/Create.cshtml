@@ -8,7 +8,7 @@
 <h1>Nouveau Voyage</h1>
 
 <br />
-<form id="voyageForm" asp-action="Create" method="post">
+<form id="voyageForm" asp-action="Create" asp-controller="Voyage" method="post">
     <div class="form-group row">
         <label class="col-sm-2 col-form-label">Date de Début</label>
         <div class="col-sm-10">
@@ -27,11 +27,14 @@
     <div class="form-group row">
         <label class="col-sm-2 col-form-label">Pays</label>
         <div class="col-sm-10">
-            <select id="paysSelect" name="IdPays" class="form-select" aria-label="Sélectionner un pays">
+            <select id="paysSelect" asp-for="IdPays" class="form-select" aria-label="Sélectionner un pays">
                 <option value="">Sélectionnez un pays</option>
-                @foreach (var pays in paysList)
+                @if (paysList != null)
                 {
-                    <option value="@pays.Nom">@pays.Nom</option>
+                    @foreach (var pays in paysList)
+                    {
+                        <option value="@pays.IdPays">@pays.Nom</option>
+                    }
                 }
             </select>
             <span asp-validation-for="IdPays" class="text-danger"></span>
@@ -39,41 +42,37 @@
     </div>
 
     <br />
+
     <div class="form-group">
-        <!-- Vos champs de formulaire ici -->
         <button type="submit" class="btn btn-primary">Soumettre</button>
         <a asp-action="Index" asp-controller="Voyage" class="btn btn-secondary">Annuler</a>
     </div>
 </form>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var form = document.getElementById('voyageForm');
+        if (form) {
+            form.addEventListener('submit', function (event) {
 
+                event.preventDefault(); // Empêche l'envoi du formulaire pour l'instant
 
-@section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            var form = document.getElementById('voyageForm');
-            if (form) {
-                form.addEventListener('submit', function (event) {
-                    event.preventDefault(); // Empêche l'envoi du formulaire pour l'instant
+                // Récupérez les valeurs des champs du formulaire
+                var dateDebut = document.querySelector('[name="DateDebut"]').value;
+                var dateFin = document.querySelector('[name="DateFin"]').value;
+                var selectedPayId = document.querySelector('[name="IdPays"]').value;
+                var selectedPayText = document.querySelector('[name="IdPays"] option:checked').text;
 
-                    var dateDebut = document.querySelector('[name="DateDebut"]').value;
-                    var dateFin = document.querySelector('[name="DateFin"]').value;
-                    var selectedPayId = document.querySelector('[name="SelectedPayId"]').value;
+                // Affichez les valeurs dans la console
+                console.log("Date de Début:", dateDebut);
+                console.log("Date de Fin:", dateFin);
+                console.log("Pays Sélectionné:", selectedPayId);
+                console.log("Pays Sélectionné Nom:", selectedPayText);
 
-                    console.log("Date de Début:", dateDebut);
-                    console.log("Date de Fin:", dateFin);
-                    console.log("Pays Sélectionné:", selectedPayId);
-
-                    // Après avoir affiché les valeurs, vous pouvez soumettre le formulaire
-                    // this.submit();
-                });
-            } else {
-                console.error("Form with ID 'voyageForm' not found.");
-            }
-        });
-    </script>
-}
-
+                // Le formulaire sera automatiquement soumis
+            });
+        } else {
+            console.error("Form with ID 'voyageForm' not found.");
+        }
+    });
+</script>
