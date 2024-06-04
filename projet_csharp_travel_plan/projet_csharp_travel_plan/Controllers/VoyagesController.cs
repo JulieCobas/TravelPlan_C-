@@ -59,7 +59,11 @@ public class VoyagesController : ControllerBase
                 DateDebut = v.DateDebut,
                 DateFin = v.DateFin,
                 // Update the Pays property if it's directly related to Voyage
-                Pays = v.IdPays.Select(p => p.Nom).ToList()
+                Pays = v.IdPays.Select(p => new PayDTO
+                {
+                    IdPays = p.IdPays,
+                    Nom = p.Nom
+                }).ToList()
             })
             .FirstOrDefaultAsync();
 
