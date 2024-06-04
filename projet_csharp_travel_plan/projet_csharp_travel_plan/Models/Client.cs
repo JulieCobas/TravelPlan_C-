@@ -23,8 +23,6 @@ public partial class Client
 
     public DateTime DateNaissance { get; set; }
 
-    public virtual Aspnetuser? IdNavigation { get; set; }
-
     public virtual ICollection<Paiement> Paiements { get; set; } = new List<Paiement>();
 
     public virtual ICollection<Voyage> Voyages { get; set; } = new List<Voyage>();

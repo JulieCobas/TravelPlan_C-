@@ -15,7 +15,5 @@ public partial class Invite
 
     public string? Mail { get; set; }
 
-    public virtual ICollection<Aspnetuser> Aspnetusers { get; set; } = new List<Aspnetuser>();
-
     public virtual ICollection<Reservation> IdReservations { get; set; } = new List<Reservation>();
 }
