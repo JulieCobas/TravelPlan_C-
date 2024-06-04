@@ -14,6 +14,7 @@ namespace projet_csharp_travel_plan_frontend.Controllers
     {
         private readonly HttpClient _client;
         private const string API_URL = "https://localhost:7287/api/Voyages/";
+        private const string PAYS_API_URL = "https://localhost:7287/api/Pay/";
 
         public VoyageController(IHttpClientFactory httpClientFactory)
         {
@@ -50,7 +51,7 @@ namespace projet_csharp_travel_plan_frontend.Controllers
         // GET: Voyage/Create
         public async Task<IActionResult> Create()
         {
-            var paysResponse = await _client.GetAsync($"{API_URL}Pays");
+            var paysResponse = await _client.GetAsync(PAYS_API_URL);
             if (paysResponse.IsSuccessStatusCode)
             {
                 var jsonPays = await paysResponse.Content.ReadAsStringAsync();
