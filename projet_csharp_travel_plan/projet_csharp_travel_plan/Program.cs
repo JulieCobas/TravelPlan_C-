@@ -9,7 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers(x => x.Filters.Add<ApiKeyAuthFilter>());
 builder.Services.AddDbContext<TravelPlanNewDbContext>(options =>
-     options.UseSqlServer(builder.Configuration.GetConnectionString("dbcon")));
+     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
