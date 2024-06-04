@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
-using projet_csharp_travel_plan_frontend.Areas.Identity.Data;
+
 using projet_csharp_travel_plan_frontend.Models;
 using projet_csharp_travel_plan_frontend.Authentication;
 
@@ -14,11 +14,11 @@ namespace projet_csharp_travel_plan_frontend
 
             // Configuration settings and services
             var connectionString = builder.Configuration.GetConnectionString("TravelPlanConnection") ?? throw new InvalidOperationException("Connection string 'TravelPlanContextConnection' not found.");
-            builder.Services.AddDbContext<TravelPlanContext>(options =>
+            builder.Services.AddDbContext<TravelPlanNewDbContext>(options =>
                 options.UseSqlServer(connectionString));
-            builder.Services.AddDefaultIdentity<AppUser>(options => options.SignIn.RequireConfirmedAccount = true)
+            builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddRoles<IdentityRole>()
-                .AddEntityFrameworkStores<TravelPlanContext>()
+                .AddEntityFrameworkStores<TravelPlanNewDbContext>()
                 .AddDefaultTokenProviders();
 
             builder.Services.AddControllersWithViews();

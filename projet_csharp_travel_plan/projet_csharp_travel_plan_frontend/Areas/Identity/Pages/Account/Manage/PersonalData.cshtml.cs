@@ -12,11 +12,11 @@ namespace projet_csharp_travel_plan_frontend.Areas.Identity.Pages.Account.Manage
 {
     public class PersonalDataModel : PageModel
     {
-        private readonly UserManager<AppUser> _userManager;
+        private readonly UserManager<IdentityUser> _userManager;
         private readonly ILogger<PersonalDataModel> _logger;
 
         public PersonalDataModel(
-            UserManager<AppUser> userManager,
+            UserManager<IdentityUser> userManager,
             ILogger<PersonalDataModel> logger)
         {
             _userManager = userManager;
