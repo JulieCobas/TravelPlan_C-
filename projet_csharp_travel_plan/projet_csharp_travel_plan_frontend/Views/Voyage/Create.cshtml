@@ -104,6 +104,11 @@
                 if (form.querySelectorAll('.is-invalid').length > 0) {
                     return;
                 }
+                //Check
+                console.log("Date de Début:", dateDebut);
+                console.log("Date de Fin:", dateFin);
+                console.log("Pays Sélectionné:", selectedPayId);
+                console.log("Pays Sélectionné Nom:", selectedPayText);
 
                 // Si toutes les validations passent, envoyez le formulaire
                 form.submit();
@@ -117,7 +122,6 @@
     });
 
 </script>
-
 <style>
     body {
         font-family: Arial, sans-serif;
