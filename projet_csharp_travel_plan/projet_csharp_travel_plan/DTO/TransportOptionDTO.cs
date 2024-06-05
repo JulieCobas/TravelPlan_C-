@@ -5,10 +5,10 @@
         public short IdOptionTransport { get; set; }
         public bool? BagageMain { get; set; }
         public int? PrixBagageMain { get; set; }
-        public bool? BagageLarge { get; set; }
-        public int? PrixBagageLarge { get; set; }
         public bool? BagageEnSoute { get; set; }
         public int? PrixBagageEnSoute { get; set; }
+        public bool? BagageLarge { get; set; }
+        public int? PrixBagageLarge { get; set; }
         public bool? Speedyboarding { get; set; }
         public int? PrixSpeedyBoarding { get; set; }
         public int? NumeroSiege { get; set; }

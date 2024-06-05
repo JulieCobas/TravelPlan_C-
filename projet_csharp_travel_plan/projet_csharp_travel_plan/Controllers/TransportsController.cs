@@ -25,23 +25,25 @@ public class TransportsController : ControllerBase
             .Include(t => t.IdOptionTransportNavigation)
             .Include(t => t.IdCategorieTransportNavigation)
             .Include(t => t.IdPrixTransportNavigation)
-            .Select(t => new TransportDTO
-            {
-                IdTransport = t.IdTransport,
-                NomFournisseur = t.IdFournisseurNavigation.NomCompagnie,
-                BagageMain = t.IdOptionTransportNavigation.BagageMain,
-                BagageEnSoute = t.IdOptionTransportNavigation.BagageEnSoute,
-                BagageLarge = t.IdOptionTransportNavigation.BagageLarge,
-                Speedyboarding = t.IdOptionTransportNavigation.Speedyboarding,
-                Prix = t.IdPrixTransportNavigation.Prix,
-                CategorieTransportNom = t.IdCategorieTransportNavigation.Nom,
-                VehiculeLocMarque = t.IdVehiculeLocNavigation.Marque,
-                VehiculeLocTypeVehicule = t.IdVehiculeLocNavigation.TypeVehicule,
-                VehiculeLocNbSiege = t.IdVehiculeLocNavigation.NbSiege
-            })
+            .Include(t => t.IdVehiculeLocNavigation)
             .ToListAsync();
 
-        return transports;
+        var transportDTOs = transports.Select(t => new TransportDTO
+        {
+            IdTransport = t.IdTransport,
+            NomFournisseur = t.IdFournisseurNavigation.NomCompagnie,
+            BagageMain = t.IdOptionTransportNavigation?.BagageMain,
+            BagageEnSoute = t.IdOptionTransportNavigation?.BagageEnSoute,
+            BagageLarge = t.IdOptionTransportNavigation?.BagageLarge,
+            Speedyboarding = t.IdOptionTransportNavigation?.Speedyboarding,
+            Prix = t.IdPrixTransportNavigation.Prix,
+            CategorieTransportNom = t.IdCategorieTransportNavigation.Nom,
+            VehiculeLocMarque = t.IdVehiculeLocNavigation?.Marque,
+            VehiculeLocTypeVehicule = t.IdVehiculeLocNavigation?.TypeVehicule,
+            VehiculeLocNbSiege = t.IdVehiculeLocNavigation?.NbSiege ?? 0 // Default to 0 if null
+        }).ToList();
+
+        return transportDTOs;
     }
 
     [HttpGet("{id}")]
@@ -50,23 +52,10 @@ public class TransportsController : ControllerBase
         var transport = await _context.Transports
             .Include(t => t.IdFournisseurNavigation)
             .Include(t => t.IdOptionTransportNavigation)
-            .Include(t => t.IdCategorieTransportNavigation)
+            .Include(t => t.IdCategorieTransportNavigation)  // Inclure la catégorie de transport
             .Include(t => t.IdPrixTransportNavigation)
+            .Include(t => t.IdVehiculeLocNavigation)
             .Where(t => t.IdTransport == id)
-            .Select(t => new TransportDTO
-            {
-                IdTransport = t.IdTransport,
-                NomFournisseur = t.IdFournisseurNavigation.NomCompagnie,
-                BagageMain = t.IdOptionTransportNavigation.BagageMain,
-                BagageEnSoute = t.IdOptionTransportNavigation.BagageEnSoute,
-                BagageLarge = t.IdOptionTransportNavigation.BagageLarge,
-                Speedyboarding = t.IdOptionTransportNavigation.Speedyboarding,
-                Prix = t.IdPrixTransportNavigation.Prix,
-                CategorieTransportNom = t.IdCategorieTransportNavigation.Nom,
-                VehiculeLocMarque = t.IdVehiculeLocNavigation.Marque,
-                VehiculeLocTypeVehicule = t.IdVehiculeLocNavigation.TypeVehicule,
-                VehiculeLocNbSiege = t.IdVehiculeLocNavigation.NbSiege
-            })
             .FirstOrDefaultAsync();
 
         if (transport == null)
@@ -74,8 +63,35 @@ public class TransportsController : ControllerBase
             return NotFound();
         }
 
-        return transport;
+        var transportDto = new TransportDTO
+        {
+            IdTransport = transport.IdTransport,
+            NomFournisseur = transport.IdFournisseurNavigation.NomCompagnie,
+            Prix = transport.IdPrixTransportNavigation.Prix,
+            VehiculeLocMarque = transport.IdVehiculeLocNavigation?.Marque,
+            VehiculeLocTypeVehicule = transport.IdVehiculeLocNavigation?.TypeVehicule,
+            VehiculeLocNbSiege = transport.IdVehiculeLocNavigation?.NbSiege ?? 0,
+            BagageMain = transport.IdOptionTransportNavigation?.BagageMain,
+            PrixBagageMain = transport.IdOptionTransportNavigation?.PrixBagagemain,
+            BagageEnSoute = transport.IdOptionTransportNavigation?.BagageEnSoute,
+            PrixBagageEnSoute = transport.IdOptionTransportNavigation?.PrixBagagesoute,
+            BagageLarge = transport.IdOptionTransportNavigation?.BagageLarge,
+            PrixBagageLarge = transport.IdOptionTransportNavigation?.PrixBagagelarge,
+            Speedyboarding = transport.IdOptionTransportNavigation?.Speedyboarding,
+            PrixSpeedyBoarding = transport.IdOptionTransportNavigation?.PrixSpeedyboarding,
+            CategorieTransport = new TransportCategorieDTO
+            {
+                IdCategorieTransport = transport.IdCategorieTransportNavigation.IdCategorieTransport,
+                Nom = transport.IdCategorieTransportNavigation.Nom
+            }
+        };
+
+        return transportDto;
     }
+
+
+
+
 
 
     [HttpPut("{id}")]
