@@ -60,9 +60,10 @@ namespace projet_csharp_travel_plan_frontend.Controllers
                 {
                     DateDebut = DateTime.Now,
                     DateFin = DateTime.Now.AddDays(7),
-                    Pays = pays.Select(p => p.Nom).ToList()
+                    Pays = pays
                 };
 
+                ViewBag.Pays = pays;
                 return View(voyageDto);
             }
 
@@ -72,7 +73,7 @@ namespace projet_csharp_travel_plan_frontend.Controllers
             return View("Error", errorModel);
         }
 
-        // POST: Voyage/Create
+        /// POST: Voyage/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(VoyageDTO voyage)
@@ -85,7 +86,7 @@ namespace projet_csharp_travel_plan_frontend.Controllers
                 var response = await _client.PostAsync(API_URL, content);
                 if (response.IsSuccessStatusCode)
                 {
-                    return RedirectToAction("Index");
+                    return RedirectToAction("Index", "Reservation", new { id = voyage.IdPays });
                 }
 
                 // Handle error
@@ -95,12 +96,12 @@ namespace projet_csharp_travel_plan_frontend.Controllers
             }
 
             // Si la validation échoue, rechargez la liste des pays
-            var paysResponse = await _client.GetAsync($"{API_URL}Pays");
+            var paysResponse = await _client.GetAsync(PAYS_API_URL);
             if (paysResponse.IsSuccessStatusCode)
             {
                 var jsonPays = await paysResponse.Content.ReadAsStringAsync();
                 var pays = JsonConvert.DeserializeObject<List<PayDTO>>(jsonPays);
-                voyage.Pays = pays.Select(p => p.Nom).ToList();
+                voyage.Pays = pays;
             }
 
             return View(voyage);

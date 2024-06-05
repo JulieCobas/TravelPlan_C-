@@ -6,69 +6,216 @@
 
 <h1>Nouveau Voyage</h1>
 
-<form id="voyageForm" asp-action="Create" method="post">
+<form id="voyageForm" asp-action="Create" asp-controller="Voyage" method="post">
+
     <div class="form-group row">
-        <label class="col-sm-2 col-form-label">Date de Début</label>
+        <label class="col-sm-2 col-form-label">Date d'arrivée</label>
         <div class="col-sm-10">
-            <input type="date" asp-for="DateDebut" class="form-control" />
-            <span asp-validation-for="DateDebut" class="text-danger"></span>
-        </div>
-    </div>
-    <div class="form-group row">
-        <label class="col-sm-2 col-form-label">Date de Fin</label>
-        <div class="col-sm-10">
-            <input type="date" asp-for="DateFin" class="form-control" />
-            <span asp-validation-for="DateFin" class="text-danger"></span>
-        </div>
-    </div>
-    <div class="form-group row">
-        <label class="col-sm-2 col-form-label">P</label>
-        <div class="col-sm-10">
-            <select class="form-select" aria-label="Default select example">
-                <option selected>Open this select menu</option>
-                <option value="1">One</option>
-                <option value="2">Two</option>
-                <option value="3">Three</option>
-            </select>
+            <input type="date" asp-for="DateDebut" class="form-control"/>
+            <div class="invalid-feedback" data-name="DateDebut"></div>
         </div>
     </div>
 
+    <div class="form-group row">
+        <label class="col-sm-2 col-form-label">Date de départ</label>
+        <div class="col-sm-10">
+            <input type="date" asp-for="DateFin" class="form-control"/>
+            <div class="invalid-feedback" data-name="DateFin"></div>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label class="col-sm-2 col-form-label">Où allez-vous ?</label>
+        <div class="col-sm-10">
+            <select id="paysSelect" asp-for="IdPays" class="form-select" aria-label="Sélectionner un pays">
+                <option value="">Sélectionnez un pays</option>
+                @if (Model.Pays != null)
+                {
+                    @foreach (var pays in Model.Pays)
+                    {
+                        <option value="@pays.IdPays">@pays.Nom</option>
+                    }
+                }
+            </select>
+            <div class="invalid-feedback" data-name="IdPays"></div>
+        </div>
+    </div>
 
     <div class="form-group">
-        <!-- Vos champs de formulaire ici -->
         <button type="submit" class="btn btn-primary">Soumettre</button>
-        <a asp-action="Index" asp-controller="Voyage" class="btn btn-secondary">Annuler</a>
+        <a asp-action="Index" asp-controller="Home" class="btn btn-secondary">Annuler</a>
     </div>
+
 </form>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var form = document.getElementById('voyageForm');
+        if (form) {
+            form.addEventListener('submit', function (event) {
+                event.preventDefault(); // Empêche l'envoi du formulaire pour l'instant
 
-
-@* @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            var form = document.getElementById('voyageForm');
-            if (form) {
-                form.addEventListener('submit', function (event) {
-                    event.preventDefault(); // Empêche l'envoi du formulaire pour l'instant
-
-                    var dateDebut = document.querySelector('[name="DateDebut"]').value;
-                    var dateFin = document.querySelector('[name="DateFin"]').value;
-                    var selectedPayId = document.querySelector('[name="SelectedPayId"]').value;
-
-                    console.log("Date de Début:", dateDebut);
-                    console.log("Date de Fin:", dateFin);
-                    console.log("Pays Sélectionné:", selectedPayId);
-
-                    // Après avoir affiché les valeurs, vous pouvez soumettre le formulaire
-                    // this.submit();
+                // Supprimer les classes is-invalid pour les champs
+                form.querySelectorAll('.is-invalid').forEach(function (element) {
+                    element.classList.remove('is-invalid');
                 });
-            } else {
-                console.error("Form with ID 'voyageForm' not found.");
-            }
-        });
-    </script>
-}
- *@
+
+                // Récupérez les valeurs des champs du formulaire
+                var dateDebut = document.querySelector('[name="DateDebut"]').value;
+                var dateFin = document.querySelector('[name="DateFin"]').value;
+                var selectedPayId = document.querySelector('[name="IdPays"]').value;
+                var selectedPayText = document.querySelector('[name="IdPays"] option:checked').text;
+
+                // Validation : Vérifier si les champs dates sont vides
+                if (!dateDebut) {
+                    document.querySelector('[name="DateDebut"]').classList.add('is-invalid');
+                    document.querySelector('[data-name="DateDebut"]').textContent = "Veuillez remplir tous les champs du formulaire.";
+                }
+                if (!dateFin) {
+                    document.querySelector('[name="DateFin"]').classList.add('is-invalid');
+                    document.querySelector('[data-name="DateFin"]').textContent = "Veuillez remplir tous les champs du formulaire.";
+                }
+
+                // Validation : Vérifier si les dates sont dans le passé
+                var currentDate = new Date();
+                currentDate.setHours(0, 0, 0, 0); // Réinitialiser les heures pour avoir la possibilité de sélectionner la date d'aujourd'hui
+                if (new Date(dateDebut) < currentDate) {
+                    document.querySelector('[name="DateDebut"]').classList.add('is-invalid');
+                    document.querySelector('[data-name="DateDebut"]').textContent = "La date d'arrivée ne peut pas être dans le passé.";
+                }
+                if (new Date(dateFin) < currentDate) {
+                    document.querySelector('[name="DateFin"]').classList.add('is-invalid');
+                    document.querySelector('[data-name="DateFin"]').textContent = "La date de départ ne pas être dans le passé.";
+                }
+
+                // Validation : Vérifier si la date de fin est postérieure à la date de début
+                if (new Date(dateFin) <= new Date(dateDebut)) {
+                    document.querySelector('[name="DateFin"]').classList.add('is-invalid');
+                    document.querySelector('[data-name="DateFin"]').textContent = "La date de fin doit être postérieure à la date de début.";
+                }
+
+                // Validation : Vérifier si un pays a été sélectionné
+                if (selectedPayId === "") {
+                    document.querySelector('[name="IdPays"]').classList.add('is-invalid');
+                    document.querySelector('[data-name="IdPays"]').textContent = "Veuillez sélectionner un pays.";
+                }
+
+                // Si des champs sont invalides, arrêtez l'exécution
+                if (form.querySelectorAll('.is-invalid').length > 0) {
+                    return;
+                }
+
+                // Si toutes les validations passent, envoyez le formulaire
+                form.submit();
+
+                // Redirection après la soumission du formulaire
+                window.location.href = '@Url.Action("Create", "Reservations")' + '?dateDebut=' + dateDebut + '&dateFin=' + dateFin + '&selectedPayId=' + selectedPayId + '&selectedPayText=' + selectedPayText;
+            });
+        } else {
+            console.error("Form with ID 'voyageForm' not found.");
+        }
+    });
+
+</script>
+
+<style>
+
+    body {
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    }
+
+    h1 {
+    color: #333;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    font-weight: bold;
+    text-align: center; /* Centrer horizontalement */
+    }
+
+    .form-group {
+    margin-bottom: 20px;
+    }
+
+    .form-control {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 100%;
+    }
+
+    .form-select {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 100%;
+    }
+
+    label {
+    font-weight: bold;
+    margin-bottom: 10px;
+    text-align:left;
+    }
+
+    .invalid-feedback {
+    color: red;
+    font-size: 12px;
+    margin-right: 10px;
+    }
+
+    .form-control.is-invalid {
+    border-color: red;
+    }
+
+    /* Styles spécifiques au formulaire */
+
+    #voyageForm {
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 20px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    #voyageForm .form-group.row {
+    margin-bottom: 20px;
+    }
+
+    #voyageForm .col-sm-2 {
+    text-align: right;
+    padding-right: 20px;
+    }
+
+    #voyageForm .col-sm-10 {
+    padding-left: 20px;
+    }
+
+    #voyageForm button[type="submit"] {
+    background-color: #337ab7;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    }
+
+    #voyageForm button[type="submit"]:hover {
+    background-color: #23527c;
+    }
+
+    #voyageForm .btn-secondary {
+    background-color: #666;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    }
+
+    #voyageForm .btn-secondary:hover {
+    background-color: #444;
+    }
+
+    
+</style>
