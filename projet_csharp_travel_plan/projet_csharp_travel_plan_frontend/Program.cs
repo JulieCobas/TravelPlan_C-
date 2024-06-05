@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
-
 using projet_csharp_travel_plan_frontend.Models;
 using projet_csharp_travel_plan_frontend.Authentication;
+using projet_csharp_travel_plan_frontend.Services;
 
 namespace projet_csharp_travel_plan_frontend
 {
@@ -30,6 +30,12 @@ namespace projet_csharp_travel_plan_frontend
                 .AddHttpMessageHandler<ApiKeyHandler>();
 
             builder.Services.AddAuthorization();
+
+            //builder.Services.AddHttpClient<ClientApiService>(client =>
+            //{
+            //    var backendApiUrl = builder.Configuration["ApiSettings:BackendApiUrl"];
+            //    client.BaseAddress = new Uri(backendApiUrl);
+            //});
 
             var app = builder.Build();
 

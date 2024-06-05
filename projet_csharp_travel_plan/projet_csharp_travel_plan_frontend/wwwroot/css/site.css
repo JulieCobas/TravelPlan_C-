@@ -75,3 +75,6 @@ body {
         background-color: #138496;
         border-color: #117a8b;
     }
+.btn-primary:hover {
+    background-color: #0056b3;
+}

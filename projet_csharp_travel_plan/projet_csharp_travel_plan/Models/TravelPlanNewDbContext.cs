@@ -372,7 +372,7 @@ public partial class TravelPlanNewDbContext : DbContext
                 .IsUnicode(false)
                 .HasColumnName("CP");
             entity.Property(e => e.DateNaissance)
-                .HasColumnType("datetime")
+                .HasColumnType("date")
                 .HasColumnName("DATE_NAISSANCE");
             entity.Property(e => e.Id)
                 .HasMaxLength(450)

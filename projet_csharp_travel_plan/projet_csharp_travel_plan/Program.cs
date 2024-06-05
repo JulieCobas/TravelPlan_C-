@@ -7,9 +7,18 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers(x => x.Filters.Add<ApiKeyAuthFilter>());
+builder.Services.AddControllers();
+
 builder.Services.AddDbContext<TravelPlanNewDbContext>(options =>
      options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowSpecificOrigin",
+        builder => builder.WithOrigins("https://localhost:*")
+                          .AllowAnyHeader()
+                          .AllowAnyMethod());
+});
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -39,7 +48,6 @@ builder.Services.AddSwaggerGen(c =>
     c.AddSecurityRequirement(requirement);
 });
 
-builder.Services.AddScoped<ApiKeyAuthFilter>();
 
 var app = builder.Build();
 
@@ -52,8 +60,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-
-//app.UseAuthorization();
+app.UseMiddleware<ApiKeyAuthMiddleware>();
+app.UseAuthorization();
 
 app.MapControllers();
 
