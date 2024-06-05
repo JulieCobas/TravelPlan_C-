@@ -11,25 +11,21 @@
         <tr>
             <th>Catégorie</th>
             <th>Nom du logement</th>
-            <th>Description</th>
             <th>Note</th>
             <th>Nombre d'évaluation</th>
-            <th>Fournisseur</th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @foreach (var l in Model)
         {
             <tr>
-                <td>@Html.DisplayFor(modelItem => item.NomCategorie)</td>
-                <td>@Html.DisplayFor(modelItem => item.Nom)</td>
-                <td>@Html.DisplayFor(modelItem => item.Details)</td>
-                <td>@Html.DisplayFor(modelItem => item.Note)/10</td>
-                <td>@Html.DisplayFor(modelItem => item.NbEvaluation)</td>
-                <td>@Html.DisplayFor(modelItem => item.NomFournisseur)</td>
+                <td>@Html.DisplayFor(modelItem => l.NomCategorie)</td>
+                <td>@Html.DisplayFor(modelItem => l.Nom)</td>
+                <td>@Html.DisplayFor(modelItem => l.Note)/10</td>
+                <td>@Html.DisplayFor(modelItem => l.NbEvaluation)</td>
                 <td>
-                    <a asp-action="Details" asp-route-id="@item.IdLogement" class="btn btn-info">Voir détails</a>
+                    <a asp-action="Details" asp-route-id="@l.IdLogement" class="btn btn-info">Voir détails</a>
                 </td>
             </tr>
         }
