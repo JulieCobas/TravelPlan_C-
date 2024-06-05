@@ -3,6 +3,7 @@
 @{
     ViewData["Title"] = "Transports";
     var selectedCountry = ViewData["SelectedCountry"] as string;
+    var voyageId = ViewData["VoyageId"] as int?;
 }
 
 <h1>Transports en @selectedCountry</h1>
@@ -26,7 +27,7 @@
                 <td>@Html.DisplayFor(modelItem => item.NomFournisseur)</td>
                 <td>@Html.DisplayFor(modelItem => item.Prix)</td>
                 <td>
-                    <a asp-action="Details" asp-route-id="@item.IdTransport" class="btn btn-info">Voir détails</a>
+                    <a asp-action="Details" asp-route-id="@item.IdTransport" asp-route-voyageId="@voyageId" class="btn btn-info">Voir détails</a>
                 </td>
             </tr>
         }
@@ -35,5 +36,6 @@
 
 <form method="post" asp-action="ProceedToLodging">
     @Html.AntiForgeryToken()
+    <input type="hidden" name="voyageId" value="@voyageId" />
     <button type="submit" class="btn btn-secondary">Passer à la réservation de logement sans sélectionner de transport</button>
 </form>

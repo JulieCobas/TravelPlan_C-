@@ -4,10 +4,10 @@
     {
         public short IdPays { get; set; }
         public string Nom { get; set; }
-        public List<string> Activites { get; set; }
-        public List<string> Logements { get; set; }
-        public List<string> Regions { get; set; }
-        public List<string> Transports { get; set; }
-        public List<string> Voyages { get; set; }
+        public List<string> Activites { get; set; } = new List<string>();
+        public List<string> Logements { get; set; } = new List<string>();
+        public List<string> Regions { get; set; } = new List<string>();
+        public List<string> Transports { get; set; } = new List<string>();
+        public List<string> Voyages { get; set; } = new List<string>();
     }
 }

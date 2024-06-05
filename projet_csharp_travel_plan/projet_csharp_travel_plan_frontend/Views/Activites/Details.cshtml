@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Details";
+    var voyageId = ViewData["VoyageId"];
 }
 
 <h1>Details</h1>
@@ -30,11 +31,11 @@
         <dd class="col-sm-10">@Html.DisplayFor(model => model.VisiteGuidee)</dd>
         <dt class="col-sm-2">Prix</dt>
         <dd class="col-sm-10">@Html.DisplayFor(model => model.PrixActivite) CHF</dd>
-
     </dl>
     <form method="post" asp-action="ConfirmActiviteSelection">
         @Html.AntiForgeryToken()
         <input type="hidden" name="IdActivite" value="@Model.IdActivite" />
+        <input type="hidden" name="VoyageId" value="@voyageId" />
         <div class="form-group">
             <label for="DateDebut">Date de début</label>
             <input type="date" class="form-control" id="DateDebut" name="DateDebut" required />
@@ -57,5 +58,5 @@
         </div>
         <button type="submit" class="btn btn-primary">Réservation</button>
     </form>
-    <a asp-action="Index">Retour à la liste des activités</a>
+    <a asp-action="Index" asp-route-voyageId="@voyageId">Retour à la liste des activités</a>
 </div>

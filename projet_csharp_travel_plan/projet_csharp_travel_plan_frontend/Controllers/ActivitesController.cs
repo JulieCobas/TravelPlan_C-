@@ -16,7 +16,7 @@ public class ActivitesController : Controller
     }
 
     // GET: Activites
-    public async Task<IActionResult> Index(string country)
+    public async Task<IActionResult> Index(string country, int voyageId)
     {
         var response = await _client.GetAsync($"{API_URL}?country={country}");
         if (response.IsSuccessStatusCode)
@@ -25,6 +25,7 @@ public class ActivitesController : Controller
             var activites = JsonConvert.DeserializeObject<List<ActiviteDTO>>(json);
             activites = activites.Where(a => a.NomPays == country).ToList();
             ViewData["SelectedCountry"] = country;
+            ViewData["VoyageId"] = voyageId;
             return View(activites);
         }
 
@@ -34,13 +35,14 @@ public class ActivitesController : Controller
     }
 
     // GET: Activites/Details/5
-    public async Task<IActionResult> Details(int id)
+    public async Task<IActionResult> Details(int id, int voyageId)
     {
         var response = await _client.GetAsync($"{API_URL}{id}");
         if (response.IsSuccessStatusCode)
         {
             var json = await response.Content.ReadAsStringAsync();
             var activite = JsonConvert.DeserializeObject<ActiviteDTO>(json);
+            ViewData["VoyageId"] = voyageId;
             return View(activite);
         }
 
@@ -49,14 +51,14 @@ public class ActivitesController : Controller
         return View("Error", errorModel);
     }
 
-    // POST: Activites/ConfirmActiviteSelection
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> ConfirmActiviteSelection(short IdActivite, DateTime DateDebut, DateTime DateFin, TimeSpan HeureDebut, bool GuideAudio, bool VisiteGuidee)
+    public async Task<IActionResult> ConfirmActiviteSelection(short IdActivite, short VoyageId, DateTime DateDebut, DateTime DateFin, TimeSpan HeureDebut, bool GuideAudio, bool VisiteGuidee)
     {
         var reservation = new ReservationDTO
         {
             IdActivite = IdActivite,
+            IdVoyage = VoyageId,
             DateHeureDebut = DateDebut.Add(HeureDebut),
             DateHeureFin = DateFin,
             Disponibilite = true

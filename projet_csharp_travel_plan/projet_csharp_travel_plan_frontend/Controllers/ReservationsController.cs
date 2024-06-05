@@ -62,7 +62,7 @@ namespace projet_csharp_travel_plan_frontend.Controllers
         // POST: Reservations/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(string selectedCountry, string selectedOption)
+        public IActionResult Create(string selectedCountry, string selectedOption, DateTime dateDebut, DateTime dateFin, int selectedPayId, string selectedPayText)
         {
             if (string.IsNullOrEmpty(selectedCountry) || string.IsNullOrEmpty(selectedOption))
             {
@@ -72,14 +72,19 @@ namespace projet_csharp_travel_plan_frontend.Controllers
                 return View();
             }
 
+            TempData["VoyageId"] = selectedPayId;
+            TempData["Country"] = selectedCountry;
+            TempData["DateDebut"] = dateDebut;
+            TempData["DateFin"] = dateFin;
+
             switch (selectedOption)
             {
                 case "Logement":
-                    return RedirectToAction("Index", "Logements", new { country = selectedCountry });
+                    return RedirectToAction("Index", "Logements", new { country = selectedCountry, voyageId = selectedPayId });
                 case "Activité":
-                    return RedirectToAction("Index", "Activites", new { country = selectedCountry });
+                    return RedirectToAction("Index", "Activites", new { country = selectedCountry, voyageId = selectedPayId });
                 case "Transport":
-                    return RedirectToAction("Index", "Transports", new { country = selectedCountry });
+                    return RedirectToAction("Index", "Transports", new { country = selectedCountry, voyageId = selectedPayId });
                 default:
                     return View();
             }

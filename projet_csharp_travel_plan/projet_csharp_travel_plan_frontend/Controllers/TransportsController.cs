@@ -21,7 +21,7 @@ namespace projet_csharp_travel_plan_frontend.Controllers
         }
 
         // GET: Transports
-        public async Task<IActionResult> Index(string country)
+        public async Task<IActionResult> Index(string country, int voyageId)
         {
             var response = await _client.GetAsync($"{API_URL}?country={country}");
             if (response.IsSuccessStatusCode)
@@ -29,6 +29,7 @@ namespace projet_csharp_travel_plan_frontend.Controllers
                 var json = await response.Content.ReadAsStringAsync();
                 var transportDtos = JsonConvert.DeserializeObject<List<TransportDTO>>(json);
                 ViewData["SelectedCountry"] = country;
+                ViewData["VoyageId"] = voyageId; // Passing voyageId to the view
                 return View(transportDtos);
             }
 
@@ -39,13 +40,14 @@ namespace projet_csharp_travel_plan_frontend.Controllers
         }
 
         // GET: Transports/Details/5
-        public async Task<IActionResult> Details(int id)
+        public async Task<IActionResult> Details(int id, int voyageId)
         {
             var response = await _client.GetAsync($"{API_URL}{id}");
             if (response.IsSuccessStatusCode)
             {
                 var json = await response.Content.ReadAsStringAsync();
                 var transportDto = JsonConvert.DeserializeObject<TransportDTO>(json);
+                ViewData["VoyageId"] = voyageId; // Passing voyageId to the view
                 return View(transportDto);
             }
 
@@ -57,7 +59,7 @@ namespace projet_csharp_travel_plan_frontend.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ConfirmTransportSelection(int IdTransport, bool BagageMain, bool BagageEnSoute, bool BagageLarge, bool Speedyboarding)
+        public async Task<IActionResult> ConfirmTransportSelection(short IdTransport, bool BagageMain, bool BagageEnSoute, bool BagageLarge, bool Speedyboarding, short voyageId, DateTime DateDebut, DateTime DateFin)
         {
             var response = await _client.GetAsync($"{API_URL}{IdTransport}");
             if (!response.IsSuccessStatusCode)
@@ -75,24 +77,32 @@ namespace projet_csharp_travel_plan_frontend.Controllers
             transportDto.BagageLarge = BagageLarge;
             transportDto.Speedyboarding = Speedyboarding;
 
-            var updateResponse = await _client.PutAsJsonAsync($"{API_URL}{transportDto.IdTransport}", transportDto);
-            if (!updateResponse.IsSuccessStatusCode)
+            var reservation = new ReservationDTO
             {
-                var errorMessage = await updateResponse.Content.ReadAsStringAsync();
-                var errorModel = new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier, ErrorMessage = errorMessage };
-                return View("Error", errorModel);
+                IdTransport = IdTransport,
+                IdVoyage = voyageId,
+                DateHeureDebut = DateDebut,
+                DateHeureFin = DateFin,
+                Disponibilite = true
+            };
+
+            var reservationResponse = await _client.PostAsJsonAsync("https://localhost:7287/api/Reservations", reservation);
+            if (reservationResponse.IsSuccessStatusCode)
+            {
+                return RedirectToAction("Index", "Reservations");
             }
 
-            return RedirectToAction("Reservations");
+            var reservationErrorMessage = await reservationResponse.Content.ReadAsStringAsync();
+            var reservationErrorModel = new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier, ErrorMessage = reservationErrorMessage };
+            return View("Error", reservationErrorModel);
         }
 
         // New action to proceed to lodging reservation without selecting transport
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult ProceedToLodging()
+        public IActionResult ProceedToLodging(int voyageId)
         {
-            // Here you can add any logic you need before redirecting
-            return RedirectToAction("Index", "Logements");
+            return RedirectToAction("Index", "Logements", new { voyageId });
         }
     }
 }

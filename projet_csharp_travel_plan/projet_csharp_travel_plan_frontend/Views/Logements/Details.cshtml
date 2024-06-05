@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Détails du Logement";
+    var voyageId = ViewData["VoyageId"];
 }
 
 <h1>@ViewData["Title"]</h1>
@@ -30,6 +31,7 @@
     <form method="post" asp-action="ConfirmReservation">
         @Html.AntiForgeryToken()
         <input type="hidden" name="IdLogement" value="@Model.IdLogement" />
+        <input type="hidden" name="VoyageId" value="@voyageId" />
         <div class="form-group">
             <label for="DateDebut">Date de début</label>
             <input type="date" class="form-control" id="DateDebut" name="DateDebut" required />
@@ -40,5 +42,5 @@
         </div>
         <button type="submit" class="btn btn-primary">Confirmer la réservation</button>
     </form>
-    <a class="nav-link text-dark" asp-area="" asp-controller="Reservations" asp-action="Index">Reservation</a>
+    <a asp-action="Index" asp-route-voyageId="@voyageId" class="btn btn-secondary">Retour à la liste</a>
 </div>

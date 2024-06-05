@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = $"Logements en {ViewData["SelectedCountry"]}";
+    var voyageId = ViewData["VoyageId"];
 }
 
 <h1>@ViewData["Title"]</h1>
@@ -29,7 +30,7 @@
                 <td>@Html.DisplayFor(modelItem => item.NbEvaluation)</td>
                 <td>@Html.DisplayFor(modelItem => item.NomFournisseur)</td>
                 <td>
-                    <a asp-action="Details" asp-route-id="@item.IdLogement" class="btn btn-info">Voir détails</a>
+                    <a asp-action="Details" asp-route-id="@item.IdLogement" asp-route-voyageId="@voyageId" class="btn btn-info">Voir détails</a>
                 </td>
             </tr>
         }
