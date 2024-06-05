@@ -1,19 +1,23 @@
 ﻿@model projet_csharp_travel_plan_frontend.Models.ErrorViewModel
 @{
-    ViewData["Title"] = "Error";
+    ViewData["Title"] = "Erreur";
 }
 
-<h1 class="text-danger">Error.</h1>
-<h2 class="text-danger">An error occurred while processing your request.</h2>
+<h1 class="text-danger">Erreur</h1>
+<h2 class="text-danger">Une erreur est survenue lors du traitement de votre demande.</h2>
 
-@if (Model.ShowRequestId)
+@if (Model != null && !string.IsNullOrEmpty(Model.RequestId))
 {
     <p>
-        <strong>Request ID:</strong> <code>@Model.RequestId</code>
+        <strong>ID de la requête :</strong> <code>@Model.RequestId</code>
     </p>
 }
 
-@if (!string.IsNullOrEmpty(Model.ErrorMessage))
+<p>Nous sommes désolés, mais une erreur inattendue s'est produite. Veuillez réessayer plus tard ou contacter le support si le problème persiste.</p>
+
+@if (Model != null && !string.IsNullOrEmpty(Model.ErrorMessage))
 {
-    <p class="text-danger">@Model.ErrorMessage</p>
+    <p>
+        <strong>Détails de l'erreur :</strong> <code>@Model.ErrorMessage</code>
+    </p>
 }

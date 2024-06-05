@@ -34,8 +34,7 @@ namespace projet_csharp_travel_plan_frontend.Controllers
 
             // Handle error
             var errorMessage = await response.Content.ReadAsStringAsync();
-            var errorModel = new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier, ErrorMessage = errorMessage };
-            return View("Error", errorModel);
+            return RedirectToAction("Error", "Home", new { message = errorMessage });
         }
 
         // GET: Reservations/Create
@@ -55,8 +54,7 @@ namespace projet_csharp_travel_plan_frontend.Controllers
 
             // Handle error
             var errorMessage = await response.Content.ReadAsStringAsync();
-            var errorModel = new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier, ErrorMessage = errorMessage };
-            return View("Error", errorModel);
+            return RedirectToAction("Error", "Home", new { message = errorMessage });
         }
 
         // POST: Reservations/Create

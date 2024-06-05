@@ -6,10 +6,23 @@ using projet_csharp_travel_plan.Models;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
-builder.Services.AddControllers(x => x.Filters.Add<ApiKeyAuthFilter>());
+builder.Services.AddControllers(options =>
+{
+    options.Filters.Add<ApiKeyAuthFilter>();
+});
 builder.Services.AddDbContext<TravelPlanNewDbContext>(options =>
-     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll",
+        builder =>
+        {
+            builder.AllowAnyOrigin()
+                   .AllowAnyMethod()
+                   .AllowAnyHeader();
+        });
+});
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -52,11 +65,10 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseCors("AllowAll");
 
-//app.UseAuthorization();
+app.UseAuthorization();
 
 app.MapControllers();
-
-
 
 app.Run();

@@ -39,6 +39,7 @@
             <form method="post" asp-action="ConfirmActiviteSelection">
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="IdActivite" value="@Model.IdActivite" />
+                <input type="hidden" name="VoyageId" value="@voyageId" />
                 <div class="form-group">
                     <label for="DateDebut">Date de début</label>
                     <input type="date" class="form-control" id="DateDebut" name="DateDebut" required />

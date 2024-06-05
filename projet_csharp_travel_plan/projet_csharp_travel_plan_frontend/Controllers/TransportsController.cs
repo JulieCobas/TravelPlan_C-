@@ -1,12 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
+using System.Net.Http;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using projet_csharp_travel_plan_frontend.DTO;
 using projet_csharp_travel_plan_frontend.Models;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Threading.Tasks;
-using System.Diagnostics;
 
 namespace projet_csharp_travel_plan_frontend.Controllers
 {
@@ -35,8 +34,7 @@ namespace projet_csharp_travel_plan_frontend.Controllers
 
             // Handle error
             var errorMessage = await response.Content.ReadAsStringAsync();
-            var errorModel = new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier, ErrorMessage = errorMessage };
-            return View("Error", errorModel);
+            return RedirectToAction("Error", "Home", new { message = errorMessage });
         }
 
         // GET: Transports/Details/5
@@ -53,8 +51,7 @@ namespace projet_csharp_travel_plan_frontend.Controllers
 
             // Handle error
             var errorMessage = await response.Content.ReadAsStringAsync();
-            var errorModel = new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier, ErrorMessage = errorMessage };
-            return View("Error", errorModel);
+            return RedirectToAction("Error", "Home", new { message = errorMessage });
         }
 
         [HttpPost]
@@ -65,8 +62,7 @@ namespace projet_csharp_travel_plan_frontend.Controllers
             if (!response.IsSuccessStatusCode)
             {
                 var errorMessage = await response.Content.ReadAsStringAsync();
-                var errorModel = new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier, ErrorMessage = errorMessage };
-                return View("Error", errorModel);
+                return RedirectToAction("Error", "Home", new { message = errorMessage });
             }
 
             var json = await response.Content.ReadAsStringAsync();
@@ -93,8 +89,7 @@ namespace projet_csharp_travel_plan_frontend.Controllers
             }
 
             var reservationErrorMessage = await reservationResponse.Content.ReadAsStringAsync();
-            var reservationErrorModel = new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier, ErrorMessage = reservationErrorMessage };
-            return View("Error", reservationErrorModel);
+            return RedirectToAction("Error", "Home", new { message = reservationErrorMessage });
         }
 
         // New action to proceed to lodging reservation without selecting transport
