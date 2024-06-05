@@ -1,61 +1,111 @@
 ﻿@model projet_csharp_travel_plan_frontend.DTO.ActiviteDTO
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Détails de l'Activité";
 }
 
-<h1>Details</h1>
+<h1>@ViewData["Title"]</h1>
 
-<div>
-    <h4>ActiviteDTO</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">Fournisseur</dt>
-        <dd class="col-sm-10">@Html.DisplayFor(model => model.NomFournisseur)</dd>
-        <dt class="col-sm-2">Catégorie</dt>
-        <dd class="col-sm-10">@Html.DisplayFor(model => model.NomCategorie)</dd>
-        <dt class="col-sm-2">Pays</dt>
-        <dd class="col-sm-10">@Html.DisplayFor(model => model.NomPays)</dd>
-        <dt class="col-sm-2">Description</dt>
-        <dd class="col-sm-10">@Html.DisplayFor(model => model.Details)</dd>
-        <dt class="col-sm-2">Durée</dt>
-        <dd class="col-sm-10">@Html.DisplayFor(model => model.HeuresMoyennes)</dd>
-        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Note)</dt>
-        <dd class="col-sm-10">@Html.DisplayFor(model => model.Note)/10</dd>
-        <dt class="col-sm-2">Nombre d'évaluations</dt>
-        <dd class="col-sm-10">@Html.DisplayFor(model => model.NbEvaluation)</dd>
-        <dt class="col-sm-2">Désirez-vous un guide audio ?</dt>
-        <dd class="col-sm-10">@Html.DisplayFor(model => model.GuideAudio)</dd>
-        <dt class="col-sm-2">Désirez-vous une visite guidée ?</dt>
-        <dd class="col-sm-10">@Html.DisplayFor(model => model.VisiteGuidee)</dd>
-        <dt class="col-sm-2">Prix</dt>
-        <dd class="col-sm-10">@Html.DisplayFor(model => model.PrixActivite) CHF</dd>
+<div class="container">
+    <div class="card mb-4 shadow-sm">
+        <div class="row no-gutters">
+            <div class="col-md-4">
+                <img src="/img/activite_test.jpg" class="card-img" alt="Image de l'activité">
+            </div>
+            <div class="col-md-8 d-flex flex-column">
+                <div class="card-body">
+                    <h4 class="card-title">@Html.DisplayFor(model => model.Nom)</h4>
+                    <h6 class="card-subtitle mb-2 text-muted">@Html.DisplayFor(model => model.NomCategorie)</h6>
+                    <p class="card-text"><strong>@Html.DisplayFor(model => model.NomFournisseur)</strong> </p>
+                    <p class="card-text"><strong>Description :</strong> @Html.DisplayFor(model => model.Details)</p>
+                    <p class="card-text"><strong>Durée :</strong> @Html.DisplayFor(model => model.HeuresMoyennes) heures</p>
+                    <p class="card-text">
+                        <strong>Note :</strong>
+                        @for (var i = 1; i <= 10; i++)
+                        {
+                            <span class="fa fa-star @(i <= Model.Note ? "checked" : "")"></span>
+                        }
+                    </p>
+                    <p class="card-text"><strong>Nombre d'évaluations :</strong> @Html.DisplayFor(model => model.NbEvaluation)</p>
+                    <p class="card-text"><strong>Prix :</strong> @Html.DisplayFor(model => model.PrixActivite) CHF</p>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    </dl>
-    <form method="post" asp-action="ConfirmActiviteSelection">
-        @Html.AntiForgeryToken()
-        <input type="hidden" name="IdActivite" value="@Model.IdActivite" />
-        <div class="form-group">
-            <label for="DateDebut">Date de début</label>
-            <input type="date" class="form-control" id="DateDebut" name="DateDebut" required />
+    <div class="card mb-4 shadow-sm">
+        <div class="card-body">
+            <form method="post" asp-action="ConfirmActiviteSelection">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="IdActivite" value="@Model.IdActivite" />
+                <div class="form-group">
+                    <label for="DateDebut">Date de début</label>
+                    <input type="date" class="form-control" id="DateDebut" name="DateDebut" required />
+                </div>
+                <div class="form-group">
+                    <label for="DateFin">Date de fin</label>
+                    <input type="date" class="form-control" id="DateFin" name="DateFin" required />
+                </div>
+                <div class="form-group">
+                    <label for="HeureDebut">Heure de début</label>
+                    <input type="time" class="form-control" id="HeureDebut" name="HeureDebut" required />
+                </div>
+                <div class="form-group form-check">
+                    <input type="checkbox" class="form-check-input" id="GuideAudio" name="GuideAudio" value="true" />
+                    <label class="form-check-label" for="GuideAudio">Guide Audio</label>
+                </div>
+                <div class="form-group form-check">
+                    <input type="checkbox" class="form-check-input" id="VisiteGuidee" name="VisiteGuidee" value="true" />
+                    <label class="form-check-label" for="VisiteGuidee">Visite Guidée</label>
+                </div>
+                <button type="submit" class="btn btn-primary">Confirmer la réservation</button>
+            </form>
+            <a asp-action="Index" class="btn btn-secondary mt-2">Retour à la liste des activités</a>
         </div>
-        <div class="form-group">
-            <label for="DateFin">Date de fin</label>
-            <input type="date" class="form-control" id="DateFin" name="DateFin" required />
-        </div>
-        <div class="form-group">
-            <label for="HeureDebut">Heure de début</label>
-            <input type="time" class="form-control" id="HeureDebut" name="HeureDebut" required />
-        </div>
-        <div class="form-group">
-            <label for="GuideAudio">Guide Audio</label>
-            <input type="checkbox" class="form-control" id="GuideAudio" name="GuideAudio" value="true" />
-        </div>
-        <div class="form-group">
-            <label for="VisiteGuidee">Visite Guidée</label>
-            <input type="checkbox" class="form-control" id="VisiteGuidee" name="VisiteGuidee" value="true" />
-        </div>
-        <button type="submit" class="btn btn-primary">Réservation</button>
-    </form>
-    <a asp-action="Index">Retour à la liste des activités</a>
+    </div>
 </div>
+
+<style>
+    .card {
+        border-radius: 10px;
+        border: none;
+    }
+
+    .card-img {
+        border-radius: 10px 0 0 10px;
+        object-fit: cover;
+        height: 100%;
+        border: 2px solid grey;
+    }
+
+    .card-title {
+        font-weight: bold;
+    }
+
+    .card-subtitle {
+        font-size: 14px;
+        color: #6c757d;
+    }
+
+    .card-text {
+        margin-bottom: 10px;
+    }
+
+    .fa-star.checked {
+        color: orange;
+    }
+
+    .container .card:first-child {
+        margin-top: 40px;
+    }
+
+    .form-check-label {
+        margin-left: 5px;
+    }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        color: white;
+        border: none;
+    }
+</style>
