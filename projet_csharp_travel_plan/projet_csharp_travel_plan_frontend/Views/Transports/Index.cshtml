@@ -8,34 +8,77 @@
 
 <h1>Transports en @selectedCountry</h1>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>@Html.DisplayNameFor(model => model.IdTransport)</th>
-            <th>@Html.DisplayNameFor(model => model.CategorieTransportNom)</th>
-            <th>@Html.DisplayNameFor(model => model.NomFournisseur)</th>
-            <th>@Html.DisplayNameFor(model => model.Prix)</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>@Html.DisplayFor(modelItem => item.IdTransport)</td>
-                <td>@Html.DisplayFor(modelItem => item.CategorieTransportNom)</td>
-                <td>@Html.DisplayFor(modelItem => item.NomFournisseur)</td>
-                <td>@Html.DisplayFor(modelItem => item.Prix)</td>
-                <td>
-                    <a asp-action="Details" asp-route-id="@item.IdTransport" asp-route-voyageId="@voyageId" class="btn btn-info">Voir détails</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+<div class="container">
+    @foreach (var item in Model)
+    {
+        <div class="card mb-4 shadow-sm">
+            <div class="row no-gutters">
+                <div class="col-md-4">
+                    <img src="/img/transport_test.png" class="card-img" alt="Image du transport">
+                </div>
+                <div class="col-md-8 d-flex flex-column">
+                    <div class="card-body">
+                        <h5 class="card-title">@Html.DisplayFor(modelItem => item.NomFournisseur)</h5>
+                        <p class="card-text"><strong>@Html.DisplayFor(modelItem => item.CategorieTransportNom)</strong></p>
+                        <p class="card-text">@Html.DisplayFor(modelItem => item.Prix) €</p>
+                    </div>
+                    <div class="card-footer text-left">
+                        <a asp-action="Details" asp-route-id="@item.IdTransport" asp-route-voyageId="@voyageId" class="btn btn-info">Voir détails</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
 
 <form method="post" asp-action="ProceedToLodging">
     @Html.AntiForgeryToken()
     <input type="hidden" name="voyageId" value="@voyageId" />
     <button type="submit" class="btn btn-secondary">Passer à la réservation de logement sans sélectionner de transport</button>
 </form>
+
+<style>
+    .card {
+        border-radius: 10px;
+        border: none;
+    }
+
+    .card-img {
+        border-radius: 10px 0 0 10px;
+        object-fit: contain;
+        height: 200px; /* Fixed height */
+        width: 100%; /* Full width */
+        border: 2px solid grey;
+    }
+
+    .card-title {
+        font-weight: bold;
+    }
+
+    .card-subtitle {
+        font-size: 14px;
+        color: #6c757d;
+    }
+
+    .card-text {
+        margin-bottom: 10px;
+    }
+
+    .card-footer {
+        background-color: white;
+        border-top: none;
+        padding: 15px;
+    }
+
+    .btn {
+        margin-bottom: 10px;
+    }
+
+    .fa-star.checked {
+        color: orange;
+    }
+
+    .container .card:first-child {
+        margin-top: 40px;
+    }
+</style>

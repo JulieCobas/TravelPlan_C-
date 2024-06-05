@@ -7,40 +7,93 @@
 
 <h1>@ViewData["Title"]</h1>
 
-<div>
-    <h4>Nom: @Model.Nom</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">Fournisseur</dt>
-        <dd class="col-sm-10">@Model.NomFournisseur</dd>
-        <dt class="col-sm-2">Catégorie</dt>
-        <dd class="col-sm-10">@Model.NomCategorie</dd>
-        <dt class="col-sm-2">Pays</dt>
-        <dd class="col-sm-10">@Model.NomPays</dd>
-        <dt class="col-sm-2">Détails</dt>
-        <dd class="col-sm-10">@Model.Details</dd>
-        <dt class="col-sm-2">Note</dt>
-        <dd class="col-sm-10">@Model.Note/10</dd>
-        <dt class="col-sm-2">Nombre d'évaluations</dt>
-        <dd class="col-sm-10">@Model.NbEvaluation</dd>
-        <dt class="col-sm-2">Image</dt>
-        <dd class="col-sm-10">
-            <!-- Vous devez décider comment afficher l'image -->
-        </dd>
-    </dl>
-    <form method="post" asp-action="ConfirmReservation">
-        @Html.AntiForgeryToken()
-        <input type="hidden" name="IdLogement" value="@Model.IdLogement" />
-        <input type="hidden" name="VoyageId" value="@voyageId" />
-        <div class="form-group">
-            <label for="DateDebut">Date de début</label>
-            <input type="date" class="form-control" id="DateDebut" name="DateDebut" required />
+<div class="container">
+    <div class="card mb-4 shadow-sm">
+        <div class="row no-gutters">
+            <div class="col-md-4">
+                <img src="/img/logement_test.jpg" class="card-img" alt="Image du logement">
+            </div>
+            <div class="col-md-8 d-flex flex-column">
+                <div class="card-body">
+                    <h4 class="card-title">@Html.DisplayFor(model => model.Nom)</h4>
+                    <h6 class="card-subtitle mb-2 text-muted">@Html.DisplayFor(model => model.NomCategorie)</h6>
+                    <p class="card-text"><strong>Fournisseur :</strong> @Html.DisplayFor(model => model.NomFournisseur)</p>
+                    <p class="card-text"><strong>Description :</strong> @Html.DisplayFor(model => model.Details)</p>
+                    <p class="card-text">
+                        <strong>Note :</strong>
+                        @for (var i = 1; i <= 10; i++)
+                        {
+                            <span class="fa fa-star @(i <= Model.Note ? "checked" : "")"></span>
+                        }
+                    </p>
+                    <p class="card-text"><strong>Nombre d'évaluations :</strong> @Html.DisplayFor(model => model.NbEvaluation) avis</p>
+                </div>
+            </div>
         </div>
-        <div class="form-group">
-            <label for="DateFin">Date de fin</label>
-            <input type="date" class="form-control" id="DateFin" name="DateFin" required />
+    </div>
+
+    <div class="card mb-4 shadow-sm">
+        <div class="card-body">
+            <form method="post" asp-action="ConfirmReservation">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="IdLogement" value="@Model.IdLogement" />
+                <input type="hidden" name="VoyageId" value="@voyageId" />
+                <div class="form-group">
+                    <label for="DateDebut">Date de début</label>
+                    <input type="date" class="form-control" id="DateDebut" name="DateDebut" required />
+                </div>
+                <div class="form-group">
+                    <label for="DateFin">Date de fin</label>
+                    <input type="date" class="form-control" id="DateFin" name="DateFin" required />
+                </div>
+                <button type="submit" class="btn btn-primary">Confirmer la réservation</button>
+            </form>
+            <a asp-action="Index" asp-route-voyageId="@voyageId" class="btn btn-secondary mt-2">Retour à la liste</a>
         </div>
-        <button type="submit" class="btn btn-primary">Confirmer la réservation</button>
-    </form>
-    <a asp-action="Index" asp-route-voyageId="@voyageId" class="btn btn-secondary">Retour à la liste</a>
+    </div>
 </div>
+
+<style>
+    .card {
+        border-radius: 10px;
+        border: none;
+    }
+
+    .card-img {
+        border-radius: 10px 0 0 10px;
+        object-fit: cover;
+        height: 100%;
+        border: 2px solid grey;
+    }
+
+    .card-title {
+        font-weight: bold;
+    }
+
+    .card-subtitle {
+        font-size: 14px;
+        color: #6c757d;
+    }
+
+    .card-text {
+        margin-bottom: 10px;
+    }
+
+    .fa-star.checked {
+        color: orange;
+    }
+
+    .container .card:first-child {
+        margin-top: 40px;
+    }
+
+    .form-check-label {
+        margin-left: 5px;
+    }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        color: white;
+        border: none;
+    }
+</style>
