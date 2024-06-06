@@ -18,8 +18,8 @@ namespace projet_csharp_travel_plan_frontend
                 options.UseSqlServer(connectionString));
             builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddRoles<IdentityRole>()
-                .AddEntityFrameworkStores<TravelPlanNewDbContext>()
-                .AddDefaultTokenProviders();
+                .AddEntityFrameworkStores<TravelPlanNewDbContext>();
+                //.AddDefaultTokenProviders();
 
             builder.Services.AddControllersWithViews();
             builder.Services.AddRazorPages();

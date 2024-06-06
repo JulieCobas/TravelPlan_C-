@@ -113,6 +113,7 @@ public class ClientsController : ControllerBase
 
         var newClient = new Client
         {
+            IdClient = clientDto.IdClient,
             Id = clientDto.Id,
             Addresse = clientDto.Addresse,
             Cp = clientDto.Cp,
@@ -127,6 +128,13 @@ public class ClientsController : ControllerBase
         await _context.SaveChangesAsync();
 
         return CreatedAtAction(nameof(GetClient), new { userId = newClient.Id }, clientDto);
+    }
+
+    [HttpGet("maxid")]
+    public async Task<ActionResult<int>> GetMaxClientId()
+    {
+        var maxId = await _context.Clients.MaxAsync(c => (int?)c.IdClient) ?? 0;
+        return Ok(maxId);
     }
 
     private bool ClientExists(int id)

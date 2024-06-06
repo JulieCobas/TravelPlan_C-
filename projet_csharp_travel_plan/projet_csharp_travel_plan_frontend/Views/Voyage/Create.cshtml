@@ -27,7 +27,7 @@
         <label class="col-sm-2 col-form-label">Où allez-vous ?</label>
         <div class="col-sm-10">
             <select id="paysSelect" asp-for="IdPays" class="form-select" aria-label="Sélectionner un pays">
-                <option value="">Sélectionnez un pays</option>
+                <option value="" selected disabled>Sélectionnez un pays</option>
                 @if (ViewBag.Pays != null)
                 {
                     @foreach (var pays in ViewBag.Pays)

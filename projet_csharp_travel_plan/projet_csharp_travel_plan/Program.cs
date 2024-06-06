@@ -10,6 +10,7 @@ builder.Services.AddControllers(options =>
 {
     options.Filters.Add<ApiKeyAuthFilter>();
 });
+
 builder.Services.AddDbContext<TravelPlanNewDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 

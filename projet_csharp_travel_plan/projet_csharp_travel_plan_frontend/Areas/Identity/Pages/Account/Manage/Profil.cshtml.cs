@@ -6,6 +6,7 @@ using System.Net.Http.Json;
 using Microsoft.Extensions.Logging;
 using System.Globalization;
 using System.ComponentModel.DataAnnotations;
+using System.Net.Http;
 
 namespace projet_csharp_travel_plan_frontend.Areas.Identity.Pages.Account.Manage
 {
@@ -18,11 +19,11 @@ namespace projet_csharp_travel_plan_frontend.Areas.Identity.Pages.Account.Manage
         private const string API_URL = "https://localhost:7287/api/clients";
         private const string API_KEY = "test";
 
-        public ProfilModel(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, HttpClient httpClient, ILogger<ProfilModel> logger)
+        public ProfilModel(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, IHttpClientFactory httpClientFactory, ILogger<ProfilModel> logger)
         {
             _userManager = userManager;
             _signInManager = signInManager;
-            _httpClient = httpClient;
+            _httpClient = httpClientFactory.CreateClient("default");
             _logger = logger;
         }
 
@@ -108,9 +109,28 @@ namespace projet_csharp_travel_plan_frontend.Areas.Identity.Pages.Account.Manage
             }
         }
 
+        private async Task<int> GetNextClientIdAsync()
+        {
+            var request = new HttpRequestMessage(HttpMethod.Get, $"{API_URL}/maxid");
+            request.Headers.Add("Authorization", $"Bearer {API_KEY}");
+
+            var response = await _httpClient.SendAsync(request);
+            if (response.IsSuccessStatusCode)
+            {
+                var maxId = await response.Content.ReadFromJsonAsync<int>();
+                return maxId + 1;
+            }
+            else
+            {
+                _logger.LogError("Error retrieving the max client ID. Status Code: {StatusCode}", response.StatusCode);
+                throw new Exception("Error retrieving the max client ID.");
+            }
+        }
+
         private async Task<IActionResult> CreateClientAsync(IdentityUser user)
         {
             Client.Id = await _userManager.GetUserIdAsync(user);
+            Client.IdClient = (short)await GetNextClientIdAsync();
             Client.Nom = Input.Nom;
             Client.Prenom = Input.Prenom;
             Client.Addresse = Input.Adresse;
