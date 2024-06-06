@@ -3,7 +3,7 @@
 @{
     ViewData["Title"] = "Détails du Logement";
     var selectedCountry = ViewData["SelectedCountry"];
-    var voyageId = ViewData["VoyageId"];
+    var voyageId = ViewData["VoyageId"] as int? ?? 1; // Default to 1 if voyageId is null
 }
 
 <h1>@ViewData["Title"]</h1>

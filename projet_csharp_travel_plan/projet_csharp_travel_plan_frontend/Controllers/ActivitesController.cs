@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using projet_csharp_travel_plan_frontend.DTO;
@@ -10,6 +11,7 @@ using projet_csharp_travel_plan_frontend.Models;
 
 namespace projet_csharp_travel_plan_frontend.Controllers
 {
+    [Authorize]
     public class ActivitesController : Controller
     {
         private readonly HttpClient _client;
@@ -51,7 +53,7 @@ namespace projet_csharp_travel_plan_frontend.Controllers
                     var json = await response.Content.ReadAsStringAsync();
                     var activite = JsonConvert.DeserializeObject<ActiviteDTO>(json);
                     ViewData["SelectedCountry"] = country;
-                    ViewData["VoyageId"] = voyageId;
+                    ViewData["VoyageId"] = voyageId == 0 ? 1 : voyageId; // Default to 1 if voyageId is 0
                     return View(activite);
                 }
 
@@ -66,11 +68,12 @@ namespace projet_csharp_travel_plan_frontend.Controllers
             }
         }
 
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ConfirmActiviteSelection(short IdActivite, short VoyageId, DateTime DateDebut, DateTime DateFin, TimeSpan HeureDebut, bool GuideAudio, bool VisiteGuidee)
         {
+            if (VoyageId == 0) VoyageId = 1; // Default to 1 if VoyageId is 0
+
             var reservation = new ReservationDTO
             {
                 IdActivite = IdActivite,
