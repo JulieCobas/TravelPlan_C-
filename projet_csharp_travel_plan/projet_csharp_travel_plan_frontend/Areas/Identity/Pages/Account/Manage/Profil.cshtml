@@ -1,0 +1,130 @@
+﻿@page
+@model ProfilModel
+@{
+    ViewData["Title"] = "Client Profile";
+
+}
+
+<style>
+    .form-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+
+    .form-group {
+        flex: 1 1 45%;
+        display: flex;
+        flex-direction: column;
+    }
+
+        .form-group label {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .form-group input, .form-group select {
+            padding: 10px;
+            font-size: 1em;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .form-group span.text-danger {
+            margin-top: 5px;
+        }
+
+    .btn-primary {
+        padding: 10px 20px;
+        font-size: 1.2em;
+        border: none;
+        border-radius: 5px;
+        background-color: #007bff;
+        color: white;
+        cursor: pointer;
+        margin-top: 20px;
+    }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+</style>
+
+<h2>Profil Client</h2>
+
+<form method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="form-container">
+        <div class="form-group">
+            <label asp-for="Input.Nom" class="control-label"></label>
+            <input asp-for="Input.Nom" class="form-control" />
+            <span asp-validation-for="Input.Nom" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Input.Prenom" class="control-label"></label>
+            <input asp-for="Input.Prenom" class="form-control" />
+            <span asp-validation-for="Input.Prenom" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Input.Adresse" class="control-label"></label>
+            <input asp-for="Input.Adresse" class="form-control" />
+            <span asp-validation-for="Input.Adresse" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Input.Ville" class="control-label"></label>
+            <input asp-for="Input.Ville" class="form-control" />
+            <span asp-validation-for="Input.Ville" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Input.CodePostal" class="control-label"></label>
+            <input asp-for="Input.CodePostal" class="form-control" />
+            <span asp-validation-for="Input.CodePostal" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Input.Pays" class="control-label"></label>
+            <input asp-for="Input.Pays" class="form-control" />
+            <span asp-validation-for="Input.Pays" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label>Date de naissance</label>
+            <div>
+                <select asp-for="Input.Day" class="form-control" style="width: 30%; display: inline-block;">
+                    @for (int day = 1; day <= 31; day++)
+                    {
+                        <option value="@day">@day</option>
+                    }
+                </select>
+                <select asp-for="Input.Month" class="form-control" style="width: 30%; display: inline-block;">
+                    @for (int month = 1; month <= 12; month++)
+                    {
+                        <option value="@month">@month</option>
+                    }
+                </select>
+                <select asp-for="Input.Year" class="form-control" style="width: 35%; display: inline-block;">
+                    @for (int year = DateTime.Now.Year; year >= DateTime.Now.Year - 100; year--)
+                    {
+                        <option value="@year">@year</option>
+                    }
+                </select>
+            </div>
+            <span asp-validation-for="Input.Day" class="text-danger"></span>
+            <span asp-validation-for="Input.Month" class="text-danger"></span>
+            <span asp-validation-for="Input.Year" class="text-danger"></span>
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Sauvegarder</button>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -98,3 +98,6 @@ footer {
 .mt-4 {
     margin-top: 1.5rem;
 }
+.btn-primary:hover {
+    background-color: #0056b3;
+}

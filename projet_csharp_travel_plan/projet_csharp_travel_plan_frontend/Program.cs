@@ -31,6 +31,12 @@ namespace projet_csharp_travel_plan_frontend
 
             builder.Services.AddAuthorization();
 
+            //builder.Services.AddHttpClient<ClientApiService>(client =>
+            //{
+            //    var backendApiUrl = builder.Configuration["ApiSettings:BackendApiUrl"];
+            //    client.BaseAddress = new Uri(backendApiUrl);
+            //});
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
