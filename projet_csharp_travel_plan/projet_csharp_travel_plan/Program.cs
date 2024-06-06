@@ -52,7 +52,6 @@ builder.Services.AddSwaggerGen(c =>
     c.AddSecurityRequirement(requirement);
 });
 
-builder.Services.AddScoped<ApiKeyAuthFilter>();
 
 var app = builder.Build();
 

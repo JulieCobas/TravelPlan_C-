@@ -21,7 +21,7 @@ public partial class Client
 
     public string Prenom { get; set; } = null!;
 
-    public DateTime DateNaissance { get; set; }
+    public DateOnly DateNaissance { get; set; }
 
     public virtual ICollection<Paiement> Paiements { get; set; } = new List<Paiement>();
 
