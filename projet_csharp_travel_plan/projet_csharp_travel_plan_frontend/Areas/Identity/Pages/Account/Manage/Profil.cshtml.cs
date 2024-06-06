@@ -5,6 +5,7 @@ using projet_csharp_travel_plan_frontend.DTO;
 using System.Net.Http.Json;
 using Microsoft.Extensions.Logging;
 using System.Globalization;
+using System.ComponentModel.DataAnnotations;
 
 namespace projet_csharp_travel_plan_frontend.Areas.Identity.Pages.Account.Manage
 {
@@ -15,6 +16,7 @@ namespace projet_csharp_travel_plan_frontend.Areas.Identity.Pages.Account.Manage
         private readonly HttpClient _httpClient;
         private readonly ILogger<ProfilModel> _logger;
         private const string API_URL = "https://localhost:7287/api/clients";
+        private const string API_KEY = "test";
 
         public ProfilModel(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, HttpClient httpClient, ILogger<ProfilModel> logger)
         {
@@ -24,49 +26,113 @@ namespace projet_csharp_travel_plan_frontend.Areas.Identity.Pages.Account.Manage
             _logger = logger;
         }
 
-        public string Username { get; set; }
-        public int Day { get; set; }
-        public int Month { get; set; }
-        public int Year { get; set; }
-
-        [BindProperty]
-        public ClientDTO Client { get; set; } = new ClientDTO();
-
         [TempData]
         public string StatusMessage { get; set; }
 
+        [BindProperty]
+        public InputModel Input { get; set; }
+        public ClientDTO Client { get; set; } = new ClientDTO();
+
+        public class InputModel
+        {
+            [Required]
+            public int Day { get; set; }
+            [Required]
+            public int Month { get; set; }
+            [Required]
+            public int Year { get; set; }
+            [Required]
+            [Display(Name = "Nom")]
+            public string Nom { get; set; }
+            [Required]
+            [Display(Name = "Prénom")]
+            public string Prenom { get; set; }
+            [Required]
+            [Display(Name = "Adresse")]
+            public string Adresse { get; set; }
+            [Required]
+            [Display(Name = "Code postal")]
+            public string CodePostal { get; set; }
+            [Required]
+            [Display(Name = "Ville")]
+            public string Ville { get; set; }
+            [Required]
+            [Display(Name = "Pays")]
+            public string Pays { get; set; }
+        }
+
         private async Task LoadAsync(IdentityUser user)
         {
-            var userName = await _userManager.GetUserNameAsync(user);
-
+            var userId = await _userManager.GetUserIdAsync(user);
 
             // Load client data from API
-            _logger.LogInformation("Loading client data for user ID: {UserId}", user.Id);
-            var response = await _httpClient.GetAsync($"{API_URL}/{user.Id}");
+            _logger.LogInformation("Loading client data for user ID: {UserId}", userId);
+
+            var request = new HttpRequestMessage(HttpMethod.Get, $"{API_URL}/{userId}");
+            request.Headers.Add("Authorization", $"Bearer {API_KEY}");
+
+            var response = await _httpClient.SendAsync(request);
             if (response.IsSuccessStatusCode)
             {
                 Client = await response.Content.ReadFromJsonAsync<ClientDTO>();
+
                 if (Client == null)
                 {
-                    _logger.LogWarning("Client data not found for user ID: {UserId}", user.Id);
+                    _logger.LogWarning("Client data not found for user ID: {UserId}", userId);
                     Client = new ClientDTO();
                 }
                 else
                 {
-                    _logger.LogInformation("Client data loaded successfully for user ID: {UserId}", user.Id);
+                    _logger.LogInformation("Client data loaded successfully for user ID: {UserId}", userId);
                     if (Client.DateNaissance != default)
                     {
-                        Day = Client.DateNaissance.Day;
-                        Month = Client.DateNaissance.Month;
-                        Year = Client.DateNaissance.Year;
+                        Input = new InputModel
+                        {
+                            Nom = Client.Nom,
+                            Prenom = Client.Prenom,
+                            Adresse = Client.Addresse,
+                            CodePostal = Client.Cp,
+                            Ville = Client.Ville,
+                            Pays = Client.Pays,
+                            Day = Client.DateNaissance.Day,
+                            Month = Client.DateNaissance.Month,
+                            Year = Client.DateNaissance.Year
+                        };
                     }
                 }
             }
             else
             {
-                _logger.LogError("Error loading client data for user ID: {UserId}. Status Code: {StatusCode}", user.Id, response.StatusCode);
+                _logger.LogError("Error loading client data for user ID: {UserId}. Status Code: {StatusCode}", userId, response.StatusCode);
                 Client = new ClientDTO();
             }
+        }
+
+        private async Task<IActionResult> CreateClientAsync(IdentityUser user)
+        {
+            Client.Id = await _userManager.GetUserIdAsync(user);
+            Client.Nom = Input.Nom;
+            Client.Prenom = Input.Prenom;
+            Client.Addresse = Input.Adresse;
+            Client.Cp = Input.CodePostal;
+            Client.Ville = Input.Ville;
+            Client.Pays = Input.Pays;
+            Client.DateNaissance = new DateOnly(Input.Year, Input.Month, Input.Day);
+
+            var request = new HttpRequestMessage(HttpMethod.Post, API_URL)
+            {
+                Content = JsonContent.Create(Client)
+            };
+            request.Headers.Add("Authorization", $"Bearer {API_KEY}");
+
+            var response = await _httpClient.SendAsync(request);
+            if (!response.IsSuccessStatusCode)
+            {
+                ModelState.AddModelError(string.Empty, "Error creating profile.");
+                return Page();
+            }
+
+            return RedirectToPage();
         }
 
         public async Task<IActionResult> OnGetAsync()
@@ -95,23 +161,60 @@ namespace projet_csharp_travel_plan_frontend.Areas.Identity.Pages.Account.Manage
                 return Page();
             }
 
-            try
-            {
-                Client.DateNaissance = new DateOnly(Year, Month, Day);
-            }
-            catch (ArgumentOutOfRangeException)
-            {
-                ModelState.AddModelError(string.Empty, "Invalid date.");
-                await LoadAsync(user);
-                return Page();
-            }
+            var userId = await _userManager.GetUserIdAsync(user);
+            var request = new HttpRequestMessage(HttpMethod.Get, $"{API_URL}/{userId}");
+            request.Headers.Add("Authorization", $"Bearer {API_KEY}");
 
-            Client.Id = user.Id;
-
-            var response = await _httpClient.PutAsJsonAsync($"{API_URL}/{Client.IdClient}", Client);
-            if (!response.IsSuccessStatusCode)
+            var response = await _httpClient.SendAsync(request);
+            if (response.IsSuccessStatusCode)
             {
-                ModelState.AddModelError(string.Empty, "Error updating profile.");
+                Client = await response.Content.ReadFromJsonAsync<ClientDTO>();
+
+                if (Client == null)
+                {
+                    _logger.LogWarning("Client data not found for user ID: {UserId}", userId);
+                    return await CreateClientAsync(user);
+                }
+
+                try
+                {
+                    Client.DateNaissance = new DateOnly(Input.Year, Input.Month, Input.Day);
+                }
+                catch (ArgumentOutOfRangeException)
+                {
+                    ModelState.AddModelError(string.Empty, "Invalid date.");
+                    await LoadAsync(user);
+                    return Page();
+                }
+
+                Client.Nom = Input.Nom;
+                Client.Prenom = Input.Prenom;
+                Client.Addresse = Input.Adresse;
+                Client.Cp = Input.CodePostal;
+                Client.Ville = Input.Ville;
+                Client.Pays = Input.Pays;
+
+                request = new HttpRequestMessage(HttpMethod.Put, $"{API_URL}/{Client.IdClient}")
+                {
+                    Content = JsonContent.Create(Client)
+                };
+                request.Headers.Add("Authorization", $"Bearer {API_KEY}");
+
+                response = await _httpClient.SendAsync(request);
+                if (!response.IsSuccessStatusCode)
+                {
+                    ModelState.AddModelError(string.Empty, "Error updating profile.");
+                    await LoadAsync(user);
+                    return Page();
+                }
+            }
+            else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                return await CreateClientAsync(user);
+            }
+            else
+            {
+                ModelState.AddModelError(string.Empty, "Error loading client data.");
                 await LoadAsync(user);
                 return Page();
             }

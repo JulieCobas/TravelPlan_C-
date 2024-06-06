@@ -34,7 +34,6 @@ namespace projet_csharp_travel_plan_frontend.Areas.Identity.Pages.Account.Manage
         ///     directly from your code. This API may change or be removed in future releases.
         /// </summary>
         public string Utilisateur { get; set; }
-
         public string Email { get; set; }
         public bool IsEmailConfirmed { get; set; }
 
@@ -84,7 +83,7 @@ namespace projet_csharp_travel_plan_frontend.Areas.Identity.Pages.Account.Manage
             Input = new InputModel
             {
                 PhoneNumber = phoneNumber,
-                NewEmail = email
+                NewEmail = ""//email
             };
             IsEmailConfirmed = await _userManager.IsEmailConfirmedAsync(user);
         }
