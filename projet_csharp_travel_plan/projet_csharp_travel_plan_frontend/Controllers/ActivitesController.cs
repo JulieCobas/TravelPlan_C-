@@ -41,21 +41,31 @@ namespace projet_csharp_travel_plan_frontend.Controllers
         }
 
         // GET: Activites/Details/5
-        public async Task<IActionResult> Details(int id, int voyageId)
+        public async Task<IActionResult> Details(int id, string country, int voyageId)
         {
-            var response = await _client.GetAsync($"{API_URL}{id}");
-            if (response.IsSuccessStatusCode)
+            try
             {
-                var json = await response.Content.ReadAsStringAsync();
-                var activite = JsonConvert.DeserializeObject<ActiviteDTO>(json);
-                ViewData["VoyageId"] = voyageId;
-                return View(activite);
-            }
+                var response = await _client.GetAsync($"{API_URL}{id}");
+                if (response.IsSuccessStatusCode)
+                {
+                    var json = await response.Content.ReadAsStringAsync();
+                    var activite = JsonConvert.DeserializeObject<ActiviteDTO>(json);
+                    ViewData["SelectedCountry"] = country;
+                    ViewData["VoyageId"] = voyageId;
+                    return View(activite);
+                }
 
-            // Handle error
-            var errorMessage = await response.Content.ReadAsStringAsync();
-            return RedirectToAction("Error", "Home", new { message = errorMessage });
+                // Handle error
+                var errorMessage = await response.Content.ReadAsStringAsync();
+                return RedirectToAction("Error", "Home", new { message = errorMessage });
+            }
+            catch (Exception ex)
+            {
+                // Handle exception
+                return RedirectToAction("Error", "Home", new { message = ex.Message });
+            }
         }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]

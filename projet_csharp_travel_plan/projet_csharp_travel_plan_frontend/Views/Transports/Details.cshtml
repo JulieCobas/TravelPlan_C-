@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Details";
+    var selectedCountry = ViewData["SelectedCountry"] as string;
     var voyageId = ViewData["VoyageId"] as int?;
     var categoriesAfficherOptions = new List<string> { "Aérien", "Maritime", "Terrestre - train" };
 }
@@ -48,12 +49,12 @@
                         <input type="hidden" name="BagageEnSoute" value="false" />
                         <input type="hidden" name="BagageLarge" value="false" />
                         <input type="hidden" name="Speedyboarding" value="false" />
-                        <input type="hidden" name="voyageId" value="@ViewData["VoyageId"]" />
+                        <input type="hidden" name="voyageId" value="@voyageId" />
                         <input type="hidden" name="DateDebut" value="" />
                         <input type="hidden" name="DateFin" value="" />
                         <button type="submit" class="btn btn-primary">Confirmer et passer à la réservation de logement</button>
                     </form>
-                    <a href="@Url.Action("Index")" class="btn btn-secondary">Retour à la liste</a>
+                    <a asp-action="Index" asp-route-country="@selectedCountry" asp-route-voyageId="@voyageId" class="btn btn-secondary">Retour à la liste</a>
                 </div>
             </div>
         </div>

@@ -6,8 +6,7 @@
 
 <h1>Nouveau Voyage</h1>
 
-<form id="voyageForm" asp-action="Create" asp-controller="Voyage" method="post">
-
+<form id="voyageForm" asp-action="CreatePost" asp-controller="Voyage" method="post">
     <div class="form-group row">
         <label class="col-sm-2 col-form-label">Date d'arrivée</label>
         <div class="col-sm-10">
@@ -29,9 +28,9 @@
         <div class="col-sm-10">
             <select id="paysSelect" asp-for="IdPays" class="form-select" aria-label="Sélectionner un pays">
                 <option value="">Sélectionnez un pays</option>
-                @if (Model.Pays != null)
+                @if (ViewBag.Pays != null)
                 {
-                    @foreach (var pays in Model.Pays)
+                    @foreach (var pays in ViewBag.Pays)
                     {
                         <option value="@pays.IdPays">@pays.Nom</option>
                     }
@@ -45,7 +44,6 @@
         <button type="submit" class="btn btn-primary">Soumettre</button>
         <a asp-action="Index" asp-controller="Home" class="btn btn-secondary">Annuler</a>
     </div>
-
 </form>
 
 <script>
@@ -85,7 +83,7 @@
                 }
                 if (new Date(dateFin) < currentDate) {
                     document.querySelector('[name="DateFin"]').classList.add('is-invalid');
-                    document.querySelector('[data-name="DateFin"]').textContent = "La date de départ ne pas être dans le passé.";
+                    document.querySelector('[data-name="DateFin"]').textContent = "La date de départ ne peut pas être dans le passé.";
                 }
 
                 // Validation : Vérifier si la date de fin est postérieure à la date de début
@@ -104,7 +102,7 @@
                 if (form.querySelectorAll('.is-invalid').length > 0) {
                     return;
                 }
-                //Check
+                // Check
                 console.log("Date de Début:", dateDebut);
                 console.log("Date de Fin:", dateFin);
                 console.log("Pays Sélectionné:", selectedPayId);
@@ -120,8 +118,8 @@
             console.error("Form with ID 'voyageForm' not found.");
         }
     });
-
 </script>
+
 <style>
     body {
         font-family: Arial, sans-serif;

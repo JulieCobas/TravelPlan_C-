@@ -74,6 +74,7 @@ public partial class TravelPlanNewDbContext : DbContext
     public virtual DbSet<Ville> Villes { get; set; }
 
     public virtual DbSet<Voyage> Voyages { get; set; }
+    //public DbSet<Choisir> Choisirs { get; set; }  // Add this line
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) { }
 
@@ -394,6 +395,8 @@ public partial class TravelPlanNewDbContext : DbContext
                 .IsUnicode(false)
                 .HasColumnName("VILLE");
         });
+
+
 
         modelBuilder.Entity<DisponibiliteLogement>(entity =>
         {
@@ -1185,6 +1188,29 @@ public partial class TravelPlanNewDbContext : DbContext
                         j.IndexerProperty<short>("IdPays").HasColumnName("ID_PAYS");
                     });
         });
+        /*modelBuilder.Entity<Choisir>(entity =>
+        {
+            entity.HasKey(e => new { e.IdVoyage, e.IdPays }).HasName("PK_CHOISIR");
+
+            entity.ToTable("CHOISIR");
+
+            entity.HasIndex(e => e.IdPays, "IX_CHOISIR_ID_PAYS");
+
+            entity.Property(e => e.IdVoyage).HasColumnName("ID_VOYAGE");
+            entity.Property(e => e.IdPays).HasColumnName("ID_PAYS");
+
+            entity.HasOne<Voyage>()
+                .WithMany()
+                .HasForeignKey(e => e.IdVoyage)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_CHOISIR_VOYAGE");
+
+            entity.HasOne<Pay>()
+                .WithMany()
+                .HasForeignKey(e => e.IdPays)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_CHOISIR_PAYS");
+        });*/
 
         OnModelCreatingPartial(modelBuilder);
     }

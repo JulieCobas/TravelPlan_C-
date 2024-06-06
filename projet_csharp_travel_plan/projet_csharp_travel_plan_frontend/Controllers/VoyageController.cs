@@ -11,6 +11,7 @@ using Microsoft.Extensions.Logging;
 
 namespace projet_csharp_travel_plan_frontend.Controllers
 {
+    [Route("[controller]")]
     public class VoyageController : Controller
     {
         private readonly HttpClient _client;
@@ -24,35 +25,11 @@ namespace projet_csharp_travel_plan_frontend.Controllers
             _logger = logger;
         }
 
-        // GET: Voyage
-        public async Task<IActionResult> Index()
-        {
-            var response = await _client.GetAsync(API_URL);
-            if (response.IsSuccessStatusCode)
-            {
-                var json = await response.Content.ReadAsStringAsync();
-                var voyageDtos = JsonConvert.DeserializeObject<List<VoyageDTO>>(json);
-
-                // Fetch the list of countries
-                var paysResponse = await _client.GetAsync($"{API_URL}GetPays");
-                if (paysResponse.IsSuccessStatusCode)
-                {
-                    var paysJson = await paysResponse.Content.ReadAsStringAsync();
-                    var paysDtos = JsonConvert.DeserializeObject<List<PayDTO>>(paysJson);
-                    ViewBag.Pays = paysDtos;
-                }
-
-                return View(voyageDtos);
-            }
-
-            // Handle error
-            var errorMessage = await response.Content.ReadAsStringAsync();
-            return RedirectToAction("Error", "Home", new { message = errorMessage });
-        }
-
         // GET: Voyage/Create
+        [HttpGet("Create")]
         public async Task<IActionResult> Create()
         {
+            _logger.LogInformation("GET Create action called.");
             var paysResponse = await _client.GetAsync(PAYS_API_URL);
             if (paysResponse.IsSuccessStatusCode)
             {
@@ -62,31 +39,37 @@ namespace projet_csharp_travel_plan_frontend.Controllers
                 {
                     DateDebut = DateTime.Now,
                     DateFin = DateTime.Now.AddDays(7),
-                    Pays = pays
+                    IdPays = pays.FirstOrDefault()?.IdPays ?? 0 // Utilise le premier pays de la liste
                 };
 
                 ViewBag.Pays = pays;
+                _logger.LogInformation("GET Create action completed successfully.");
                 return View(voyageDto);
             }
 
             // Handle error
             var errorMessage = await paysResponse.Content.ReadAsStringAsync();
-            return RedirectToAction("Error", "Home", new { message = errorMessage });
+            var errorModel = new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier, ErrorMessage = errorMessage };
+            _logger.LogError("Error in GET Create action: {ErrorMessage}", errorMessage);
+            return View("Error", errorModel);
         }
 
         // POST: Voyage/Create
-        [HttpPost]
+        [HttpPost("Create")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(VoyageDTO voyage)
+        public async Task<IActionResult> CreatePost(VoyageDTO voyage)
         {
-            _logger.LogInformation("Starting Create action in VoyageController");
+            _logger.LogInformation("POST Create action called.");
+
+            voyage.IdClient = 1; // Set default client ID
+            voyage.PrixTotal = 0; // Set default price total
+            voyage.StatutPaiement = false; // Set default payment status
 
             if (ModelState.IsValid)
             {
+                _logger.LogInformation("ModelState is valid. Sending POST request to API.");
                 var json = JsonConvert.SerializeObject(voyage);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
-
-                _logger.LogInformation("Sending POST request to API with payload: {Json}", json);
 
                 var response = await _client.PostAsync(API_URL, content);
                 if (response.IsSuccessStatusCode)
@@ -103,17 +86,18 @@ namespace projet_csharp_travel_plan_frontend.Controllers
                 var errorMessage = await response.Content.ReadAsStringAsync();
                 _logger.LogError("Error occurred while creating voyage: {ErrorMessage}", errorMessage);
 
-                return RedirectToAction("Error", "Home", new { message = errorMessage });
+                var errorModel = new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier, ErrorMessage = errorMessage };
+                return View("Error", errorModel);
             }
 
+            _logger.LogWarning("ModelState is invalid. Reloading countries list.");
             // If validation fails, reload the list of countries
-            _logger.LogWarning("Model state is invalid, reloading countries list");
             var paysResponse = await _client.GetAsync(PAYS_API_URL);
             if (paysResponse.IsSuccessStatusCode)
             {
                 var jsonPays = await paysResponse.Content.ReadAsStringAsync();
                 var pays = JsonConvert.DeserializeObject<List<PayDTO>>(jsonPays);
-                voyage.Pays = pays;
+                ViewBag.Pays = pays;
             }
 
             return View(voyage);

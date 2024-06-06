@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Détails du Logement";
+    var selectedCountry = ViewData["SelectedCountry"];
     var voyageId = ViewData["VoyageId"];
 }
 
@@ -48,7 +49,7 @@
                 </div>
                 <button type="submit" class="btn btn-primary">Confirmer la réservation</button>
             </form>
-            <a asp-action="Index" asp-route-voyageId="@voyageId" class="btn btn-secondary mt-2">Retour à la liste</a>
+            <a asp-action="Index" asp-route-country="@selectedCountry" asp-route-voyageId="@voyageId" class="btn btn-secondary mt-2">Retour à la liste des logements</a>
         </div>
     </div>
 </div>

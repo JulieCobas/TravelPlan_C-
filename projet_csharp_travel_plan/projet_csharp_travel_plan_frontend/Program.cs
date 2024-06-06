@@ -34,11 +34,7 @@ namespace projet_csharp_travel_plan_frontend
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-            else
+            if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
@@ -50,24 +46,13 @@ namespace projet_csharp_travel_plan_frontend
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.Use(async (context, next) =>
-            {
-                try
-                {
-                    await next.Invoke();
-                }
-                catch (Exception ex)
-                {
-                    context.Response.Redirect("/Home/Error");
-                }
-            });
-
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
             app.MapRazorPages();
 
             app.Run();
+
         }
     }
 }

@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = $"Activités en {ViewData["SelectedCountry"]}";
+    var country = ViewData["SelectedCountry"];
     var voyageId = ViewData["VoyageId"];
 }
 
@@ -31,13 +32,14 @@
                         <p class="card-text"><strong>Nombre d'évaluations:</strong> @Html.DisplayFor(modelItem => item.NbEvaluation) avis </p>
                     </div>
                     <div class="card-footer text-left">
-                        <a asp-action="Details" asp-route-id="@item.IdActivite" class="btn btn-info">Réserver l'activité</a>
+                        <a asp-action="Details" asp-route-id="@item.IdActivite" asp-route-country="@country" asp-route-voyageId="@voyageId" class="btn btn-info">Réserver l'activité</a>
                     </div>
                 </div>
             </div>
         </div>
     }
 </div>
+
 
 <style>
     .card {

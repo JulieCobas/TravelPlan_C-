@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -41,23 +40,31 @@ namespace projet_csharp_travel_plan_frontend.Controllers
         }
 
         // GET: Logements/Details/5
-        public async Task<IActionResult> Details(int id, int voyageId)
+        public async Task<IActionResult> Details(int id, string country, int voyageId)
         {
-            var response = await _client.GetAsync($"{API_URL}{id}");
-            if (response.IsSuccessStatusCode)
+            try
             {
-                var json = await response.Content.ReadAsStringAsync();
-                var logement = JsonConvert.DeserializeObject<LogementDTO>(json);
-                ViewData["VoyageId"] = voyageId;
-                return View(logement);
-            }
+                var response = await _client.GetAsync($"{API_URL}{id}");
+                if (response.IsSuccessStatusCode)
+                {
+                    var json = await response.Content.ReadAsStringAsync();
+                    var logement = JsonConvert.DeserializeObject<LogementDTO>(json);
+                    ViewData["SelectedCountry"] = country;
+                    ViewData["VoyageId"] = voyageId;
+                    return View(logement);
+                }
 
-            // Handle error
-            var errorMessage = await response.Content.ReadAsStringAsync();
-            return RedirectToAction("Error", "Home", new { message = errorMessage });
+                // Handle error
+                var errorMessage = await response.Content.ReadAsStringAsync();
+                return RedirectToAction("Error", "Home", new { message = errorMessage });
+            }
+            catch (Exception ex)
+            {
+                // Handle exception
+                return RedirectToAction("Error", "Home", new { message = ex.Message });
+            }
         }
 
-        // POST: Logements/ConfirmReservation
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ConfirmReservation(short IdLogement, short VoyageId, DateTime DateDebut, DateTime DateFin)

@@ -1,0 +1,46 @@
+﻿@model projet_csharp_travel_plan_frontend.DTO.ReservationDTO
+
+@{
+    ViewData["Title"] = "Détails de la Réservation";
+}
+
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="display-4">Détails de la Réservation</h1>
+        <a asp-action="Index" class="btn btn-primary">Retour aux Réservations</a>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            @if (Model.Logement != null)
+            {
+                <h5 class="card-title">@Model.Logement.Nom</h5>
+                <p class="card-text">
+                    <strong>Description :</strong> @Model.Logement.Details<br />
+                    <strong>Note :</strong> @Model.Logement.Note / 10<br />
+                </p>
+            }
+            else if (Model.Activite != null)
+            {
+                <h5 class="card-title">@Model.Activite.Nom</h5>
+                <p class="card-text">
+                    <strong>Description :</strong> @Model.Activite.Details<br />
+                    <strong>Prix :</strong> @Model.Activite.PrixActivite CHF<br />
+                </p>
+            }
+            else if (Model.Transport != null)
+            {
+                <h5 class="card-title">@Model.Transport.CategorieTransportNom</h5>
+                <p class="card-text">
+                    <strong>Fournisseur :</strong> @Model.Transport.NomFournisseur<br />
+                    <strong>Prix :</strong> @Model.Transport.Prix CHF<br />
+                </p>
+            }
+            else
+            {
+                <h5 class="card-title">Voyage: @Model.IdVoyage</h5>
+                <p class="card-text">Aucun détail disponible</p>
+            }
+        </div>
+    </div>
+</div>

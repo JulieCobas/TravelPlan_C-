@@ -5,19 +5,18 @@ using projet_csharp_travel_plan.Models;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using System;
 
 [Route("api/[controller]")]
 [ApiController]
 public class VoyagesController : ControllerBase
 {
     private readonly TravelPlanNewDbContext _context;
-    private readonly ILogger<VoyagesController> _logger;
 
-    public VoyagesController(TravelPlanNewDbContext context, ILogger<VoyagesController> logger)
+    public VoyagesController(TravelPlanNewDbContext context)
     {
         _context = context;
-        _logger = logger;
     }
 
     [HttpGet]
@@ -29,7 +28,7 @@ public class VoyagesController : ControllerBase
                 IdVoyage = v.IdVoyage,
                 DateDebut = v.DateDebut,
                 DateFin = v.DateFin,
-                IdPays = v.IdPays.Select(p => p.IdPays).FirstOrDefault() // Select the first country ID
+                IdPays = v.IdPays.FirstOrDefault().IdPays // Sélectionne le premier ID de pays
             })
             .ToListAsync();
 
@@ -60,11 +59,7 @@ public class VoyagesController : ControllerBase
                 IdVoyage = v.IdVoyage,
                 DateDebut = v.DateDebut,
                 DateFin = v.DateFin,
-                Pays = v.IdPays.Select(p => new PayDTO
-                {
-                    IdPays = p.IdPays,
-                    Nom = p.Nom
-                }).ToList()
+                IdPays = v.IdPays.FirstOrDefault().IdPays // Sélectionne le premier ID de pays
             })
             .FirstOrDefaultAsync();
 
@@ -93,15 +88,12 @@ public class VoyagesController : ControllerBase
         voyage.DateDebut = dto.DateDebut;
         voyage.DateFin = dto.DateFin;
 
-        // Update Pays relationship
+        // Mettre à jour la relation avec le pays
         voyage.IdPays.Clear();
-        foreach (var pay in dto.Pays)
+        var existingPay = await _context.Pays.FindAsync(dto.IdPays);
+        if (existingPay != null)
         {
-            var existingPay = await _context.Pays.FindAsync(pay.IdPays);
-            if (existingPay != null)
-            {
-                voyage.IdPays.Add(existingPay);
-            }
+            voyage.IdPays.Add(existingPay);
         }
 
         _context.Entry(voyage).State = EntityState.Modified;
@@ -128,7 +120,27 @@ public class VoyagesController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<VoyageDTO>> PostVoyage(VoyageDTO dto)
     {
-        _logger.LogInformation("Starting PostVoyage method");
+        if (dto == null)
+        {
+            return BadRequest("Le voyage à ajouter est null.");
+        }
+
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        var existingClient = await _context.Clients.FindAsync(dto.IdClient);
+        if (existingClient == null)
+        {
+            return NotFound($"Client with Id: {dto.IdClient} not found");
+        }
+
+        var existingPay = await _context.Pays.FindAsync(dto.IdPays);
+        if (existingPay == null)
+        {
+            return NotFound($"Pay with Id: {dto.IdPays} not found");
+        }
 
         var voyage = new Voyage
         {
@@ -136,38 +148,35 @@ public class VoyagesController : ControllerBase
             DateFin = dto.DateFin,
             IdClient = dto.IdClient,
             PrixTotal = dto.PrixTotal,
-            StatutPaiement = dto.StatutPaiement
+            StatutPaiement = dto.StatutPaiement,
+            IdClientNavigation = existingClient
         };
-
-        _logger.LogInformation("Created voyage object with DateDebut: {DateDebut}, DateFin: {DateFin}", dto.DateDebut, dto.DateFin);
-
-        foreach (var pay in dto.Pays)
-        {
-            var existingPay = await _context.Pays.FindAsync(pay.IdPays);
-            if (existingPay != null)
-            {
-                voyage.IdPays.Add(existingPay);
-                _logger.LogInformation("Added existing pay with Id: {IdPays} to voyage", pay.IdPays);
-            }
-        }
 
         _context.Voyages.Add(voyage);
 
         try
         {
             await _context.SaveChangesAsync();
-            _logger.LogInformation("Saved changes to the database");
+
+            var choisir = new Choisir
+            {
+                IdVoyage = voyage.IdVoyage,
+                IdPays = dto.IdPays
+            };
+
+            _context.Set<Choisir>().Add(choisir);
+            await _context.SaveChangesAsync();
+
+            dto.IdVoyage = voyage.IdVoyage;
+
+            return CreatedAtAction(nameof(GetVoyage), new { id = voyage.IdVoyage }, dto);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error occurred while saving voyage to the database");
-            return StatusCode(500, "Internal server error");
+            return StatusCode(500, $"Internal server error: {ex}");
         }
-
-        dto.IdVoyage = voyage.IdVoyage;
-
-        return CreatedAtAction(nameof(GetVoyage), new { id = voyage.IdVoyage }, dto);
     }
+
 
 
     [HttpDelete("{id}")]

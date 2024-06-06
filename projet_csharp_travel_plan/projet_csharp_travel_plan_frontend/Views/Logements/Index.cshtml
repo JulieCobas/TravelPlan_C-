@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = $"Logements en {ViewData["SelectedCountry"]}";
+    var selectedCountry = ViewData["SelectedCountry"];
     var voyageId = ViewData["VoyageId"];
 }
 
@@ -29,10 +30,10 @@
                             }
                         </p>
                         <p class="card-text"><strong>Nombre d'évaluations :</strong> @Html.DisplayFor(modelItem => item.NbEvaluation) avis </p>
-                        
+
                     </div>
                     <div class="card-footer text-left">
-                        <a asp-action="Details" asp-route-id="@item.IdLogement" class="btn btn-info">Réserver le logement</a>
+                        <a asp-action="Details" asp-route-id="@item.IdLogement" asp-route-country="@selectedCountry" asp-route-voyageId="@voyageId" class="btn btn-info">Réserver le logement</a>
                     </div>
                 </div>
             </div>
