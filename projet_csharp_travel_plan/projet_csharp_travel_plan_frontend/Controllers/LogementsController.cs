@@ -50,7 +50,7 @@ namespace projet_csharp_travel_plan_frontend.Controllers
                     var json = await response.Content.ReadAsStringAsync();
                     var logement = JsonConvert.DeserializeObject<LogementDTO>(json);
                     ViewData["SelectedCountry"] = country;
-                    ViewData["VoyageId"] = voyageId;
+                    ViewData["VoyageId"] = voyageId == 0 ? 1 : voyageId; // Default to 1 if voyageId is 0
                     return View(logement);
                 }
 
@@ -69,6 +69,8 @@ namespace projet_csharp_travel_plan_frontend.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ConfirmReservation(short IdLogement, short VoyageId, DateTime DateDebut, DateTime DateFin)
         {
+            if (VoyageId == 0) VoyageId = 1; // Default to 1 if VoyageId is 0
+
             var reservation = new ReservationDTO
             {
                 IdLogement = IdLogement,

@@ -48,7 +48,7 @@ namespace projet_csharp_travel_plan_frontend.Controllers
                     var json = await response.Content.ReadAsStringAsync();
                     var transport = JsonConvert.DeserializeObject<TransportDTO>(json);
                     ViewData["SelectedCountry"] = country;
-                    ViewData["VoyageId"] = voyageId;
+                    ViewData["VoyageId"] = voyageId == 0 ? 1 : voyageId; // Default to 1 if voyageId is 0
                     return View(transport);
                 }
 
@@ -67,6 +67,8 @@ namespace projet_csharp_travel_plan_frontend.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ConfirmTransportSelection(short IdTransport, bool BagageMain, bool BagageEnSoute, bool BagageLarge, bool Speedyboarding, short voyageId, DateTime DateDebut, DateTime DateFin)
         {
+            if (voyageId == 0) voyageId = 1; // Default to 1 if voyageId is 0
+
             var response = await _client.GetAsync($"{API_URL}{IdTransport}");
             if (!response.IsSuccessStatusCode)
             {
@@ -99,14 +101,6 @@ namespace projet_csharp_travel_plan_frontend.Controllers
 
             var reservationErrorMessage = await reservationResponse.Content.ReadAsStringAsync();
             return RedirectToAction("Error", "Home", new { message = reservationErrorMessage });
-        }
-
-        // New action to proceed to lodging reservation without selecting transport
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult ProceedToLodging(int voyageId)
-        {
-            return RedirectToAction("Index", "Logements", new { voyageId });
         }
     }
 }

@@ -25,6 +25,7 @@ html, body {
 body {
     display: flex;
     flex-direction: column;
+    background-color: #f8f9fa;
 }
 
 .container {
@@ -38,12 +39,6 @@ footer {
     position: relative;
     bottom: 0;
     width: 100%;
-}
-
-
-/* Add custom CSS here */
-body {
-    background-color: #f8f9fa;
 }
 
 .card {
@@ -75,3 +70,31 @@ body {
         background-color: #138496;
         border-color: #117a8b;
     }
+
+.text-center {
+    text-align: center;
+}
+
+.mt-5 {
+    margin-top: 3rem;
+}
+
+.w-50 {
+    width: 50%;
+}
+
+.shadow-lg {
+    box-shadow: 0 1rem 3rem rgba(0,0,0,0.175);
+}
+
+.p-5 {
+    padding: 3rem;
+}
+
+.mt-3 {
+    margin-top: 1rem;
+}
+
+.mt-4 {
+    margin-top: 1.5rem;
+}
