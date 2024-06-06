@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using projet_csharp_travel_plan_frontend.DTO;
@@ -9,6 +10,7 @@ using projet_csharp_travel_plan_frontend.Models;
 
 namespace projet_csharp_travel_plan_frontend.Controllers
 {
+    [Authorize]
     public class LogementsController : Controller
     {
         private readonly HttpClient _client;

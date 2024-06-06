@@ -8,9 +8,11 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Authorization;
 
 namespace projet_csharp_travel_plan_frontend.Controllers
 {
+    [Authorize]
     [Route("[controller]")]
     public class VoyageController : Controller
     {
