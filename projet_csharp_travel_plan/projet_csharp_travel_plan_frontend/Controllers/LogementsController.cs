@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using projet_csharp_travel_plan_frontend.DTO;
 using projet_csharp_travel_plan_frontend.Models;
+using System.Diagnostics;
+using Microsoft.Extensions.Logging;
 
 namespace projet_csharp_travel_plan_frontend.Controllers
 {
@@ -14,31 +16,42 @@ namespace projet_csharp_travel_plan_frontend.Controllers
     public class LogementsController : Controller
     {
         private readonly HttpClient _client;
+        private readonly ILogger<LogementsController> _logger;
         private const string API_URL = "https://localhost:7287/api/Logements/";
         private const string RESERVATION_API_URL = "https://localhost:7287/api/Reservations/";
 
-        public LogementsController(IHttpClientFactory httpClientFactory)
+        public LogementsController(IHttpClientFactory httpClientFactory, ILogger<LogementsController> logger)
         {
             _client = httpClientFactory.CreateClient("default");
+            _logger = logger;
         }
 
         // GET: Logements
         public async Task<IActionResult> Index(string country, int voyageId)
         {
-            var response = await _client.GetAsync($"{API_URL}?country={country}");
-            if (response.IsSuccessStatusCode)
+            try
             {
-                var json = await response.Content.ReadAsStringAsync();
-                var logements = JsonConvert.DeserializeObject<List<LogementDTO>>(json);
-                logements = logements.Where(l => l.NomPays == country).ToList();
-                ViewData["SelectedCountry"] = country;
-                ViewData["VoyageId"] = voyageId;
-                return View(logements);
-            }
+                var response = await _client.GetAsync($"{API_URL}?country={country}");
+                if (response.IsSuccessStatusCode)
+                {
+                    var json = await response.Content.ReadAsStringAsync();
+                    var logements = JsonConvert.DeserializeObject<List<LogementDTO>>(json);
+                    logements = logements.Where(l => l.NomPays == country).ToList();
+                    ViewData["SelectedCountry"] = country;
+                    ViewData["VoyageId"] = voyageId;
+                    return View(logements);
+                }
 
-            // Handle error
-            var errorMessage = await response.Content.ReadAsStringAsync();
-            return RedirectToAction("Error", "Home", new { message = errorMessage });
+                // Handle error
+                var errorMessage = await response.Content.ReadAsStringAsync();
+                return RedirectToAction("Error", "Home", new { message = errorMessage });
+            }
+            catch (HttpRequestException ex)
+            {
+                _logger.LogError("Error in GET Logements action: {Message}", ex.Message);
+                var errorModel = new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier, ErrorMessage = ex.Message };
+                return View("Error", errorModel);
+            }
         }
 
         // GET: Logements/Details/5
@@ -60,10 +73,11 @@ namespace projet_csharp_travel_plan_frontend.Controllers
                 var errorMessage = await response.Content.ReadAsStringAsync();
                 return RedirectToAction("Error", "Home", new { message = errorMessage });
             }
-            catch (Exception ex)
+            catch (HttpRequestException ex)
             {
-                // Handle exception
-                return RedirectToAction("Error", "Home", new { message = ex.Message });
+                _logger.LogError("Error in GET Logement Details action: {Message}", ex.Message);
+                var errorModel = new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier, ErrorMessage = ex.Message };
+                return View("Error", errorModel);
             }
         }
 
@@ -82,15 +96,24 @@ namespace projet_csharp_travel_plan_frontend.Controllers
                 Disponibilite = true
             };
 
-            var response = await _client.PostAsJsonAsync(RESERVATION_API_URL, reservation);
-            if (response.IsSuccessStatusCode)
+            try
             {
-                return RedirectToAction("Index", "Reservations");
-            }
+                var response = await _client.PostAsJsonAsync(RESERVATION_API_URL, reservation);
+                if (response.IsSuccessStatusCode)
+                {
+                    return RedirectToAction("Index", "Reservations");
+                }
 
-            // Handle error
-            var errorMessage = await response.Content.ReadAsStringAsync();
-            return RedirectToAction("Error", "Home", new { message = errorMessage });
+                // Handle error
+                var errorMessage = await response.Content.ReadAsStringAsync();
+                return RedirectToAction("Error", "Home", new { message = errorMessage });
+            }
+            catch (HttpRequestException ex)
+            {
+                _logger.LogError("Error in POST ConfirmReservation action: {Message}", ex.Message);
+                var errorModel = new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier, ErrorMessage = ex.Message };
+                return View("Error", errorModel);
+            }
         }
     }
 }
