@@ -18,26 +18,33 @@
                     <div class="card-body">
                         @if (item.Logement != null)
                         {
+                            <h1>@item.DateHeureDebut.Date</h1>
+                            <h1>Logement</h1>
                             <h5 class="card-title">@item.Logement.Nom</h5>
                             <p class="card-text">
-                                <strong>Description :</strong> @item.Logement.Details<br />
-                                <strong>Prix :</strong> @item.Logement.Details<br />
-                                <strong>Note :</strong> @item.Logement.Note / 10<br />
+                                <string> </string>
+                                <strong>Fournisseur : </strong> @item.Logement.NomFournisseur<br />
+                                <strong>Prix :</strong> @item.Logement.PrixLogement<br />
                             </p>
                         }
                         else if (item.Activite != null)
                         {
+                            <h1>@item.DateHeureDebut</h1>
+                            <h1>Activité</h1>
                             <h5 class="card-title">@item.Activite.Nom</h5>
+
                             <p class="card-text">
-                                <strong>Description :</strong> @item.Activite.Details<br />
+                                <strong>Fournisseur : </strong> @item.Activite.NomFournisseur<br />
                                 <strong>Prix :</strong> @item.Activite.PrixActivite CHF<br />
                             </p>
                         }
                         else if (item.Transport != null)
                         {
+                            <h1>@item.DateHeureDebut</h1>
+                            <h1>Transport</h1>
                             <h5 class="card-title">@item.Transport.CategorieTransportNom</h5>
                             <p class="card-text">
-                                <strong>Fournisseur</strong> @item.Transport.NomFournisseur<br />
+                                <strong>Fournisseur : </strong> @item.Transport.NomFournisseur<br />
                                 <strong>Prix :</strong> @item.Transport.Prix CHF<br />
                             </p>
                         }
