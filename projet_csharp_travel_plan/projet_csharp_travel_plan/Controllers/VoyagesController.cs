@@ -159,16 +159,6 @@ public class VoyagesController : ControllerBase
         try
         {
             await _context.SaveChangesAsync();
-
-            var choisir = new Choisir
-            {
-                IdVoyage = voyage.IdVoyage,
-                IdPays = dto.IdPays
-            };
-
-            _context.Set<Choisir>().Add(choisir);
-            await _context.SaveChangesAsync();
-
             dto.IdVoyage = voyage.IdVoyage;
 
             return CreatedAtAction(nameof(GetVoyage), new { id = voyage.IdVoyage }, dto);
@@ -179,7 +169,30 @@ public class VoyagesController : ControllerBase
         }
     }
 
+    [HttpGet("GetByUserId")]
+    public async Task<ActionResult<ClientDTO>> GetClientByUserId(string userId)
+    {
+        var client = await _context.Clients.FirstOrDefaultAsync(c => c.Id == userId);
+        if (client == null)
+        {
+            return NotFound();
+        }
 
+        var clientDto = new ClientDTO
+        {
+            IdClient = client.IdClient,
+            Id = client.Id,
+            Addresse = client.Addresse,
+            Cp = client.Cp,
+            Ville = client.Ville,
+            Pays = client.Pays,
+            Nom = client.Nom,
+            Prenom = client.Prenom,
+            DateNaissance = client.DateNaissance
+        };
+
+        return clientDto;
+    }
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteVoyage(int id)

@@ -26,20 +26,27 @@ namespace projet_csharp_travel_plan_frontend.Controllers
         // GET: Activites
         public async Task<IActionResult> Index(string country, int voyageId)
         {
-            var response = await _client.GetAsync($"{API_URL}?country={country}");
-            if (response.IsSuccessStatusCode)
+            try
             {
-                var json = await response.Content.ReadAsStringAsync();
-                var activites = JsonConvert.DeserializeObject<List<ActiviteDTO>>(json);
-                activites = activites.Where(a => a.NomPays == country).ToList();
-                ViewData["SelectedCountry"] = country;
-                ViewData["VoyageId"] = voyageId;
-                return View(activites);
-            }
+                var response = await _client.GetAsync($"{API_URL}?country={country}");
+                if (response.IsSuccessStatusCode)
+                {
+                    var json = await response.Content.ReadAsStringAsync();
+                    var activites = JsonConvert.DeserializeObject<List<ActiviteDTO>>(json);
+                    activites = activites.Where(a => a.NomPays == country).ToList();
+                    ViewData["SelectedCountry"] = country;
+                    ViewData["VoyageId"] = voyageId;
+                    return View(activites);
+                }
 
-            // Handle error
-            var errorMessage = await response.Content.ReadAsStringAsync();
-            return RedirectToAction("Error", "Home", new { message = errorMessage });
+                // Handle error
+                var errorMessage = await response.Content.ReadAsStringAsync();
+                return RedirectToAction("Error", "Home", new { message = errorMessage });
+            }
+            catch (HttpRequestException ex)
+            {
+                return RedirectToAction("Error", "Home", new { message = ex.Message });
+            }
         }
 
         // GET: Activites/Details/5
@@ -74,24 +81,31 @@ namespace projet_csharp_travel_plan_frontend.Controllers
         {
             if (VoyageId == 0) VoyageId = 1; // Default to 1 if VoyageId is 0
 
-            var reservation = new ReservationDTO
+            try
             {
-                IdActivite = IdActivite,
-                IdVoyage = VoyageId,
-                DateHeureDebut = DateDebut.Add(HeureDebut),
-                DateHeureFin = DateFin,
-                Disponibilite = true
-            };
+                var reservation = new ReservationDTO
+                {
+                    IdActivite = IdActivite,
+                    IdVoyage = VoyageId,
+                    DateHeureDebut = DateDebut.Add(HeureDebut),
+                    DateHeureFin = DateFin,
+                    Disponibilite = true
+                };
 
-            var response = await _client.PostAsJsonAsync(RESERVATION_API_URL, reservation);
-            if (response.IsSuccessStatusCode)
-            {
-                return RedirectToAction("Index", "Reservations");
+                var response = await _client.PostAsJsonAsync(RESERVATION_API_URL, reservation);
+                if (response.IsSuccessStatusCode)
+                {
+                    return RedirectToAction("Index", "Reservations");
+                }
+
+                // Handle error
+                var errorMessage = await response.Content.ReadAsStringAsync();
+                return RedirectToAction("Error", "Home", new { message = errorMessage });
             }
-
-            // Handle error
-            var errorMessage = await response.Content.ReadAsStringAsync();
-            return RedirectToAction("Error", "Home", new { message = errorMessage });
+            catch (HttpRequestException ex)
+            {
+                return RedirectToAction("Error", "Home", new { message = ex.Message });
+            }
         }
     }
 }
