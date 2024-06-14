@@ -6,6 +6,10 @@
 
 <h1 class="text-center mt-5">Nouvelle Réservation</h1>
 
+<p class="description">Dans cette étape, veuillez sélectionner une option, c'est-à-dire l'élément que vous souhaitez réserver :</p>
+<p class="description">Logement - Activité - Transport</p>
+<p class="description">Cela vous redirigera sur une page qui vous proposera les différentes options disponibles !</p>
+
 <div class="d-flex justify-content-center mt-5">
     <div class="card p-5 shadow-lg w-50">
         <form asp-action="Create" method="post">
@@ -22,7 +26,28 @@
                 <label for="selectedOption">Option</label>
                 <select asp-for="SelectedOption" asp-items="ViewBag.Options" class="form-control" id="selectedOption"></select>
             </div>
-            <button type="submit" class="btn btn-primary btn-block mt-4">Suivant</button>
+            <div class="form-group mt-4 d-flex justify-content-end">
+                <button type="submit" class="btn btn-primary">Suivant</button>
+            </div>
         </form>
     </div>
 </div>
+
+<style>
+    .description {
+        text-align: center;
+    }
+
+    .btn-primary {
+        background-color: #337ab7;
+        color: #fff;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+        .btn-primary:hover {
+            background-color: #23527c;
+        }
+</style>
