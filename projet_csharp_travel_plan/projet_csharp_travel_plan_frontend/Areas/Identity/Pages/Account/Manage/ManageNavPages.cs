@@ -4,6 +4,7 @@
 
 using System;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.CodeAnalysis.Elfie.Diagnostics;
 
 namespace  projet_csharp_travel_plan_frontend.Areas.Identity.Pages.Account.Manage
 {
@@ -20,6 +21,8 @@ namespace  projet_csharp_travel_plan_frontend.Areas.Identity.Pages.Account.Manag
         public static string Index => "Index";
 
         public static string Profil => "Profil";
+
+        public static string MesVoyages => "Mes Voyages";
 
         /// <summary>
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
@@ -70,6 +73,8 @@ namespace  projet_csharp_travel_plan_frontend.Areas.Identity.Pages.Account.Manag
         public static string IndexNavClass(ViewContext viewContext) => PageNavClass(viewContext, Index);
 
         public static string ProfilNavClass(ViewContext viewContext) => PageNavClass(viewContext, Profil);
+
+        public static string MesVoyagesNavClass(ViewContext viewContext) => PageNavClass(viewContext, MesVoyages);
 
         /// <summary>
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used

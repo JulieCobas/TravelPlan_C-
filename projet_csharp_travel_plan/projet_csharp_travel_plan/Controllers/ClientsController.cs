@@ -27,7 +27,7 @@ public class ClientsController : ControllerBase
         var client = await _context.Clients.FirstOrDefaultAsync(c => c.Id == userId);
         if (client == null)
         {
-            _logger.LogWarning("Client not found for user ID: {UserId}", userId);
+            _logger.LogWarning($"Client not found for user ID: {userId}");
             return NotFound();
         }
 
@@ -44,7 +44,7 @@ public class ClientsController : ControllerBase
             DateNaissance = client.DateNaissance,
         };
 
-        _logger.LogInformation("Client data successfully fetched for user ID: {UserId}", userId);
+        _logger.LogInformation($"Client data successfully fetched for user ID: {userId}");
         return Ok(clientDto);
     }
 
@@ -53,14 +53,14 @@ public class ClientsController : ControllerBase
     {
         if (id != clientDto.IdClient)
         {
-            _logger.LogWarning("Bad request for client update. ID mismatch: {Id}", id);
+            _logger.LogWarning($"Bad request for client update. ID mismatch: {id}");
             return BadRequest("Client ID mismatch.");
         }
 
         var client = await _context.Clients.FirstOrDefaultAsync(c => c.IdClient == id);
         if (client == null)
         {
-            _logger.LogWarning("Client not found for ID: {Id}", id);
+            _logger.LogWarning($"Client not found for ID: {id}");
             return NotFound();
         }
 
@@ -78,24 +78,24 @@ public class ClientsController : ControllerBase
         {
             _context.Entry(client).State = EntityState.Modified;
             await _context.SaveChangesAsync();
-            _logger.LogInformation("Client data successfully updated for ID: {Id}", id);
+            _logger.LogInformation($"Client data successfully updated for ID: {id}");
         }
         catch (DbUpdateConcurrencyException ex)
         {
             if (!ClientExists(id))
             {
-                _logger.LogError(ex, "Client not found during update for ID: {Id}", id);
+                _logger.LogError(ex, $"Client not found during update for ID: {id}");
                 return NotFound();
             }
             else
             {
-                _logger.LogError(ex, "Concurrency error during client update for ID: {Id}", id);
+                _logger.LogError(ex, $"Concurrency error during client update for ID: {id}");
                 throw;
             }
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "An error occurred while updating client data for ID: {Id}", id);
+            _logger.LogError(ex, $"An error occurred while updating client data for ID: {id}");
             return StatusCode(500, "An error occurred while updating the client.");
         }
 
@@ -121,7 +121,7 @@ public class ClientsController : ControllerBase
             Pays = clientDto.Pays,
             Nom = clientDto.Nom,
             Prenom = clientDto.Prenom,
-            DateNaissance = clientDto.DateNaissance,
+            DateNaissance = clientDto.DateNaissance
         };
 
         _context.Clients.Add(newClient);

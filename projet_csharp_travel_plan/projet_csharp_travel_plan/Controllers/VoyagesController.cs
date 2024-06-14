@@ -28,6 +28,8 @@ public class VoyagesController : ControllerBase
                 IdVoyage = v.IdVoyage,
                 DateDebut = v.DateDebut,
                 DateFin = v.DateFin,
+                IdClient = (short)v.IdClient,
+                PrixTotal = v.PrixTotal,
                 IdPays = v.IdPays.FirstOrDefault().IdPays // Sélectionne le premier ID de pays
             })
             .ToListAsync();
