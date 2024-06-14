@@ -23,6 +23,7 @@ public class LogementsController : ControllerBase
         var logements = await _context.Logements
             .Include(l => l.IdFournisseurNavigation)
             .Include(l => l.IdLogementCategorieNavigation)
+            .Include(l => l.IdLogementPrixNavigation)
             .Include(l => l.IdPaysNavigation)
             .Select(l => new LogementDTO
             {
@@ -35,7 +36,9 @@ public class LogementsController : ControllerBase
                 Disponibilite = l.Disponibilite,
                 NomFournisseur = l.IdFournisseurNavigation.NomCompagnie,
                 NomCategorie = l.IdLogementCategorieNavigation.Nom,
-                NomPays = l.IdPaysNavigation.Nom
+                NomPays = l.IdPaysNavigation.Nom,
+                PrixLogement = l.IdLogementPrixNavigation.Prix
+                
             })
             .ToListAsync();
 
@@ -49,6 +52,7 @@ public class LogementsController : ControllerBase
             .Include(l => l.IdFournisseurNavigation)
             .Include(l => l.IdLogementCategorieNavigation)
             .Include(l => l.IdPaysNavigation)
+            .Include(l => l.IdLogementPrixNavigation)
             .Where(l => l.IdLogement == id)
             .Select(l => new LogementDTO
             {
@@ -61,7 +65,8 @@ public class LogementsController : ControllerBase
                 Disponibilite = l.Disponibilite,
                 NomFournisseur = l.IdFournisseurNavigation.NomCompagnie,
                 NomCategorie = l.IdLogementCategorieNavigation.Nom,
-                NomPays = l.IdPaysNavigation.Nom
+                NomPays = l.IdPaysNavigation.Nom,
+                PrixLogement = l.IdLogementPrixNavigation.Prix
             })
             .FirstOrDefaultAsync();
 
