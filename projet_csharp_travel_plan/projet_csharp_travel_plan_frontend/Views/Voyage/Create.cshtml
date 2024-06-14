@@ -62,7 +62,6 @@
                 var dateDebut = document.querySelector('[name="DateDebut"]').value;
                 var dateFin = document.querySelector('[name="DateFin"]').value;
                 var selectedPayId = document.querySelector('[name="IdPays"]').value;
-                var selectedPayText = document.querySelector('[name="IdPays"] option:checked').text;
 
                 // Validation : Vérifier si les champs dates sont vides
                 if (!dateDebut) {
@@ -102,17 +101,9 @@
                 if (form.querySelectorAll('.is-invalid').length > 0) {
                     return;
                 }
-                // Check
-                console.log("Date de Début:", dateDebut);
-                console.log("Date de Fin:", dateFin);
-                console.log("Pays Sélectionné:", selectedPayId);
-                console.log("Pays Sélectionné Nom:", selectedPayText);
 
-                // Si toutes les validations passent, envoyez le formulaire
+                // Soumettez le formulaire si toutes les validations passent
                 form.submit();
-
-                // Redirection après la soumission du formulaire
-                window.location.href = '@Url.Action("Create", "Reservations")' + '?dateDebut=' + dateDebut + '&dateFin=' + dateFin + '&selectedPayId=' + selectedPayId + '&selectedPayText=' + selectedPayText;
             });
         } else {
             console.error("Form with ID 'voyageForm' not found.");
