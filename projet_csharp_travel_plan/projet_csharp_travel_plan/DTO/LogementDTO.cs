@@ -1,4 +1,6 @@
-﻿namespace projet_csharp_travel_plan.DTO
+﻿using projet_csharp_travel_plan.Models;
+
+namespace projet_csharp_travel_plan.DTO
 {
     public class LogementDTO
     {
@@ -12,5 +14,6 @@
         public string NomFournisseur { get; set; } = null!;
         public string NomCategorie { get; set; } = null!;
         public string NomPays { get; set; } = null!;
+        public decimal? PrixLogement { get; set; }
     }
 }

@@ -16,28 +16,34 @@
             <div class="col-md-4 mb-4">
                 <div class="card">
                     <div class="card-body">
+                        <h5 class="card-title">
+                            Date: @item.DateDebut.ToString("dd.MM.yyyy") <br />
+                            Heure: @item.HeureDebut.ToString(@"hh\:mm\:ss")
+                        </h5>
                         @if (item.Logement != null)
                         {
+                            <h2>Logement</h2>
                             <h5 class="card-title">@item.Logement.Nom</h5>
                             <p class="card-text">
-                                <strong>Description :</strong> @item.Logement.Details<br />
-                                <strong>Prix :</strong> @item.Logement.Details<br />
-                                <strong>Note :</strong> @item.Logement.Note / 10<br />
+                                <strong>Fournisseur :</strong> @item.Logement.NomFournisseur<br />
+                                <strong>Prix :</strong> @item.Logement.PrixLogement CHF<br />
                             </p>
                         }
                         else if (item.Activite != null)
                         {
+                            <h2>Activité</h2>
                             <h5 class="card-title">@item.Activite.Nom</h5>
                             <p class="card-text">
-                                <strong>Description :</strong> @item.Activite.Details<br />
+                                <strong>Fournisseur :</strong> @item.Activite.NomFournisseur<br />
                                 <strong>Prix :</strong> @item.Activite.PrixActivite CHF<br />
                             </p>
                         }
                         else if (item.Transport != null)
                         {
+                            <h2>Transport</h2>
                             <h5 class="card-title">@item.Transport.CategorieTransportNom</h5>
                             <p class="card-text">
-                                <strong>Fournisseur</strong> @item.Transport.NomFournisseur<br />
+                                <strong>Fournisseur :</strong> @item.Transport.NomFournisseur<br />
                                 <strong>Prix :</strong> @item.Transport.Prix CHF<br />
                             </p>
                         }
@@ -46,7 +52,7 @@
                             <h5 class="card-title">Voyage: @item.IdVoyage</h5>
                             <p class="card-text">Aucun détail disponible</p>
                         }
-                        <a href="@Url.Action("Details", "Reservations", new { id = item.IdReservation })" class="btn btn-info btn-sm">Details</a>
+                        <a href="@Url.Action("Details", "Reservations", new { id = item.IdReservation })" class="btn btn-info btn-sm">Détails</a>
                     </div>
                 </div>
             </div>

@@ -12,5 +12,7 @@
         public string NomFournisseur { get; set; } = null!;
         public string NomCategorie { get; set; } = null!;
         public string NomPays { get; set; } = null!;
+        public decimal? PrixLogement { get; set; }
+
     }
 }
