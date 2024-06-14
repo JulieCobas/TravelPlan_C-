@@ -8,6 +8,8 @@
 
 <h1>@ViewData["Title"]</h1>
 
+<p class="description">Veuillez remplir les différentes options demandées</p>
+
 <div class="container">
     <div class="card mb-4 shadow-sm">
         <div class="row no-gutters">
@@ -47,9 +49,15 @@
                     <label for="DateFin">Date de fin</label>
                     <input type="date" class="form-control" id="DateFin" name="DateFin" required />
                 </div>
-                <button type="submit" class="btn btn-primary">Confirmer la réservation</button>
+                <div class="form-group row mt-4">
+                    <div class="col-sm-6">
+                        <a asp-action="Index" asp-route-country="@selectedCountry" asp-route-voyageId="@voyageId" class="btn btn-danger btn-block">Retour à la liste des logements</a>
+                    </div>
+                    <div class="col-sm-6 text-right">
+                        <button type="submit" class="btn btn-primary">Confirmer la réservation</button>
+                    </div>
+                </div>
             </form>
-            <a asp-action="Index" asp-route-country="@selectedCountry" asp-route-voyageId="@voyageId" class="btn btn-secondary mt-2">Retour à la liste des logements</a>
         </div>
     </div>
 </div>
@@ -92,9 +100,31 @@
         margin-left: 5px;
     }
 
-    .btn-secondary {
-        background-color: #6c757d;
-        color: white;
+    .btn-danger {
+        background-color: #dc3545;
+        color: #fff;
+        padding: 10px 20px;
         border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        width: 100%;
     }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+
+    .btn-primary {
+        background-color: #337ab7;
+        color: #fff;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        width: 100%;
+    }
+
+        .btn-primary:hover {
+            background-color: #23527c;
+        }
 </style>
