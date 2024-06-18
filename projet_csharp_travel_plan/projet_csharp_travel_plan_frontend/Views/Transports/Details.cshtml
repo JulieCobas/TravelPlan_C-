@@ -9,10 +9,12 @@
 
 <h1>Details</h1>
 
+<p class="description">Veuillez remplir les différentes options demandées</p>
+
 <div class="container">
     <div class="card mb-4 shadow-sm">
         <div class="row no-gutters">
-            <div class="col-md-4">
+            <div class="col-md-4 d-flex flex-column justify-content-center">
                 <img src="/img/transport_test.png" class="card-img" alt="Image du transport">
             </div>
             <div class="col-md-8 d-flex flex-column">
@@ -40,8 +42,17 @@
                         </div>
                     }
                     <p class="card-text"><strong>Prix : </strong><span id="totalPrice">@Model.Prix</span> €</p>
+                    <div class="form-group">
+                        <label for="DateDebut">Date de début</label>
+                        <input type="date" class="form-control" id="DateDebut" name="DateDebut" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="DateFin">Date de fin</label>
+                        <input type="date" class="form-control" id="DateFin" name="DateFin" required />
+                    </div>
                 </div>
-                <div class="card-footer text-left">
+                <div class="card-footer d-flex justify-content-between align-items-center">
+                    <a asp-action="Index" asp-route-country="@selectedCountry" asp-route-voyageId="@voyageId" class="btn btn-danger ml-3">Retour à la liste</a>
                     <form method="post" asp-action="ConfirmTransportSelection">
                         @Html.AntiForgeryToken()
                         <input type="hidden" name="IdTransport" value="@Model.IdTransport" />
@@ -50,17 +61,8 @@
                         <input type="hidden" name="BagageLarge" value="false" />
                         <input type="hidden" name="Speedyboarding" value="false" />
                         <input type="hidden" name="voyageId" value="@voyageId" />
-                        <div class="form-group">
-                            <label for="DateDebut">Date de début</label>
-                            <input type="date" class="form-control" id="DateDebut" name="DateDebut" required />
-                        </div>
-                        <div class="form-group">
-                            <label for="DateFin">Date de fin</label>
-                            <input type="date" class="form-control" id="DateFin" name="DateFin" required />
-                        </div>
                         <button type="submit" class="btn btn-primary">Confirmer et passer à la réservation de logement</button>
                     </form>
-                    <a asp-action="Index" asp-route-country="@selectedCountry" asp-route-voyageId="@voyageId" class="btn btn-secondary">Retour à la liste</a>
                 </div>
             </div>
         </div>
@@ -134,5 +136,39 @@
 
     .container .card:first-child {
         margin-top: 40px;
+    }
+
+    .btn-danger {
+        background-color: #dc3545;
+        color: #fff;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+
+    .btn-primary {
+        background-color: #337ab7;
+        color: #fff;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+        .btn-primary:hover {
+            background-color: #23527c;
+        }
+
+    .mt-auto {
+        margin-top: auto;
+    }
+
+    .ml-3 {
+        margin-left: 1rem !important;
     }
 </style>

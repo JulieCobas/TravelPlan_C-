@@ -10,7 +10,6 @@
         public DateTime DateHeureDebut { get; set; }
         public DateTime? DateHeureFin { get; set; }
         public bool? Disponibilite { get; set; }
-
         public LogementDTO? Logement { get; set; }
         public ActiviteDTO? Activite { get; set; }
         public TransportDTO? Transport { get; set; }
