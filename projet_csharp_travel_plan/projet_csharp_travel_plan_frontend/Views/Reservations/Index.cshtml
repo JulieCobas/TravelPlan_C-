@@ -7,7 +7,7 @@
 
 <div class="container mt-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="display-4">Reservations</h1>
+        <h1 class="display-4 font-weight-bold">Réservations</h1>
         <a asp-action="Create" class="btn btn-primary btn-lg">Nouvelle Réservation</a>
     </div>
 
@@ -32,7 +32,7 @@
                             {
                                 <h5 class="card-title">@item.Logement.Nom</h5>
                                 <p class="card-text">
-                                    <strong>Fournisseur :</strong> @item.Logement.NomFournisseur<br />
+                                    <strong>Hébergeur :</strong> @item.Logement.NomFournisseur<br />
                                     <strong>Prix :</strong> @item.Logement.PrixLogement CHF<br />
                                 </p>
                             }
@@ -40,7 +40,7 @@
                             {
                                 <h5 class="card-title">@item.Activite.Nom</h5>
                                 <p class="card-text">
-                                    <strong>Fournisseur :</strong> @item.Activite.NomFournisseur<br />
+                                    <strong>Prestataire :</strong> @item.Activite.NomFournisseur<br />
                                     <strong>Prix :</strong> @item.Activite.PrixActivite CHF<br />
                                 </p>
                             }
@@ -63,7 +63,7 @@
                                     @item.Transport.CategorieTransportNom
                                 </h5>
                                 <p class="card-text">
-                                    <strong>Fournisseur :</strong> @item.Transport.NomFournisseur<br />
+                                    <strong>Compagnie :</strong> @item.Transport.NomFournisseur<br />
                                     <strong>Lieu de départ :</strong> @item.Transport.LieuDepart<br />
                                     <strong>Prix :</strong> @item.Transport.Prix CHF<br />
                                 </p>
