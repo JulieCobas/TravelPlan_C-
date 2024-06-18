@@ -53,6 +53,20 @@
                     }
                 </div>
                 <div class="timeline-content">
+                    <div class="badge-container">
+                        @if (item.Logement != null)
+                        {
+                            <span class="badge badge-pill badge-primary">Logement</span>
+                        }
+                        else if (item.Activite != null)
+                        {
+                            <span class="badge badge-pill badge-success">Activité</span>
+                        }
+                        else if (item.Transport != null)
+                        {
+                            <span class="badge badge-pill badge-warning">Transport</span>
+                        }
+                    </div>
                     <div class="country-section d-flex align-items-center mb-3">
                         <span class="badge badge-country">
                             <i class="fas fa-globe"></i> @item.Voyage.NomPays
@@ -71,7 +85,7 @@
                         {
                             <h5 class="card-title">@item.Logement.Nom</h5>
                             <p class="card-text">
-                                <strong>Logement :</strong> @item.Logement.NomFournisseur<br />
+                                <strong>Hébergeur :</strong> @item.Logement.NomFournisseur<br />
                             </p>
                         }
                         else if (item.Activite != null)
@@ -109,30 +123,12 @@
                             <p class="card-text">Aucun détail disponible</p>
                         }
                     </div>
-                    <div class="badge-container">
-                        @if (item.Logement != null)
-                        {
-                            <span class="badge badge-pill badge-primary">Logement</span>
-                        }
-                        else if (item.Activite != null)
-                        {
-                            <span class="badge badge-pill badge-success">Activité</span>
-                        }
-                        else if (item.Transport != null)
-                        {
-                            <span class="badge badge-pill badge-warning">Transport</span>
-                        }
-                    </div>
                     <a href="@Url.Action("Details", "Reservations", new { id = item.IdReservation })" class="btn btn-details">Détails</a>
                 </div>
             </div>
         }
     </div>
 </div>
-
-<!-- Inclure Font Awesome pour les icônes -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
-
 
 <!-- Inclure Font Awesome pour les icônes -->
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
@@ -230,6 +226,10 @@
         .timeline-content h4 {
             margin-top: 0;
         }
+
+    .badge-container {
+        margin-left: auto;
+    }
 
         .timeline-content .btn-details {
             background-color: #007bff;
