@@ -55,11 +55,15 @@ namespace projet_csharp_travel_plan_frontend.Controllers
 
                 // Handle error
                 var errorMessage = await paysResponse.Content.ReadAsStringAsync();
-                return CreateErrorView("Une erreur est survenue lors de la récupération des pays.", errorMessage);
+                var errorModel = new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier, ErrorMessage = errorMessage };
+                _logger.LogError("Error in GET Create action: {ErrorMessage}", errorMessage);
+                return View("Error", errorModel);
             }
             catch (HttpRequestException ex)
             {
-                return CreateErrorView("Une erreur est survenue lors de la récupération des pays.", ex.Message);
+                _logger.LogError("Error in GET Create action: {Message}", ex.Message);
+                var errorModel = new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier, ErrorMessage = ex.Message };
+                return View("Error", errorModel);
             }
         }
 
@@ -73,32 +77,28 @@ namespace projet_csharp_travel_plan_frontend.Controllers
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (string.IsNullOrEmpty(userId))
             {
-                return CreateErrorView("L'utilisateur n'est pas authentifié.");
+                _logger.LogError("User is not authenticated.");
+                return View("Error", new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier, ErrorMessage = "User is not authenticated." });
             }
 
             // Retrieve client based on user ID
-            try
+            var clientResponse = await _client.GetAsync($"{CLIENT_API_URL}{userId}"); // Ajuster ici
+            if (clientResponse.IsSuccessStatusCode)
             {
-                var clientResponse = await _client.GetAsync($"{CLIENT_API_URL}{userId}");
-                if (clientResponse.IsSuccessStatusCode)
+                var jsonClient = await clientResponse.Content.ReadAsStringAsync();
+                var client = JsonConvert.DeserializeObject<ClientDTO>(jsonClient);
+                if (client == null)
                 {
-                    var jsonClient = await clientResponse.Content.ReadAsStringAsync();
-                    var client = JsonConvert.DeserializeObject<ClientDTO>(jsonClient);
-                    if (client == null)
-                    {
-                        return CreateErrorView("Client non trouvé.");
-                    }
-                    voyage.IdClient = client.IdClient;
+                    _logger.LogError("Client not found.");
+                    return View("Error", new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier, ErrorMessage = "Client not found." });
                 }
-                else
-                {
-                    var errorMessage = await clientResponse.Content.ReadAsStringAsync();
-                    return CreateErrorView("Erreur lors de la récupération du client.", errorMessage);
-                }
+                voyage.IdClient = client.IdClient;
             }
-            catch (HttpRequestException ex)
+            else
             {
-                return CreateErrorView("Erreur lors de la récupération du client.", ex.Message);
+                var errorMessage = await clientResponse.Content.ReadAsStringAsync();
+                _logger.LogError("Error occurred while retrieving client: {ErrorMessage}", errorMessage);
+                return View("Error", new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier, ErrorMessage = errorMessage });
             }
 
             voyage.PrixTotal = 0; // Set default price total
@@ -125,11 +125,16 @@ namespace projet_csharp_travel_plan_frontend.Controllers
 
                     // Handle error
                     var errorMessage = await response.Content.ReadAsStringAsync();
-                    return CreateErrorView("Erreur lors de la création du voyage.", errorMessage);
+                    _logger.LogError("Error occurred while creating voyage: {ErrorMessage}", errorMessage);
+
+                    var errorModel = new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier, ErrorMessage = errorMessage };
+                    return View("Error", errorModel);
                 }
                 catch (HttpRequestException ex)
                 {
-                    return CreateErrorView("Erreur lors de la création du voyage.", ex.Message);
+                    _logger.LogError("Error occurred while creating voyage: {Message}", ex.Message);
+                    var errorModel = new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier, ErrorMessage = ex.Message };
+                    return View("Error", errorModel);
                 }
             }
 
@@ -147,27 +152,19 @@ namespace projet_csharp_travel_plan_frontend.Controllers
                 else
                 {
                     var errorMessage = await paysResponse.Content.ReadAsStringAsync();
-                    return CreateErrorView("Erreur lors de la rechargement de la liste des pays.", errorMessage);
+                    var errorModel = new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier, ErrorMessage = errorMessage };
+                    _logger.LogError("Error in reloading countries list: {ErrorMessage}", errorMessage);
+                    return View("Error", errorModel);
                 }
             }
             catch (HttpRequestException ex)
             {
-                return CreateErrorView("Erreur lors de la rechargement de la liste des pays.", ex.Message);
+                _logger.LogError("Error in reloading countries list: {Message}", ex.Message);
+                var errorModel = new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier, ErrorMessage = ex.Message };
+                return View("Error", errorModel);
             }
 
             return View(voyage);
-        }
-
-        private IActionResult CreateErrorView(string title, string details = null)
-        {
-            _logger.LogError($"{title} Détails: {details}");
-            var errorModel = new ErrorViewModel
-            {
-                RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier,
-                ErrorMessage = title,
-                ErrorDetails = details
-            };
-            return View("Error", errorModel);
         }
     }
 }
