@@ -52,6 +52,8 @@
     </div>
 </form>
 
+<div id="errorMessage" class="alert alert-danger" style="display:none"></div>
+
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         var form = document.getElementById('voyageForm');
@@ -108,14 +110,31 @@
                     return;
                 }
 
-                // Soumettez le formulaire si toutes les validations passent
-                form.submit();
+                // Envoi du formulaire via AJAX
+                fetch(form.action, {
+                    method: 'POST',
+                    body: new FormData(form),
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.message) {
+                            document.getElementById('errorMessage').style.display = 'block';
+                            document.getElementById('errorMessage').textContent = data.message;
+                        } else {
+                            // Redirection ou autre action après la soumission réussie
+                        }
+                    })
+                    .catch(error => {
+                        document.getElementById('errorMessage').style.display = 'block';
+                        document.getElementById('errorMessage').textContent = "Une erreur est survenue lors de la soumission du formulaire.";
+                    });
             });
         } else {
             console.error("Form with ID 'voyageForm' not found.");
         }
     });
 </script>
+
 
 <style>
     body {

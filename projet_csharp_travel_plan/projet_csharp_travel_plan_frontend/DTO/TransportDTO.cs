@@ -22,5 +22,9 @@
 
         // Transport category
         public TransportCategorieDTO CategorieTransport { get; set; }
+
+        // Dates
+        public DateTime DateDebut { get; set; }
+        public DateTime DateFin { get; set; }
     }
 }

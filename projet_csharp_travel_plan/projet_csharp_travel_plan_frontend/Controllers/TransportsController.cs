@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -80,13 +81,38 @@ namespace projet_csharp_travel_plan_frontend.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ConfirmTransportSelection(short IdTransport, bool BagageMain, bool BagageEnSoute, bool BagageLarge, bool Speedyboarding, short voyageId, DateTime DateDebut, DateTime DateFin)
+        public async Task<IActionResult> ConfirmTransportSelection(TransportDTO transportDto, short voyageId)
         {
             if (voyageId == 0) voyageId = 1; // Default to 1 if voyageId is 0
 
+            if (transportDto.DateDebut == default(DateTime))
+            {
+                ModelState.AddModelError("DateDebut", "La date de début est requise.");
+            }
+            if (transportDto.DateFin == default(DateTime))
+            {
+                ModelState.AddModelError("DateFin", "La date de fin est requise.");
+            }
+            if (!ModelState.IsValid)
+            {
+                // Recharger les données nécessaires pour la vue
+                ViewData["SelectedCountry"] = Request.Form["country"];
+                ViewData["VoyageId"] = voyageId;
+                var response = await _client.GetAsync($"{API_URL}{transportDto.IdTransport}");
+                if (response.IsSuccessStatusCode)
+                {
+                    var json = await response.Content.ReadAsStringAsync();
+                    var transport = JsonConvert.DeserializeObject<TransportDTO>(json);
+                    return View("Details", transport);
+                }
+
+                var errorMessage = await response.Content.ReadAsStringAsync();
+                return RedirectToAction("Error", "Home", new { message = errorMessage });
+            }
+
             try
             {
-                var response = await _client.GetAsync($"{API_URL}{IdTransport}");
+                var response = await _client.GetAsync($"{API_URL}{transportDto.IdTransport}");
                 if (!response.IsSuccessStatusCode)
                 {
                     var errorMessage = await response.Content.ReadAsStringAsync();
@@ -94,19 +120,19 @@ namespace projet_csharp_travel_plan_frontend.Controllers
                 }
 
                 var json = await response.Content.ReadAsStringAsync();
-                var transportDto = JsonConvert.DeserializeObject<TransportDTO>(json);
+                var transport = JsonConvert.DeserializeObject<TransportDTO>(json);
 
-                transportDto.BagageMain = BagageMain;
-                transportDto.BagageEnSoute = BagageEnSoute;
-                transportDto.BagageLarge = BagageLarge;
-                transportDto.Speedyboarding = Speedyboarding;
+                transport.BagageMain = transportDto.BagageMain;
+                transport.BagageEnSoute = transportDto.BagageEnSoute;
+                transport.BagageLarge = transportDto.BagageLarge;
+                transport.Speedyboarding = transportDto.Speedyboarding;
 
                 var reservation = new ReservationDTO
                 {
-                    IdTransport = IdTransport,
+                    IdTransport = transportDto.IdTransport,
                     IdVoyage = voyageId,
-                    DateHeureDebut = DateDebut,
-                    DateHeureFin = DateFin,
+                    DateHeureDebut = transportDto.DateDebut,
+                    DateHeureFin = transportDto.DateFin,
                     Disponibilite = true
                 };
 
