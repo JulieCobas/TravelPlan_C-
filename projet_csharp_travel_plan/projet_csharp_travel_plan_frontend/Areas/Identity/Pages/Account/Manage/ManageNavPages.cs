@@ -22,7 +22,7 @@ namespace  projet_csharp_travel_plan_frontend.Areas.Identity.Pages.Account.Manag
 
         public static string Profil => "Profil";
 
-        public static string MesVoyages => "Mes Voyages";
+        public static string MesVoyages => "MesVoyages";
 
         /// <summary>
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used

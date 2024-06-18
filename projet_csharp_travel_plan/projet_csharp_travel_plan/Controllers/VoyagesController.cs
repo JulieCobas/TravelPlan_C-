@@ -220,12 +220,13 @@ public class VoyagesController : ControllerBase
     {
         var voyages = await _context.Voyages
             .Where(v => v.IdClient == clientId)
+            .OrderBy(v => v.DateDebut) // Trier par DateDebut
             .Select(v => new VoyageDTO
             {
                 IdVoyage = v.IdVoyage,
                 DateDebut = v.DateDebut,
                 DateFin = v.DateFin,
-                PrixTotal = v.PrixTotal // Assurez-vous que cette propriété existe et est mappée correctement
+                PrixTotal = v.PrixTotal
             })
             .ToListAsync();
 
