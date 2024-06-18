@@ -19,6 +19,7 @@
         public int? PrixBagageLarge { get; set; }
         public bool? Speedyboarding { get; set; }
         public int? PrixSpeedyBoarding { get; set; }
+        public string LieuDepart {  get; set; }
 
         // Transport category
         public TransportCategorieDTO CategorieTransport { get; set; }

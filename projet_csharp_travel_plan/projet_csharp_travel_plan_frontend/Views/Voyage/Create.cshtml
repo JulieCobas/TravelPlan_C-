@@ -6,6 +6,8 @@
 
 <h1>Nouveau Voyage</h1>
 
+<p class="description">Vous vous trouvez ici à l'aube d'un nouveau voyage ! Veuillez remplir les informations ci-dessous pour créer un nouveau voyage. Assurez-vous que toutes les données sont correctes et à jour avant de soumettre le formulaire.</p>
+
 <form id="voyageForm" asp-action="CreatePost" asp-controller="Voyage" method="post">
     <div class="form-group row">
         <label class="col-sm-2 col-form-label">Date d'arrivée</label>
@@ -40,9 +42,13 @@
         </div>
     </div>
 
-    <div class="form-group">
-        <button type="submit" class="btn btn-primary">Soumettre</button>
-        <a asp-action="Index" asp-controller="Home" class="btn btn-secondary">Annuler</a>
+    <div class="form-group row">
+        <div class="col-sm-6">
+            <a asp-action="Index" asp-controller="Home" class="btn btn-danger btn-block">Annuler</a>
+        </div>
+        <div class="col-sm-6 text-right">
+            <button type="submit" class="btn btn-primary">Soumettre</button>
+        </div>
     </div>
 </form>
 
@@ -159,6 +165,10 @@
         border-color: red;
     }
 
+    .description {
+        text-align: center;
+    }
+
     #voyageForm {
         max-width: 600px;
         margin: 40px auto;
@@ -181,29 +191,31 @@
             padding-left: 20px;
         }
 
-        #voyageForm button[type="submit"] {
+        #voyageForm .btn-danger {
+            background-color: #dc3545;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+            #voyageForm .btn-danger:hover {
+                background-color: #c82333;
+            }
+
+        #voyageForm .btn-primary {
             background-color: #337ab7;
             color: #fff;
             padding: 10px 20px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            width: 100%;
         }
 
-            #voyageForm button[type="submit"]:hover {
+            #voyageForm .btn-primary:hover {
                 background-color: #23527c;
-            }
-
-        #voyageForm .btn-secondary {
-            background-color: #666;
-            color: #fff;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-            #voyageForm .btn-secondary:hover {
-                background-color: #444;
             }
 </style>
