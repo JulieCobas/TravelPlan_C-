@@ -84,9 +84,9 @@ public class ReservationsController : ControllerBase
                     DateFin = r.IdVoyageNavigation.DateFin,
                     IdClient = r.IdVoyageNavigation.IdClient ?? 0,
                     PrixTotal = r.IdVoyageNavigation.PrixTotal,
-                    StatutPaiement = r.IdVoyageNavigation.StatutPaiement,
+
                     IdPays = r.IdVoyageNavigation.IdPays.FirstOrDefault().IdPays, // Obtenez le premier IdPays
-                    NomPays = r.IdVoyageNavigation.IdPays.FirstOrDefault().Nom // Obtenez le nom du premier pays
+
                 } : null
             })
             .ToListAsync();
