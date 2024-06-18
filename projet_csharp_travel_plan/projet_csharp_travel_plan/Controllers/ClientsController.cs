@@ -41,7 +41,7 @@ public class ClientsController : ControllerBase
             Pays = client.Pays,
             Nom = client.Nom,
             Prenom = client.Prenom,
-            DateNaissance = client.DateNaissance,
+            DateNaissance = client.DateNaissance
         };
 
         _logger.LogInformation($"Client data successfully fetched for user ID: {userId}");
