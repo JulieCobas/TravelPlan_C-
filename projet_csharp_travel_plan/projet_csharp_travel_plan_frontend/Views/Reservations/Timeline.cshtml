@@ -71,8 +71,7 @@
                         {
                             <h5 class="card-title">@item.Logement.Nom</h5>
                             <p class="card-text">
-                                <strong>Hébergeur :</strong> @item.Logement.NomFournisseur<br />
-                                <strong>Prix :</strong> @item.Logement.PrixLogement CHF<br />
+                                <strong>Logement :</strong> @item.Logement.NomFournisseur<br />
                             </p>
                         }
                         else if (item.Activite != null)
@@ -80,7 +79,6 @@
                             <h5 class="card-title">@item.Activite.Nom</h5>
                             <p class="card-text">
                                 <strong>Prestataire :</strong> @item.Activite.NomFournisseur<br />
-                                <strong>Prix :</strong> @item.Activite.PrixActivite CHF<br />
                             </p>
                         }
                         else if (item.Transport != null)
@@ -103,7 +101,6 @@
                             <p class="card-text">
                                 <strong>Compagnie :</strong> @item.Transport.NomFournisseur<br />
                                 <strong>Lieu de départ :</strong> @item.Transport.LieuDepart<br />
-                                <strong>Prix :</strong> @item.Transport.Prix CHF<br />
                             </p>
                         }
                         else
