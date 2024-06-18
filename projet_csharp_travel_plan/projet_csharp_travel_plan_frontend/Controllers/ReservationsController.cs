@@ -52,6 +52,31 @@ namespace projet_csharp_travel_plan_frontend.Controllers
             }
         }
 
+        // GET: Reservations
+        public async Task<IActionResult> Timeline()
+        {
+            try
+            {
+                var response = await _client.GetAsync(API_URL);
+                if (response.IsSuccessStatusCode)
+                {
+                    var json = await response.Content.ReadAsStringAsync();
+                    var reservations = JsonConvert.DeserializeObject<List<ReservationDTO>>(json);
+                    return View(reservations);
+                }
+
+                // Handle error
+                var errorMessage = await response.Content.ReadAsStringAsync();
+                return RedirectToAction("Error", "Home", new { message = errorMessage });
+            }
+            catch (HttpRequestException ex)
+            {
+                _logger.LogError("Error in GET Reservations action: {Message}", ex.Message);
+                var errorModel = new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier, ErrorMessage = ex.Message };
+                return View("Error", errorModel);
+            }
+        }
+
         // GET: Reservations/Create
         public async Task<IActionResult> Create(int id)
         {

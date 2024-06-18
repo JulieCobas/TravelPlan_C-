@@ -1,0 +1,309 @@
+﻿@model IEnumerable<projet_csharp_travel_plan_frontend.DTO.ReservationDTO>
+
+@{
+    ViewData["Title"] = "Timeline des Réservations";
+    System.Globalization.CultureInfo.CurrentCulture = new System.Globalization.CultureInfo("fr-FR");
+
+    // Tri des réservations par date et heure croissantes (date la plus proche à la plus lointaine)
+    var sortedReservations = Model.OrderBy(r => r.DateDebut).ThenBy(r => r.HeureDebut).ToList();
+}
+
+<div class="container mt-5">
+    <h1 class="display-4 font-weight-bold">Étapes de votre voyage</h1>
+    <p class="description">Voici la timeline de vos réservations effectuées.</p>
+
+    <div class="timeline">
+        @for (int i = 0; i < sortedReservations.Count; i++)
+        {
+            var item = sortedReservations[i];
+            var isFirst = i == 0;
+            var isLast = i == sortedReservations.Count - 1;
+
+            <div class="timeline-item">
+                <div class="timeline-icon">
+                    @if (isFirst)
+                    {
+                        <span class="icon debut">
+                            <i class="fas fa-flag-checkered"></i> <!-- Icône pour le début -->
+                        </span>
+                    }
+                    else if (isLast)
+                    {
+                        <span class="icon fin">
+                            <i class="fas fa-check-circle"></i> <!-- Icône pour la fin -->
+                        </span>
+                    }
+                    else if (item.Logement != null)
+                    {
+                        <span class="icon logement">
+                            <i class="fas fa-bed"></i> <!-- Icône pour Logement -->
+                        </span>
+                    }
+                    else if (item.Activite != null)
+                    {
+                        <span class="icon activite">
+                            <i class="fas fa-running"></i> <!-- Icône pour Activité -->
+                        </span>
+                    }
+                    else if (item.Transport != null)
+                    {
+                        <span class="icon transport">
+                            <i class="fas fa-car"></i> <!-- Icône pour Transport -->
+                        </span>
+                    }
+                </div>
+                <div class="timeline-content">
+                    <div class="country-section d-flex align-items-center mb-3">
+                        <span class="badge badge-country">
+                            <i class="fas fa-globe"></i> @item.Voyage.NomPays
+                        </span>
+                    </div>
+                    <div class="details-section">
+                        <div class="date-time mb-2">
+                            <span class="date-icon">&#128197;</span>
+                            <span class="date-text">@item.DateDebut.ToString("dddd dd.MM.yyyy")</span>
+                            <br />
+                            <span class="time-icon">&#128337;</span>
+                            <span class="time-text">@item.HeureDebut.ToString(@"hh\:mm")</span>
+                        </div>
+                        <hr>
+                        @if (item.Logement != null)
+                        {
+                            <h5 class="card-title">@item.Logement.Nom</h5>
+                            <p class="card-text">
+                                <strong>Logement :</strong> @item.Logement.NomFournisseur<br />
+                            </p>
+                        }
+                        else if (item.Activite != null)
+                        {
+                            <h5 class="card-title">@item.Activite.Nom</h5>
+                            <p class="card-text">
+                                <strong>Prestataire :</strong> @item.Activite.NomFournisseur<br />
+                            </p>
+                        }
+                        else if (item.Transport != null)
+                        {
+                            <h5 class="card-title">
+                                @if (item.Transport.CategorieTransportNom == "Avion")
+                                {
+                                    <i class="fa-solid fa-plane-departure transport-icon"></i>
+                                }
+                                else if (item.Transport.CategorieTransportNom == "Train")
+                                {
+                                    <i class="fa-solid fa-train transport-icon"></i>
+                                }
+                                else if (item.Transport.CategorieTransportNom == "Bateau")
+                                {
+                                    <i class="fa-solid fa-ship transport-icon"></i>
+                                }
+                                @item.Transport.CategorieTransportNom
+                            </h5>
+                            <p class="card-text">
+                                <strong>Compagnie :</strong> @item.Transport.NomFournisseur<br />
+                                <strong>Lieu de départ :</strong> @item.Transport.LieuDepart<br />
+                            </p>
+                        }
+                        else
+                        {
+                            <h5 class="card-title">Voyage: @item.IdVoyage</h5>
+                            <p class="card-text">Aucun détail disponible</p>
+                        }
+                    </div>
+                    <div class="badge-container">
+                        @if (item.Logement != null)
+                        {
+                            <span class="badge badge-pill badge-primary">Logement</span>
+                        }
+                        else if (item.Activite != null)
+                        {
+                            <span class="badge badge-pill badge-success">Activité</span>
+                        }
+                        else if (item.Transport != null)
+                        {
+                            <span class="badge badge-pill badge-warning">Transport</span>
+                        }
+                    </div>
+                    <a href="@Url.Action("Details", "Reservations", new { id = item.IdReservation })" class="btn btn-details">Détails</a>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Inclure Font Awesome pour les icônes -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+
+
+<!-- Inclure Font Awesome pour les icônes -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+
+<style>
+    .timeline {
+        position: relative;
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 20px;
+        list-style: none;
+    }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            width: 6px;
+            background-color: #007bff;
+            top: 25px; /* Commence juste en dessous du premier point */
+            bottom: 25px; /* Se termine juste au-dessus du dernier point */
+            left: 50%;
+            margin-left: -3px;
+        }
+
+    .timeline-item:last-child::before {
+        content: '';
+        position: absolute;
+        width: 6px;
+        background-color: #007bff;
+        top: 25px;
+        bottom: 50%;
+        left: 50%;
+        margin-left: -3px;
+    }
+
+    .timeline-item {
+        display: flex;
+        align-items: flex-start;
+        justify-content: flex-end;
+        width: 50%;
+        position: relative;
+        margin-bottom: 50px;
+        padding-right: 30px;
+    }
+
+        .timeline-item:nth-child(odd) {
+            left: 0;
+        }
+
+        .timeline-item:nth-child(even) {
+            left: 50%;
+            justify-content: flex-start;
+            padding-left: 30px;
+            padding-right: 0;
+        }
+
+    .timeline-icon {
+        position: absolute;
+        top: 0;
+        width: 50px;
+        height: 50px;
+        background-color: white;
+        border: 2px solid #007bff;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        color: #007bff;
+        z-index: 1;
+    }
+
+    .icon i {
+        font-size: 24px;
+    }
+
+    .timeline-item:nth-child(odd) .timeline-icon {
+        right: -25px;
+    }
+
+    .timeline-item:nth-child(even) .timeline-icon {
+        left: -25px;
+    }
+
+    .timeline-content {
+        padding: 20px;
+        background-color: #f9f9f9;
+        border-radius: 10px;
+        border: 1px solid #ddd;
+        position: relative;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        flex-grow: 1;
+    }
+
+        .timeline-content h4 {
+            margin-top: 0;
+        }
+
+        .timeline-content .btn-details {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 0.5rem 1rem;
+            font-size: 1rem;
+            border-radius: 5px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+            .timeline-content .btn-details:hover {
+                background-color: #0056b3;
+            }
+
+    .badge-primary {
+        background-color: #ff9f43;
+    }
+
+    .badge-success {
+        background-color: #28a745;
+    }
+
+    .badge-warning {
+        background-color: #ffc107;
+    }
+
+    .badge {
+        font-size: 1rem;
+        padding: 0.5rem 2rem;
+    }
+
+    .date-time {
+        font-size: 1.2rem;
+        color: #333;
+    }
+
+        .date-time .date-icon, .date-time .time-icon {
+            font-size: 1.2rem;
+            color: #007bff;
+            vertical-align: middle;
+        }
+
+        .date-time .date-text, .date-time .time-text {
+            margin-left: 0.5rem;
+        }
+
+        .date-time .date-text {
+            font-weight: bold;
+        }
+
+        .date-time .time-text {
+            color: #555;
+        }
+
+    .transport-icon {
+        font-size: 1.2rem;
+        color: #007bff;
+        margin-right: 0.5rem;
+    }
+
+    .country-section {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+    }
+
+        .country-section .badge-country {
+            background-color: #007bff;
+            color: #fff;
+            font-size: 1.2rem;
+            padding: 0.5rem;
+            border-radius: 5px;
+        }
+
+</style>

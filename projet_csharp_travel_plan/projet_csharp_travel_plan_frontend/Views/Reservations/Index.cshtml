@@ -138,39 +138,36 @@
         const filterType = document.getElementById('filter-type');
         const sortDate = document.getElementById('sort-date');
         const resetButton = document.getElementById('reset-filters');
-
-        // Empêcher la soumission du formulaire
-        filterForm.addEventListener('submit', function (event) {
-            event.preventDefault(); // Empêche la soumission par défaut
-            applyFilters(); // Applique les filtres
-        });
+        const cards = document.querySelectorAll('.reservation-card');
 
         const applyFilters = () => {
+            // Récupérer les valeurs des filtres
             var selectedDate = filterDate.value;
             var selectedType = filterType.value.toLowerCase();
             var sortOrder = sortDate.value;
 
-            var cards = document.querySelectorAll('.reservation-card');
-            var container = document.getElementById('reservations-container');
+            // Réinitialiser l'affichage de toutes les cartes
+            cards.forEach(card => {
+                card.style.display = 'block'; // Remettre toutes les cartes à l'état affiché
+            });
 
-            // Fonction pour vérifier si la date saisie est au format "jj.MM.aaaa"
-            const isValidDateFormat = (date) => {
-                const regex = /^\d{2}\.\d{2}\.\d{4}$/;
-                return regex.test(date);
-            };
-
-            // Filtrer et afficher les cartes correspondantes
-            var filteredCards = Array.from(cards).filter(function (card) {
+            // Filtrer les cartes
+            var filteredCards = Array.from(cards).filter(card => {
                 var cardDate = card.getAttribute('data-date'); // Format "yyyy-MM-dd"
                 var cardType = card.getAttribute('data-type').toLowerCase();
 
                 var showCard = true;
 
                 if (selectedDate) {
+                    const isValidDateFormat = (date) => {
+                        const regex = /^\d{2}\.\d{2}\.\d{4}$/;
+                        return regex.test(date);
+                    };
+
                     if (isValidDateFormat(selectedDate)) {
                         // Convertir la date saisie au format "yyyy-MM-dd" pour comparaison
                         const parts = selectedDate.split('.');
-                        const formattedDate = `${parts[2]}-${parts[1]}-${parts[0]}`; // Convertir "jj.MM.aaaa" en "aaaa-MM-jj"
+                        const formattedDate = `${parts[2]}-${parts[1]}-${parts[0]}`;
                         if (formattedDate !== cardDate) {
                             showCard = false;
                         }
@@ -189,7 +186,7 @@
 
             // Trier les cartes visibles
             if (sortOrder) {
-                filteredCards.sort(function (a, b) {
+                filteredCards.sort((a, b) => {
                     var dateA = new Date(a.getAttribute('data-date'));
                     var dateB = new Date(b.getAttribute('data-date'));
 
@@ -197,27 +194,31 @@
                 });
             }
 
-            // Réorganiser les cartes visibles dans le conteneur
+            // Réorganiser les cartes filtrées dans le conteneur
+            const container = document.getElementById('reservations-container');
             container.innerHTML = ''; // Vider le conteneur
-            filteredCards.forEach(function (card) {
-                container.appendChild(card); // Ajouter uniquement les cartes visibles
+            filteredCards.forEach(card => {
+                container.appendChild(card); // Ajouter les cartes filtrées
             });
         };
 
-        // Appliquer les filtres en temps réel
+        // Ajouter les écouteurs d'événements pour appliquer les filtres en temps réel
         filterDate.addEventListener('input', applyFilters);
         filterType.addEventListener('change', applyFilters);
         sortDate.addEventListener('change', applyFilters);
 
-        // Réinitialiser les filtres et recharger la page
-        resetButton.addEventListener('click', function () {
-            // Recharge la page pour afficher l'état initial sans filtres
-            location.reload();
+        // Réinitialiser les filtres
+        resetButton.addEventListener('click', () => {
+            filterDate.value = '';
+            filterType.value = '';
+            sortDate.value = 'asc';
+            applyFilters(); // Réappliquer les filtres pour afficher toutes les cartes
         });
 
-        // Appliquer les filtres initiaux (pour s'assurer que l'affichage est correct au chargement)
+        // Appliquer les filtres au chargement de la page pour assurer l'état correct
         applyFilters();
     });
+
 </script>
 <style>
     .badge-primary {
@@ -339,7 +340,7 @@
         .country-section .badge-country {
             background-color: transparent;
             color: #fff;
-            position : center;
+
             font-size: 1.2rem;
             padding: 0.5rem 0;
             border-radius: 0;
