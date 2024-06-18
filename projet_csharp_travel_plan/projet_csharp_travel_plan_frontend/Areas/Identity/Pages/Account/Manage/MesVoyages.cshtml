@@ -1,10 +1,35 @@
 ﻿@page
-@model MesVoyagesModel
+@model projet_csharp_travel_plan_frontend.Areas.Identity.Pages.Account.Manage.MesVoyagesModel
 @{
-
-    ViewData["Title"] = "Mes voyages";
-
+    ViewData["Title"] = "Mes Voyages";
 }
 
+<h1>@ViewData["Title"]</h1>
 
+@if (Model.Voyages == null || !Model.Voyages.Any())
+{
+    <p>Vous n'avez aucun voyage enregistré.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Date de début</th>
+                <th>Date de fin</th>
+                <th>Prix Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var voyage in Model.Voyages)
+            {
+                <tr>
+                    <td>@voyage.DateDebut.ToShortDateString()</td>
+                    <td>@voyage.DateFin.ToShortDateString()</td>
+                    <td>@voyage.PrixTotal €</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
 
