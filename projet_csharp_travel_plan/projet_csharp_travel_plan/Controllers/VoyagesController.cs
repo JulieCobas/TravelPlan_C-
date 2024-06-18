@@ -28,6 +28,9 @@ public class VoyagesController : ControllerBase
                 IdVoyage = v.IdVoyage,
                 DateDebut = v.DateDebut,
                 DateFin = v.DateFin,
+                IdClient = v.IdClient ?? 0,
+                PrixTotal = v.PrixTotal,
+                StatutPaiement = v.StatutPaiement,
                 IdPays = v.IdPays.FirstOrDefault().IdPays // Sélectionne le premier ID de pays
             })
             .ToListAsync();
@@ -59,6 +62,9 @@ public class VoyagesController : ControllerBase
                 IdVoyage = v.IdVoyage,
                 DateDebut = v.DateDebut,
                 DateFin = v.DateFin,
+                IdClient = v.IdClient ?? 0,
+                PrixTotal = v.PrixTotal,
+                StatutPaiement = v.StatutPaiement,
                 IdPays = v.IdPays.FirstOrDefault().IdPays // Sélectionne le premier ID de pays
             })
             .FirstOrDefaultAsync();
@@ -87,6 +93,9 @@ public class VoyagesController : ControllerBase
 
         voyage.DateDebut = dto.DateDebut;
         voyage.DateFin = dto.DateFin;
+        voyage.IdClient = dto.IdClient;
+        voyage.PrixTotal = dto.PrixTotal;
+        voyage.StatutPaiement = dto.StatutPaiement;
 
         // Mettre à jour la relation avec le pays
         voyage.IdPays.Clear();
@@ -151,6 +160,8 @@ public class VoyagesController : ControllerBase
             StatutPaiement = dto.StatutPaiement,
             IdClientNavigation = existingClient
         };
+
+        voyage.IdPays.Add(existingPay);
 
         _context.Voyages.Add(voyage);
 

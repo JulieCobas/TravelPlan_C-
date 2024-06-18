@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -7,7 +8,6 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using projet_csharp_travel_plan_frontend.DTO;
 using projet_csharp_travel_plan_frontend.Models;
-using System.Diagnostics;
 using Microsoft.Extensions.Logging;
 
 namespace projet_csharp_travel_plan_frontend.Controllers
@@ -26,7 +26,6 @@ namespace projet_csharp_travel_plan_frontend.Controllers
             _logger = logger;
         }
 
-        // GET: Logements
         public async Task<IActionResult> Index(string country, int voyageId)
         {
             try
@@ -54,7 +53,6 @@ namespace projet_csharp_travel_plan_frontend.Controllers
             }
         }
 
-        // GET: Logements/Details/5
         public async Task<IActionResult> Details(int id, string country, int voyageId)
         {
             try
@@ -65,7 +63,7 @@ namespace projet_csharp_travel_plan_frontend.Controllers
                     var json = await response.Content.ReadAsStringAsync();
                     var logement = JsonConvert.DeserializeObject<LogementDTO>(json);
                     ViewData["SelectedCountry"] = country;
-                    ViewData["VoyageId"] = voyageId == 0 ? 1 : voyageId; // Default to 1 if voyageId is 0
+                    ViewData["VoyageId"] = voyageId;
                     return View(logement);
                 }
 
@@ -85,8 +83,6 @@ namespace projet_csharp_travel_plan_frontend.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ConfirmReservation(short IdLogement, short VoyageId, DateTime DateDebut, DateTime DateFin)
         {
-            if (VoyageId == 0) VoyageId = 1; // Default to 1 if VoyageId is 0
-
             var reservation = new ReservationDTO
             {
                 IdLogement = IdLogement,

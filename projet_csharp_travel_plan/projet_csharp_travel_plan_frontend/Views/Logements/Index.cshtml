@@ -31,6 +31,7 @@
                                 <span class="fa fa-star @(i <= item.Note ? "checked" : "")"></span>
                             }
                         </p>
+                        <p class="card-text"><strong>Prix : </strong>@Html.DisplayFor(modelItem => item.PrixLogement) CHF </p>
                         <p class="card-text"><strong>Nombre d'évaluations :</strong> @Html.DisplayFor(modelItem => item.NbEvaluation) avis </p>
 
                     </div>

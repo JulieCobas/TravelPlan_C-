@@ -2,11 +2,10 @@
 
 @{
     ViewData["Title"] = "Transports";
-    var selectedCountry = ViewData["SelectedCountry"] as string;
-    var voyageId = ViewData["VoyageId"] as int?;
+    var voyageId = ViewData["VoyageId"];
 }
 
-<h1>Transports en @selectedCountry</h1>
+<h1>Transports</h1>
 
 <p class="description">Voici les différents transports disponible pour vous ! Veuillez choisir :</p>
 

@@ -58,7 +58,6 @@ namespace projet_csharp_travel_plan_frontend
             app.MapRazorPages();
 
             app.Run();
-
         }
     }
 }

@@ -26,16 +26,15 @@ namespace projet_csharp_travel_plan_frontend.Controllers
         }
 
         // GET: Transports
-        public async Task<IActionResult> Index(string country, int voyageId)
+        public async Task<IActionResult> Index(int voyageId)
         {
             try
             {
-                var response = await _client.GetAsync($"{API_URL}?country={country}");
+                var response = await _client.GetAsync(API_URL);
                 if (response.IsSuccessStatusCode)
                 {
                     var json = await response.Content.ReadAsStringAsync();
                     var transportDtos = JsonConvert.DeserializeObject<List<TransportDTO>>(json);
-                    ViewData["SelectedCountry"] = country;
                     ViewData["VoyageId"] = voyageId; // Passing voyageId to the view
                     return View(transportDtos);
                 }
@@ -53,7 +52,7 @@ namespace projet_csharp_travel_plan_frontend.Controllers
         }
 
         // GET: Transports/Details/5
-        public async Task<IActionResult> Details(int id, string country, int voyageId)
+        public async Task<IActionResult> Details(int id, int voyageId)
         {
             try
             {
@@ -62,8 +61,7 @@ namespace projet_csharp_travel_plan_frontend.Controllers
                 {
                     var json = await response.Content.ReadAsStringAsync();
                     var transport = JsonConvert.DeserializeObject<TransportDTO>(json);
-                    ViewData["SelectedCountry"] = country;
-                    ViewData["VoyageId"] = voyageId == 0 ? 1 : voyageId; // Default to 1 if voyageId is 0
+                    ViewData["VoyageId"] = voyageId;
                     return View(transport);
                 }
 
@@ -151,6 +149,13 @@ namespace projet_csharp_travel_plan_frontend.Controllers
                 var errorModel = new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier, ErrorMessage = ex.Message };
                 return View("Error", errorModel);
             }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult ProceedToLodging(short voyageId)
+        {
+            return RedirectToAction("Index", "Logements", new { voyageId });
         }
     }
 }
