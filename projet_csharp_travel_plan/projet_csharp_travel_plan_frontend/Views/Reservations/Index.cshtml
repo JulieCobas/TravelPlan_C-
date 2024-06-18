@@ -43,97 +43,94 @@
     <div class="row flex-column" id="reservations-container">
         @foreach (var item in Model)
         {
-            <div class="d-flex align-items-start mb-4">
-                <!-- Section pour afficher le nom du pays avec une icône -->
-                
-                <div class="col-12 reservation-card"
-                     data-date="@item.DateDebut.ToString("yyyy-MM-dd")"
-                     data-type="@(item.Logement != null ? "Logement" : item.Activite != null ? "Activité" : item.Transport != null ? "Transport" : "Indéfini")">
-                    <div class="card shadow-sm flex-row position-relative">
-                        <div class="card-body d-flex justify-content-between align-items-start">
-                            <div class="country-name mr-3">
-                                <span class="badge badge-country">
-                                    &#127758; <!-- Icône de planète -->
-                                    @item.Voyage.NomPays
-                                </span>
+            <div class="col-12 reservation-card mb-4"
+                 data-date="@item.DateDebut.ToString("yyyy-MM-dd")"
+                 data-type="@(item.Logement != null ? "Logement" : item.Activite != null ? "Activité" : item.Transport != null ? "Transport" : "Indéfini")">
+                <div class="card shadow-sm flex-row position-relative">
+                    <div class="country-section d-flex flex-column align-items-center justify-content-center">
+                        <span class="badge badge-country">
+                            &#127758; <!-- Icône de planète -->
+                            @item.Voyage.NomPays
+                        </span>
+                    </div>
+                    <div class="card-body d-flex justify-content-between align-items-start">
+                        <div class="details-section">
+                            <div class="date-time">
+                                <span class="date-icon">&#128197;</span>
+                                <span class="date-text">@item.DateDebut.ToString("dddd dd.MM.yyyy")</span>
+                                <br />
+                                <span class="time-icon">&#128337;</span>
+                                <span class="time-text">@item.HeureDebut.ToString(@"hh\:mm")</span>
                             </div>
-                            <div>
-                                <div class="date-time">
-                                    <span class="date-icon">&#128197;</span>
-                                    <span class="date-text">@item.DateDebut.ToString("dddd dd.MM.yyyy")</span>
-                                    <br />
-                                    <span class="time-icon">&#128337;</span>
-                                    <span class="time-text">@item.HeureDebut.ToString(@"hh\:mm")</span>
-                                </div>
-                                <hr>
-                                @if (item.Logement != null)
-                                {
-                                    <h5 class="card-title">@item.Logement.Nom</h5>
-                                    <p class="card-text">
-                                        <strong>Hébergeur :</strong> @item.Logement.NomFournisseur<br />
-                                        <strong>Prix :</strong> @item.Logement.PrixLogement CHF<br />
-                                    </p>
-                                }
-                                else if (item.Activite != null)
-                                {
-                                    <h5 class="card-title">@item.Activite.Nom</h5>
-                                    <p class="card-text">
-                                        <strong>Prestataire :</strong> @item.Activite.NomFournisseur<br />
-                                        <strong>Prix :</strong> @item.Activite.PrixActivite CHF<br />
-                                    </p>
-                                }
-                                else if (item.Transport != null)
-                                {
-                                    <h5 class="card-title">
-                                        @if (item.Transport.CategorieTransportNom == "Avion")
-                                        {
-                                            <i class="fa-solid fa-plane-departure transport-icon"></i>
-                                        }
-                                        else if (item.Transport.CategorieTransportNom == "Train")
-                                        {
-                                            <i class="fa-solid fa-train transport-icon"></i>
-                                        }
-                                        else if (item.Transport.CategorieTransportNom == "Bateau")
-                                        {
-                                            <i class="fa-solid fa-ship transport-icon"></i>
-                                        }
-                                        @item.Transport.CategorieTransportNom
-                                    </h5>
-                                    <p class="card-text">
-                                        <strong>Compagnie :</strong> @item.Transport.NomFournisseur<br />
-                                        <strong>Lieu de départ :</strong> @item.Transport.LieuDepart<br />
-                                        <strong>Prix :</strong> @item.Transport.Prix CHF<br />
-                                    </p>
-                                }
-                                else
-                                {
-                                    <h5 class="card-title">Voyage: @item.IdVoyage</h5>
-                                    <p class="card-text">Aucun détail disponible</p>
-                                }
-                            </div>
-                        </div>
-                        <div class="badge-container">
+                            <hr>
                             @if (item.Logement != null)
                             {
-                                <span class="badge badge-pill badge-primary">Logement</span>
+                                <h5 class="card-title">@item.Logement.Nom</h5>
+                                <p class="card-text">
+                                    <strong>Hébergeur :</strong> @item.Logement.NomFournisseur<br />
+                                    <strong>Prix :</strong> @item.Logement.PrixLogement CHF<br />
+                                </p>
                             }
                             else if (item.Activite != null)
                             {
-                                <span class="badge badge-pill badge-success">Activité</span>
+                                <h5 class="card-title">@item.Activite.Nom</h5>
+                                <p class="card-text">
+                                    <strong>Prestataire :</strong> @item.Activite.NomFournisseur<br />
+                                    <strong>Prix :</strong> @item.Activite.PrixActivite CHF<br />
+                                </p>
                             }
                             else if (item.Transport != null)
                             {
-                                <span class="badge badge-pill badge-warning">Transport</span>
+                                <h5 class="card-title">
+                                    @if (item.Transport.CategorieTransportNom == "Avion")
+                                    {
+                                        <i class="fa-solid fa-plane-departure transport-icon"></i>
+                                    }
+                                    else if (item.Transport.CategorieTransportNom == "Train")
+                                    {
+                                        <i class="fa-solid fa-train transport-icon"></i>
+                                    }
+                                    else if (item.Transport.CategorieTransportNom == "Bateau")
+                                    {
+                                        <i class="fa-solid fa-ship transport-icon"></i>
+                                    }
+                                    @item.Transport.CategorieTransportNom
+                                </h5>
+                                <p class="card-text">
+                                    <strong>Compagnie :</strong> @item.Transport.NomFournisseur<br />
+                                    <strong>Lieu de départ :</strong> @item.Transport.LieuDepart<br />
+                                    <strong>Prix :</strong> @item.Transport.Prix CHF<br />
+                                </p>
+                            }
+                            else
+                            {
+                                <h5 class="card-title">Voyage: @item.IdVoyage</h5>
+                                <p class="card-text">Aucun détail disponible</p>
                             }
                         </div>
-                        <a href="@Url.Action("Details", "Reservations", new { id = item.IdReservation })" class="btn btn-details">Détails</a>
                     </div>
+                    <div class="badge-container">
+                        @if (item.Logement != null)
+                        {
+                            <span class="badge badge-pill badge-primary">Logement</span>
+                        }
+                        else if (item.Activite != null)
+                        {
+                            <span class="badge badge-pill badge-success">Activité</span>
+                        }
+                        else if (item.Transport != null)
+                        {
+                            <span class="badge badge-pill badge-warning">Transport</span>
+                        }
+                    </div>
+                    <a href="@Url.Action("Details", "Reservations", new { id = item.IdReservation })" class="btn btn-details">Détails</a>
                 </div>
             </div>
         }
     </div>
 </div>
 
+<!-- Script pour le filtrage -->
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const filterForm = document.getElementById('filter-form');
@@ -200,6 +197,7 @@
         });
     });
 </script>
+
 <style>
     .badge-primary {
         background-color: #ff9f43;
@@ -305,24 +303,29 @@
         }
 
     /* Style pour le nom du pays */
-    .country-name {
-        min-width: 100px;
+    .country-section {
+        min-width: 150px;
+        background-color: #007bff;
+        color: #fff;
+        padding: 1rem;
+        border-radius: 10px 0 0 10px;
         display: flex;
+        flex-direction: column;
         align-items: center;
         justify-content: center;
-        text-align: center;
-        padding: 1rem;
-        background-color: #f0f0f0;
-        border-radius: 5px;
-        font-weight: bold;
     }
 
-    .badge-country {
-        background-color: #343a40;
-        color: #fff;
-        font-size: 1rem;
-        padding: 0.5rem 1rem;
-        border-radius: 5px;
+        .country-section .badge-country {
+            background-color: transparent;
+            color: #fff;
+            font-size: 1.2rem;
+            padding: 0.5rem 0;
+            border-radius: 0;
+        }
+
+    .details-section {
+        flex-grow: 1;
+        padding-left: 1.5rem;
     }
 
     .filters {
