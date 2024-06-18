@@ -45,7 +45,7 @@ namespace projet_csharp_travel_plan_frontend.Controllers
                     {
                         DateDebut = DateTime.Now,
                         DateFin = DateTime.Now.AddDays(7),
-                        IdPays = pays.FirstOrDefault()?.IdPays ?? 0 // Utilise le premier pays de la liste
+                        IdPays = pays.FirstOrDefault()?.IdPays ?? 0
                     };
 
                     ViewBag.Pays = pays;
@@ -120,7 +120,7 @@ namespace projet_csharp_travel_plan_frontend.Controllers
 
                         // Store the created Voyage ID for future use
                         TempData["VoyageId"] = createdVoyage.IdVoyage;
-                        return RedirectToAction("Index", "Reservations", new { id = createdVoyage.IdVoyage });
+                        return RedirectToAction("Create", "Reservations", new { id = createdVoyage.IdVoyage });
                     }
 
                     // Handle error

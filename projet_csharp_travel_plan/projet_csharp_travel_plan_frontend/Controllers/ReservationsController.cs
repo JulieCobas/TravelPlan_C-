@@ -19,6 +19,7 @@ namespace projet_csharp_travel_plan_frontend.Controllers
         private readonly ILogger<ReservationsController> _logger;
         private const string API_URL = "https://localhost:7287/api/Reservations/";
         private const string PAYS_API_URL = "https://localhost:7287/api/Pay/";
+        private const string VOYAGE_API_URL = "https://localhost:7287/api/Voyages/";
 
         public ReservationsController(IHttpClientFactory httpClientFactory, ILogger<ReservationsController> logger)
         {
@@ -52,7 +53,7 @@ namespace projet_csharp_travel_plan_frontend.Controllers
         }
 
         // GET: Reservations/Create
-        public async Task<IActionResult> Create()
+        public async Task<IActionResult> Create(int id)
         {
             try
             {
@@ -63,7 +64,18 @@ namespace projet_csharp_travel_plan_frontend.Controllers
                     var countries = JsonConvert.DeserializeObject<List<PayDTO>>(json);
 
                     ViewBag.Countries = new SelectList(countries, "Nom", "Nom");
+
+                    // Get the selected country for the voyage
+                    var voyageResponse = await _client.GetAsync($"{VOYAGE_API_URL}{id}");
+                    if (voyageResponse.IsSuccessStatusCode)
+                    {
+                        var voyageJson = await voyageResponse.Content.ReadAsStringAsync();
+                        var voyage = JsonConvert.DeserializeObject<VoyageDTO>(voyageJson);
+                        ViewBag.SelectedCountry = countries.FirstOrDefault(c => c.IdPays == voyage.IdPays)?.Nom;
+                    }
+
                     ViewBag.Options = new SelectList(new List<string> { "Logement", "Activité", "Transport" });
+                    ViewBag.VoyageId = id;
 
                     return View();
                 }
@@ -83,7 +95,7 @@ namespace projet_csharp_travel_plan_frontend.Controllers
         // POST: Reservations/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(string selectedCountry, string selectedOption, DateTime dateDebut, DateTime dateFin, int selectedPayId, string selectedPayText)
+        public IActionResult Create(int idVoyage, string selectedCountry, string selectedOption)
         {
             if (string.IsNullOrEmpty(selectedCountry) || string.IsNullOrEmpty(selectedOption))
             {
@@ -93,19 +105,17 @@ namespace projet_csharp_travel_plan_frontend.Controllers
                 return View();
             }
 
-            TempData["VoyageId"] = selectedPayId;
+            TempData["VoyageId"] = idVoyage;
             TempData["Country"] = selectedCountry;
-            TempData["DateDebut"] = dateDebut;
-            TempData["DateFin"] = dateFin;
 
             switch (selectedOption)
             {
                 case "Logement":
-                    return RedirectToAction("Index", "Logements", new { country = selectedCountry, voyageId = selectedPayId });
+                    return RedirectToAction("Index", "Logements", new { country = selectedCountry, voyageId = idVoyage });
                 case "Activité":
-                    return RedirectToAction("Index", "Activites", new { country = selectedCountry, voyageId = selectedPayId });
+                    return RedirectToAction("Index", "Activites", new { country = selectedCountry, voyageId = idVoyage });
                 case "Transport":
-                    return RedirectToAction("Index", "Transports", new { country = selectedCountry, voyageId = selectedPayId });
+                    return RedirectToAction("Index", "Transports", new { voyageId = idVoyage });
                 default:
                     return View();
             }

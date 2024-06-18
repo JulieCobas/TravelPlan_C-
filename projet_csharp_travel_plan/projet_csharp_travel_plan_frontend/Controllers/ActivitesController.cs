@@ -49,7 +49,6 @@ namespace projet_csharp_travel_plan_frontend.Controllers
             }
         }
 
-        // GET: Activites/Details/5
         public async Task<IActionResult> Details(int id, string country, int voyageId)
         {
             try
@@ -79,19 +78,17 @@ namespace projet_csharp_travel_plan_frontend.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ConfirmActiviteSelection(short IdActivite, short VoyageId, DateTime DateDebut, DateTime DateFin, TimeSpan HeureDebut, bool GuideAudio, bool VisiteGuidee)
         {
-            if (VoyageId == 0) VoyageId = 1; // Default to 1 if VoyageId is 0
+            var reservation = new ReservationDTO
+            {
+                IdActivite = IdActivite,
+                IdVoyage = VoyageId,
+                DateHeureDebut = DateDebut.Add(HeureDebut),
+                DateHeureFin = DateFin,
+                Disponibilite = true
+            };
 
             try
             {
-                var reservation = new ReservationDTO
-                {
-                    IdActivite = IdActivite,
-                    IdVoyage = VoyageId,
-                    DateHeureDebut = DateDebut.Add(HeureDebut),
-                    DateHeureFin = DateFin,
-                    Disponibilite = true
-                };
-
                 var response = await _client.PostAsJsonAsync(RESERVATION_API_URL, reservation);
                 if (response.IsSuccessStatusCode)
                 {
