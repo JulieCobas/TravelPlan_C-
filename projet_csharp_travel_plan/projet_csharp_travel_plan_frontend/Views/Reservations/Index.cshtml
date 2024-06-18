@@ -13,10 +13,40 @@
 
     <p class="description">Bienvenue dans votre page de réservations ! Trouvez ici toutes les réservations que vous avez effectuées ! Vous pouvez également consulter les détails de chacune des réservations !</p>
 
-    <div class="row flex-column">
+    <!-- Formulaire de filtres -->
+    <div class="filters mb-4">
+        <form id="filter-form" class="d-flex align-items-center justify-content-between w-100">
+            <div class="form-group">
+                <label for="filter-date">Rechercher une Date :</label>
+                <input type="date" id="filter-date" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label for="filter-type">Type de réservation :</label>
+                <select id="filter-type" class="form-control">
+                    <option value="">Tous</option>
+                    <option value="Logement">Logement</option>
+                    <option value="Activité">Activité</option>
+                    <option value="Transport">Transport</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="sort-date">Trier par :</label>
+                <select id="sort-date" class="form-control">
+                    <option value="asc">Date croissante</option>
+                    <option value="desc">Date décroissante</option>
+                </select>
+            </div>
+            <button type="button" id="reset-filters" class="btn btn-secondary">Réinitialiser</button>
+        </form>
+    </div>
+
+
+    <div class="row flex-column" id="reservations-container">
         @foreach (var item in Model)
         {
-            <div class="col-12 mb-4">
+            <div class="col-12 mb-4 reservation-card"
+                 data-date="@item.DateDebut.ToString("yyyy-MM-dd")"
+                 data-type="@(item.Logement != null ? "Logement" : item.Activite != null ? "Activité" : item.Transport != null ? "Transport" : "Indéfini")">
                 <div class="card shadow-sm flex-row position-relative">
                     <div class="card-body d-flex justify-content-between align-items-start">
                         <div>
@@ -49,16 +79,15 @@
                                 <h5 class="card-title">
                                     @if (item.Transport.CategorieTransportNom == "Avion")
                                     {
-                                        <i class="fa-solid fa-plane-departure transport-icon"></i> 
+                                        <i class="fa-solid fa-plane-departure transport-icon"></i>
                                     }
                                     else if (item.Transport.CategorieTransportNom == "Train")
                                     {
-                                        <i class="fa-solid fa-train transport-icon"></i> 
-
+                                        <i class="fa-solid fa-train transport-icon"></i>
                                     }
                                     else if (item.Transport.CategorieTransportNom == "Bateau")
                                     {
-                                        <i class="fa-solid fa-ship transport-icon"></i> 
+                                        <i class="fa-solid fa-ship transport-icon"></i>
                                     }
                                     @item.Transport.CategorieTransportNom
                                 </h5>
@@ -94,7 +123,77 @@
             </div>
         }
     </div>
+
 </div>
+
+
+<!-- Script pour le filtrage -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const filterForm = document.getElementById('filter-form');
+        const filterDate = document.getElementById('filter-date');
+        const filterType = document.getElementById('filter-type');
+        const sortDate = document.getElementById('sort-date');
+        const resetButton = document.getElementById('reset-filters');
+
+        const applyFilters = () => {
+            var selectedDate = filterDate.value;
+            var selectedType = filterType.value.toLowerCase();
+            var sortOrder = sortDate.value;
+
+            var cards = document.querySelectorAll('.reservation-card');
+            cards.forEach(function (card) {
+                var cardDate = card.getAttribute('data-date');
+                var cardType = card.getAttribute('data-type').toLowerCase();
+
+                var showCard = true;
+
+                if (selectedDate && selectedDate !== cardDate) {
+                    showCard = false;
+                }
+
+                if (selectedType && selectedType !== cardType) {
+                    showCard = false;
+                }
+
+                card.style.display = showCard ? 'block' : 'none';
+            });
+
+            // Tri des cartes
+            if (sortOrder) {
+                var container = document.getElementById('reservations-container');
+                var sortedCards = Array.from(cards).filter(card => card.style.display === 'block');
+
+                sortedCards.sort(function (a, b) {
+                    var dateA = new Date(a.getAttribute('data-date'));
+                    var dateB = new Date(b.getAttribute('data-date'));
+
+                    return sortOrder === 'asc' ? dateA - dateB : dateB - dateA;
+                });
+
+                // Réorganiser les cartes dans le conteneur
+                sortedCards.forEach(function (card) {
+                    container.appendChild(card);
+                });
+            }
+        };
+
+        // Appliquer les filtres en temps réel
+        filterDate.addEventListener('input', applyFilters);
+        filterType.addEventListener('change', applyFilters);
+        sortDate.addEventListener('change', applyFilters);
+
+        // Réinitialiser les filtres
+        resetButton.addEventListener('click', function () {
+            filterDate.value = '';
+            filterType.value = '';
+            sortDate.value = 'asc';
+            applyFilters();
+        });
+    });
+
+</script>
+
 
 <style>
 .badge-primary {
@@ -199,4 +298,82 @@ font-weight: bold;
 .btn-details:hover {
 background-color: #0056b3;
 }
+
+    
+.filters {
+margin-bottom: 1.5rem;
+display: flex;
+align-items: center;
+gap: 1rem;
+border: 1px solid #ddd;
+padding: 1rem;
+border-radius: 5px;
+background-color: #f9f9f9;
+}
+
+        
+.filters .form-group {
+margin-bottom: 0;
+display: flex;
+flex-direction: column;
+align-items: flex-start;
+margin-right: 1rem;
+flex-grow: 1;
+}
+
+.filters .form-group label {
+margin-bottom: 0.5rem;
+font-weight: bold;
+white-space: nowrap;
+}
+
+        
+.filters .form-control {
+width: 100%;
+max-width: 200px;
+display: inline-block;
+padding: 0.375rem 0.75rem;
+font-size: 1rem;
+line-height: 1.5;
+color: #495057;
+background-color: #fff;
+background-clip: padding-box;
+border: 1px solid #ced4da;
+border-radius: 0.25rem;
+transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+           
+.filters .form-control:focus {
+border-color: #80bdff;
+outline: 0;
+box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+}
+
+#reset-filters {
+margin-left: 1rem;
+background-color: #dc3545; 
+color: #fff;
+border: none;
+padding: 0.5rem 1rem;
+font-size: 1rem;
+border-radius: 5px;
+text-align: center;
+font-weight: bold;
+cursor: pointer;
+}
+
+        
+#reset-filters:hover {
+background-color: #c82333;
+}
+
+   
+#sort-date {
+margin-left: 1rem;
+}
+
+
+
+
 </style>
