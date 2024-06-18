@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Index";
+    System.Globalization.CultureInfo.CurrentCulture = new System.Globalization.CultureInfo("fr-FR");
 }
 
 <div class="container mt-5">
@@ -10,54 +11,191 @@
         <a asp-action="Create" class="btn btn-primary btn-lg">Nouvelle Réservation</a>
     </div>
 
-    <p class="description">Bienvenue dans votre page de réservations ! Trouvez ici toutes les réservations que vous avez effectuée ! Vous pouvez également en consulter les détails de chacune des réservations !</p>
+    <p class="description">Bienvenue dans votre page de réservations ! Trouvez ici toutes les réservations que vous avez effectuées ! Vous pouvez également consulter les détails de chacune des réservations !</p>
 
-    <div class="row">
+    <div class="row flex-column">
         @foreach (var item in Model)
         {
-            <div class="col-md-4 mb-4">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">
-                            Date: @item.DateDebut.ToString("dd.MM.yyyy") <br />
-                            Heure: @item.HeureDebut.ToString(@"hh\:mm\:ss")
-                        </h5>
+            <div class="col-12 mb-4">
+                <div class="card shadow-sm flex-row position-relative">
+                    <div class="card-body d-flex justify-content-between align-items-start">
+                        <div>
+                            <div class="date-time">
+                                <span class="date-icon">&#128197;</span>
+                                <span class="date-text">@item.DateDebut.ToString("dddd dd.MM.yyyy")</span>
+                                <br />
+                                <span class="time-icon">&#128337;</span>
+                                <span class="time-text">@item.HeureDebut.ToString(@"hh\:mm")</span>
+                            </div>
+                            <hr>
+                            @if (item.Logement != null)
+                            {
+                                <h5 class="card-title">@item.Logement.Nom</h5>
+                                <p class="card-text">
+                                    <strong>Fournisseur :</strong> @item.Logement.NomFournisseur<br />
+                                    <strong>Prix :</strong> @item.Logement.PrixLogement CHF<br />
+                                </p>
+                            }
+                            else if (item.Activite != null)
+                            {
+                                <h5 class="card-title">@item.Activite.Nom</h5>
+                                <p class="card-text">
+                                    <strong>Fournisseur :</strong> @item.Activite.NomFournisseur<br />
+                                    <strong>Prix :</strong> @item.Activite.PrixActivite CHF<br />
+                                </p>
+                            }
+                            else if (item.Transport != null)
+                            {
+                                <h5 class="card-title">
+                                    @if (item.Transport.CategorieTransportNom == "Avion")
+                                    {
+                                        <i class="fa-solid fa-plane-departure transport-icon"></i> 
+                                    }
+                                    else if (item.Transport.CategorieTransportNom == "Train")
+                                    {
+                                        <i class="fa-solid fa-train transport-icon"></i> 
+
+                                    }
+                                    else if (item.Transport.CategorieTransportNom == "Bateau")
+                                    {
+                                        <i class="fa-solid fa-ship transport-icon"></i> 
+                                    }
+                                    @item.Transport.CategorieTransportNom
+                                </h5>
+                                <p class="card-text">
+                                    <strong>Fournisseur :</strong> @item.Transport.NomFournisseur<br />
+                                    <strong>Prix :</strong> @item.Transport.Prix CHF<br />
+                                </p>
+                            }
+                            else
+                            {
+                                <h5 class="card-title">Voyage: @item.IdVoyage</h5>
+                                <p class="card-text">Aucun détail disponible</p>
+                            }
+                        </div>
+                    </div>
+                    <div class="badge-container">
                         @if (item.Logement != null)
                         {
-                            <h2>Logement</h2>
-                            <h5 class="card-title">@item.Logement.Nom</h5>
-                            <p class="card-text">
-                                <strong>Fournisseur :</strong> @item.Logement.NomFournisseur<br />
-                                <strong>Prix :</strong> @item.Logement.PrixLogement CHF<br />
-                            </p>
+                            <span class="badge badge-pill badge-primary">Logement</span>
                         }
                         else if (item.Activite != null)
                         {
-                            <h2>Activité</h2>
-                            <h5 class="card-title">@item.Activite.Nom</h5>
-                            <p class="card-text">
-                                <strong>Fournisseur :</strong> @item.Activite.NomFournisseur<br />
-                                <strong>Prix :</strong> @item.Activite.PrixActivite CHF<br />
-                            </p>
+                            <span class="badge badge-pill badge-success">Activité</span>
                         }
                         else if (item.Transport != null)
                         {
-                            <h2>Transport</h2>
-                            <h5 class="card-title">@item.Transport.CategorieTransportNom</h5>
-                            <p class="card-text">
-                                <strong>Fournisseur :</strong> @item.Transport.NomFournisseur<br />
-                                <strong>Prix :</strong> @item.Transport.Prix CHF<br />
-                            </p>
+                            <span class="badge badge-pill badge-warning">Transport</span>
                         }
-                        else
-                        {
-                            <h5 class="card-title">Voyage: @item.IdVoyage</h5>
-                            <p class="card-text">Aucun détail disponible</p>
-                        }
-                        <a href="@Url.Action("Details", "Reservations", new { id = item.IdReservation })" class="btn btn-info btn-sm">Détails</a>
                     </div>
+                    <a href="@Url.Action("Details", "Reservations", new { id = item.IdReservation })" class="btn btn-details">Détails</a>
                 </div>
             </div>
         }
     </div>
 </div>
+
+<style>
+.badge-primary {
+background-color: #ff9f43;
+}
+
+.badge-success {
+background-color: #28a745;
+}
+
+.badge-warning {
+background-color: #ffc107;
+}
+
+.card {
+border-radius: 10px;
+}
+
+.card-body {
+padding: 1.5rem;
+display: flex;
+flex-direction: column;
+justify-content: space-between;
+align-items: flex-start;
+position: relative;
+}
+
+.card-title {
+font-weight: bold;
+}
+
+.description {
+font-size: 1.1rem;
+color: #666;
+}
+
+.btn-lg {
+padding: 0.75rem 1.25rem;
+font-size: 1.25rem;
+}
+
+.card.shadow-sm.flex-row {
+display: flex;
+flex-direction: row;
+position: relative;
+}
+
+.badge-container {
+position: absolute;
+top: 10px;
+right: 10px;
+}
+
+.badge {
+font-size: 1rem;
+padding: 0.5rem 2rem;
+}
+
+.date-time {
+font-size: 1.2rem;
+color: #333;
+}
+
+.date-time .date-icon, .date-time .time-icon {
+font-size: 1.2rem;
+color: #007bff;
+vertical-align: middle;
+}
+
+.date-time .date-text, .date-time .time-text {
+margin-left: 0.5rem;
+}
+
+.date-time .date-text {
+font-weight: bold;
+}
+
+.date-time .time-text {
+color: #555;
+}
+
+.transport-icon {
+font-size: 1.2rem;
+color: #007bff;
+margin-right: 0.5rem;
+}
+
+.btn-details {
+position: absolute;
+bottom: 30px;
+right: 20px;
+background-color: #007bff;
+color: #fff;
+border: none;
+padding: 0.5rem 1rem;
+font-size: 1rem;
+border-radius: 5px;
+text-align: center;
+font-weight: bold;
+}
+
+.btn-details:hover {
+background-color: #0056b3;
+}
+</style>
