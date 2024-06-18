@@ -7,8 +7,6 @@
         public DateTime DateFin { get; set; }
         public short IdClient { get; set; }
         public decimal PrixTotal { get; set; }
-        public bool StatutPaiement { get; set; }
         public short IdPays { get; set; } 
-        public string NomPays { get; set; }
     }
 }

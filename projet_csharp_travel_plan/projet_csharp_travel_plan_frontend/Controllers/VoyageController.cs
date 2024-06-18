@@ -102,7 +102,6 @@ namespace projet_csharp_travel_plan_frontend.Controllers
             }
 
             voyage.PrixTotal = 0; // Set default price total
-            voyage.StatutPaiement = false; // Set default payment status
 
             if (ModelState.IsValid)
             {
