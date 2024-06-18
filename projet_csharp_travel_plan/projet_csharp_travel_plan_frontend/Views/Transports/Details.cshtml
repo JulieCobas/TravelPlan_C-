@@ -45,15 +45,17 @@
                     <div class="form-group">
                         <label for="DateDebut">Date de début</label>
                         <input type="date" class="form-control" id="DateDebut" name="DateDebut" required />
+                        <div class="invalid-feedback" data-name="DateDebut">Veuillez remplir ce champ.</div>
                     </div>
                     <div class="form-group">
                         <label for="DateFin">Date de fin</label>
                         <input type="date" class="form-control" id="DateFin" name="DateFin" required />
+                        <div class="invalid-feedback" data-name="DateFin">Veuillez remplir ce champ.</div>
                     </div>
                 </div>
                 <div class="card-footer d-flex justify-content-between align-items-center">
                     <a asp-action="Index" asp-route-country="@selectedCountry" asp-route-voyageId="@voyageId" class="btn btn-danger ml-3">Retour à la liste</a>
-                    <form method="post" asp-action="ConfirmTransportSelection">
+                    <form id="transportForm" method="post" asp-action="ConfirmTransportSelection">
                         @Html.AntiForgeryToken()
                         <input type="hidden" name="IdTransport" value="@Model.IdTransport" />
                         <input type="hidden" name="BagageMain" value="false" />
@@ -90,6 +92,35 @@
 
             totalPriceElement.textContent = totalPrice.toFixed(2);
         }
+
+        // Validation du formulaire
+        const form = document.getElementById('transportForm');
+        form.addEventListener('submit', function (event) {
+            // Réinitialiser les messages d'erreur
+            document.querySelectorAll('.is-invalid').forEach(function (element) {
+                element.classList.remove('is-invalid');
+            });
+
+            let valid = true;
+
+            // Vérifier si les champs dates sont remplis
+            const dateDebut = document.getElementById('DateDebut');
+            const dateFin = document.getElementById('DateFin');
+
+            if (!dateDebut.value) {
+                dateDebut.classList.add('is-invalid');
+                valid = false;
+            }
+
+            if (!dateFin.value) {
+                dateFin.classList.add('is-invalid');
+                valid = false;
+            }
+
+            if (!valid) {
+                event.preventDefault();
+            }
+        });
     });
 </script>
 
@@ -170,5 +201,18 @@
 
     .ml-3 {
         margin-left: 1rem !important;
+    }
+
+    .is-invalid {
+        border-color: #dc3545;
+    }
+
+    .invalid-feedback {
+        display: none;
+        color: #dc3545;
+    }
+
+    .is-invalid + .invalid-feedback {
+        display: block;
     }
 </style>

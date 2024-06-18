@@ -21,6 +21,8 @@ public class ReservationsController : ControllerBase
             .Include(r => r.IdLogementNavigation)
             .Include(r => r.IdActiviteNavigation)
             .Include(r => r.IdTransportNavigation)
+            .Include(r => r.IdVoyageNavigation)
+            .ThenInclude(v => v.IdPays)
             .Select(r => new ReservationDTO
             {
                 IdReservation = r.IdReservation,
@@ -74,6 +76,17 @@ public class ReservationsController : ControllerBase
                     Prix = r.IdTransportNavigation.IdPrixTransportNavigation.Prix,
                     LieuDepart = r.IdTransportNavigation.LieuDepart,
                     CategorieTransportNom = r.IdTransportNavigation.IdCategorieTransportNavigation.Nom
+                } : null,
+                Voyage = r.IdVoyageNavigation != null ? new VoyageDTO
+                {
+                    IdVoyage = r.IdVoyageNavigation.IdVoyage,
+                    DateDebut = r.IdVoyageNavigation.DateDebut,
+                    DateFin = r.IdVoyageNavigation.DateFin,
+                    IdClient = r.IdVoyageNavigation.IdClient ?? 0,
+                    PrixTotal = r.IdVoyageNavigation.PrixTotal,
+                    StatutPaiement = r.IdVoyageNavigation.StatutPaiement,
+                    IdPays = r.IdVoyageNavigation.IdPays.FirstOrDefault().IdPays, // Obtenez le premier IdPays
+                    NomPays = r.IdVoyageNavigation.IdPays.FirstOrDefault().Nom // Obtenez le nom du premier pays
                 } : null
             })
             .ToListAsync();
@@ -88,6 +101,7 @@ public class ReservationsController : ControllerBase
             .Include(r => r.IdLogementNavigation)
             .Include(r => r.IdActiviteNavigation)
             .Include(r => r.IdTransportNavigation)
+            .Include(r => r.IdVoyageNavigation)
             .Where(r => r.IdReservation == id)
             .Select(r => new ReservationDTO
             {
@@ -141,7 +155,8 @@ public class ReservationsController : ControllerBase
                     Speedyboarding = (bool)r.IdTransportNavigation.IdOptionTransportNavigation.Speedyboarding,
                     Prix = r.IdTransportNavigation.IdPrixTransportNavigation.Prix,
                     CategorieTransportNom = r.IdTransportNavigation.IdCategorieTransportNavigation.Nom
-                } : null
+                } : null,
+               
             })
             .FirstOrDefaultAsync();
 
