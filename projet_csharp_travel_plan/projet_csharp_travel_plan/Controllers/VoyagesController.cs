@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using System;
+using System.Security.Claims;
 
 [Route("api/[controller]")]
 [ApiController]
@@ -222,4 +223,33 @@ public class VoyagesController : ControllerBase
     {
         return _context.Voyages.Any(e => e.IdVoyage == id);
     }
+
+    [HttpGet("VoyagesByClient/{clientId}")]
+    public async Task<ActionResult<IEnumerable<VoyageDTO>>> GetVoyagesByClient(short clientId)
+    {
+        var voyages = await _context.Voyages
+            .Where(v => v.IdClient == clientId)
+            .OrderBy(v => v.DateDebut) // Trier par DateDebut
+            .Select(v => new VoyageDTO
+            {
+                IdVoyage = v.IdVoyage,
+                DateDebut = v.DateDebut,
+                DateFin = v.DateFin,
+                PrixTotal = v.PrixTotal
+            })
+            .ToListAsync();
+
+        if (voyages == null || !voyages.Any())
+        {
+            return NotFound("No voyages found for the client.");
+        }
+
+        return Ok(voyages);
+    }
+
+
+
 }
+
+
+
