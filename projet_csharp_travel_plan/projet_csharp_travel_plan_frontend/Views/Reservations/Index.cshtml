@@ -44,15 +44,19 @@
         @foreach (var item in Model)
         {
             <div class="d-flex align-items-start mb-4">
-                <!-- Section pour afficher le nom du pays -->
-                <div class="country-name mr-3">
-                    <span class="badge badge-country">@item.Voyage.NomPays</span>
-                </div>
+                <!-- Section pour afficher le nom du pays avec une icône -->
+                
                 <div class="col-12 reservation-card"
                      data-date="@item.DateDebut.ToString("yyyy-MM-dd")"
                      data-type="@(item.Logement != null ? "Logement" : item.Activite != null ? "Activité" : item.Transport != null ? "Transport" : "Indéfini")">
                     <div class="card shadow-sm flex-row position-relative">
                         <div class="card-body d-flex justify-content-between align-items-start">
+                            <div class="country-name mr-3">
+                                <span class="badge badge-country">
+                                    &#127758; <!-- Icône de planète -->
+                                    @item.Voyage.NomPays
+                                </span>
+                            </div>
                             <div>
                                 <div class="date-time">
                                     <span class="date-icon">&#128197;</span>
@@ -130,7 +134,6 @@
     </div>
 </div>
 
-<!-- Script pour le filtrage -->
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const filterForm = document.getElementById('filter-form');
@@ -145,7 +148,10 @@
             var sortOrder = sortDate.value;
 
             var cards = document.querySelectorAll('.reservation-card');
-            cards.forEach(function (card) {
+            var container = document.getElementById('reservations-container');
+
+            // Filtrer et afficher les cartes correspondantes
+            var filteredCards = Array.from(cards).filter(function (card) {
                 var cardDate = card.getAttribute('data-date');
                 var cardType = card.getAttribute('data-type').toLowerCase();
 
@@ -160,25 +166,24 @@
                 }
 
                 card.style.display = showCard ? 'block' : 'none';
+                return showCard;
             });
 
-            // Tri des cartes
+            // Trier les cartes visibles
             if (sortOrder) {
-                var container = document.getElementById('reservations-container');
-                var sortedCards = Array.from(cards).filter(card => card.style.display === 'block');
-
-                sortedCards.sort(function (a, b) {
+                filteredCards.sort(function (a, b) {
                     var dateA = new Date(a.getAttribute('data-date'));
                     var dateB = new Date(b.getAttribute('data-date'));
 
                     return sortOrder === 'asc' ? dateA - dateB : dateB - dateA;
                 });
-
-                // Réorganiser les cartes dans le conteneur
-                sortedCards.forEach(function (card) {
-                    container.appendChild(card);
-                });
             }
+
+            // Réorganiser les cartes visibles dans le conteneur
+            container.innerHTML = ''; // Vider le conteneur
+            filteredCards.forEach(function (card) {
+                container.appendChild(card); // Ajouter uniquement les cartes visibles
+            });
         };
 
         // Appliquer les filtres en temps réel
@@ -195,7 +200,6 @@
         });
     });
 </script>
-
 <style>
     .badge-primary {
         background-color: #ff9f43;
