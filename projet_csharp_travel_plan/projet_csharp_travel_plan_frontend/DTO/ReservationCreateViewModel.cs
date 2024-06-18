@@ -2,7 +2,8 @@
 {
     public class ReservationCreateViewModel
     {
-        public string SelectedCountry { get; set; }
+        public int IdVoyage { get; set; }
+        public int SelectedCountry { get; set; }
         public string SelectedOption { get; set; }
     }
 }
