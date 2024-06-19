@@ -156,7 +156,7 @@ public class ReservationsController : ControllerBase
                     Prix = r.IdTransportNavigation.IdPrixTransportNavigation.Prix,
                     CategorieTransportNom = r.IdTransportNavigation.IdCategorieTransportNavigation.Nom
                 } : null,
-               
+
             })
             .FirstOrDefaultAsync();
 
@@ -310,14 +310,11 @@ public class ReservationsController : ControllerBase
                     DateFin = r.IdVoyageNavigation.DateFin,
                     IdClient = r.IdVoyageNavigation.IdClient ?? 0,
                     PrixTotal = r.IdVoyageNavigation.PrixTotal,
-                    IdPays = r.IdVoyageNavigation.IdPays.FirstOrDefault().IdPays, // Obtenez le premier IdPays
+                    //IdPays = r.IdVoyageNavigation.IdPays.FirstOrDefault().IdPays, // Obtenez le premier IdPays
                 } : null
             })
             .ToListAsync();
 
         return Ok(reservations);
     }
-
-
-
 }

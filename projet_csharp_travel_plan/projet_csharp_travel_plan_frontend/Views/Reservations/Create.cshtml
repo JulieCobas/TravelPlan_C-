@@ -12,22 +12,25 @@
 
 <div class="d-flex justify-content-center mt-5">
     <div class="card p-5 shadow-lg w-50">
-        <form asp-action="Create" method="post">
+        <form asp-action="Create" method="post" id="reservationForm">
             <div class="form-group">
                 <label for="voyageId">Voyage</label>
                 <select asp-for="IdVoyage" asp-items="ViewBag.Voyages" class="form-control" id="voyageId">
                     <option value="">Sélectionnez un voyage</option>
                 </select>
+                <span class="text-danger" id="voyageError"></span>
             </div>
             <div class="form-group mt-3">
                 <label for="selectedCountry">Pays</label>
                 <select asp-for="SelectedCountry" asp-items="ViewBag.Countries" class="form-control" id="selectedCountry">
                     <option value="">Sélectionnez un pays</option>
                 </select>
+                <span class="text-danger" id="countryError"></span>
             </div>
             <div class="form-group mt-3">
                 <label for="selectedOption">Option</label>
                 <select asp-for="SelectedOption" asp-items="ViewBag.Options" class="form-control" id="selectedOption"></select>
+                <span class="text-danger" id="optionError"></span>
             </div>
             <div class="form-group mt-4 d-flex justify-content-end">
                 <button type="submit" class="btn btn-primary">Suivant</button>
@@ -53,4 +56,47 @@
         .btn-primary:hover {
             background-color: #23527c;
         }
+
+    .text-danger {
+        font-size: 0.875em;
+        color: #dc3545;
+    }
+
+    .error-border {
+        border: 2px solid #dc3545 !important;
+    }
 </style>
+
+<script>
+    document.getElementById('reservationForm').addEventListener('submit', function (event) {
+        let valid = true;
+
+        // Clear previous error messages and remove error borders
+        document.getElementById('voyageError').innerText = '';
+        document.getElementById('countryError').innerText = '';
+        document.getElementById('optionError').innerText = '';
+        document.getElementById('voyageId').classList.remove('error-border');
+        document.getElementById('selectedCountry').classList.remove('error-border');
+
+        // Check Voyage selection
+        const voyageSelect = document.getElementById('voyageId');
+        if (voyageSelect.value === '') {
+            document.getElementById('voyageError').innerText = 'Veuillez sélectionner un voyage.';
+            voyageSelect.classList.add('error-border');
+            valid = false;
+        }
+
+        // Check Country selection
+        const countrySelect = document.getElementById('selectedCountry');
+        if (countrySelect.value === '') {
+            document.getElementById('countryError').innerText = 'Veuillez sélectionner un pays.';
+            countrySelect.classList.add('error-border');
+            valid = false;
+        }
+
+        // If not valid, prevent form submission
+        if (!valid) {
+            event.preventDefault();
+        }
+    });
+</script>

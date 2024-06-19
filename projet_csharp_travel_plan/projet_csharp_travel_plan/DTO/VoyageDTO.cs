@@ -7,6 +7,6 @@
         public DateTime DateFin { get; set; }
         public short IdClient { get; set; }
         public decimal PrixTotal { get; set; }
-        public short IdPays { get; set; } 
+        public short IdPays { get; set; }
     }
 }
