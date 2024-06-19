@@ -18,6 +18,7 @@ namespace projet_csharp_travel_plan_frontend.Controllers
         private readonly HttpClient _client;
         private readonly ILogger<TransportsController> _logger;
         private const string API_URL = "https://localhost:7287/api/Transports/";
+        private const string RESERVATION_API_URL = "https://localhost:7287/api/Reservations/";
 
         public TransportsController(IHttpClientFactory httpClientFactory, ILogger<TransportsController> logger)
         {
@@ -39,8 +40,8 @@ namespace projet_csharp_travel_plan_frontend.Controllers
                     return View(transportDtos);
                 }
 
-                // Handle error
                 var errorMessage = await response.Content.ReadAsStringAsync();
+                _logger.LogError("Error in GET Transports action: {Message}", errorMessage);
                 return RedirectToAction("Error", "Home", new { message = errorMessage });
             }
             catch (HttpRequestException ex)
@@ -51,7 +52,6 @@ namespace projet_csharp_travel_plan_frontend.Controllers
             }
         }
 
-        // GET: Transports/Details/5
         public async Task<IActionResult> Details(int id, int voyageId)
         {
             try
@@ -65,8 +65,8 @@ namespace projet_csharp_travel_plan_frontend.Controllers
                     return View(transport);
                 }
 
-                // Handle error
                 var errorMessage = await response.Content.ReadAsStringAsync();
+                _logger.LogError("Error in GET Transport Details action: {Message}", errorMessage);
                 return RedirectToAction("Error", "Home", new { message = errorMessage });
             }
             catch (HttpRequestException ex)
@@ -79,24 +79,25 @@ namespace projet_csharp_travel_plan_frontend.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ConfirmTransportSelection(TransportDTO transportDto, short voyageId)
+        public async Task<IActionResult> ConfirmTransportSelection(short IdTransport, short voyageId, DateTime DateDebut, DateTime DateFin, bool BagageMain, bool BagageEnSoute, bool BagageLarge, bool Speedyboarding)
         {
+            _logger.LogInformation("ConfirmTransportSelection called with IdTransport: {IdTransport}, voyageId: {voyageId}, DateDebut: {DateDebut}, DateFin: {DateFin}, BagageMain: {BagageMain}, BagageEnSoute: {BagageEnSoute}, BagageLarge: {BagageLarge}, Speedyboarding: {Speedyboarding}", IdTransport, voyageId, DateDebut, DateFin, BagageMain, BagageEnSoute, BagageLarge, Speedyboarding);
+
             if (voyageId == 0) voyageId = 1; // Default to 1 if voyageId is 0
 
-            if (transportDto.DateDebut == default(DateTime))
+            if (DateDebut == default(DateTime))
             {
                 ModelState.AddModelError("DateDebut", "La date de début est requise.");
             }
-            if (transportDto.DateFin == default(DateTime))
+            if (DateFin == default(DateTime))
             {
                 ModelState.AddModelError("DateFin", "La date de fin est requise.");
             }
             if (!ModelState.IsValid)
             {
+                _logger.LogError("Invalid model state in ConfirmTransportSelection");
                 // Recharger les données nécessaires pour la vue
-                ViewData["SelectedCountry"] = Request.Form["country"];
-                ViewData["VoyageId"] = voyageId;
-                var response = await _client.GetAsync($"{API_URL}{transportDto.IdTransport}");
+                var response = await _client.GetAsync($"{API_URL}{IdTransport}");
                 if (response.IsSuccessStatusCode)
                 {
                     var json = await response.Content.ReadAsStringAsync();
@@ -105,42 +106,31 @@ namespace projet_csharp_travel_plan_frontend.Controllers
                 }
 
                 var errorMessage = await response.Content.ReadAsStringAsync();
+                _logger.LogError("Error in GET Transport action: {Message}", errorMessage);
                 return RedirectToAction("Error", "Home", new { message = errorMessage });
             }
 
             try
             {
-                var response = await _client.GetAsync($"{API_URL}{transportDto.IdTransport}");
-                if (!response.IsSuccessStatusCode)
-                {
-                    var errorMessage = await response.Content.ReadAsStringAsync();
-                    return RedirectToAction("Error", "Home", new { message = errorMessage });
-                }
-
-                var json = await response.Content.ReadAsStringAsync();
-                var transport = JsonConvert.DeserializeObject<TransportDTO>(json);
-
-                transport.BagageMain = transportDto.BagageMain;
-                transport.BagageEnSoute = transportDto.BagageEnSoute;
-                transport.BagageLarge = transportDto.BagageLarge;
-                transport.Speedyboarding = transportDto.Speedyboarding;
-
                 var reservation = new ReservationDTO
                 {
-                    IdTransport = transportDto.IdTransport,
+                    IdTransport = IdTransport,
                     IdVoyage = voyageId,
-                    DateHeureDebut = transportDto.DateDebut,
-                    DateHeureFin = transportDto.DateFin,
+                    DateHeureDebut = DateDebut,
+                    DateHeureFin = DateFin,
                     Disponibilite = true
                 };
 
-                var reservationResponse = await _client.PostAsJsonAsync("https://localhost:7287/api/Reservations", reservation);
+                _logger.LogInformation("Sending POST request to {Url} with data: {Data}", RESERVATION_API_URL, JsonConvert.SerializeObject(reservation));
+                var reservationResponse = await _client.PostAsJsonAsync(RESERVATION_API_URL, reservation);
                 if (reservationResponse.IsSuccessStatusCode)
                 {
+                    _logger.LogInformation("Reservation created successfully.");
                     return RedirectToAction("Index", "Reservations");
                 }
 
                 var reservationErrorMessage = await reservationResponse.Content.ReadAsStringAsync();
+                _logger.LogError("Error in POST Reservation action: {Message}", reservationErrorMessage);
                 return RedirectToAction("Error", "Home", new { message = reservationErrorMessage });
             }
             catch (HttpRequestException ex)

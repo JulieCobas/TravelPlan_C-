@@ -43,6 +43,7 @@
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="IdActivite" value="@Model.IdActivite" />
                 <input type="hidden" name="VoyageId" value="@voyageId" />
+                <input type="hidden" name="PrixActivite" value="@Model.PrixActivite" /> <!-- Ajout du prix de l'activité -->
                 <div class="form-group">
                     <label for="DateDebut">Date de début</label>
                     <input type="date" class="form-control" id="DateDebut" name="DateDebut" required />

@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using projet_csharp_travel_plan_frontend.DTO;
 using projet_csharp_travel_plan_frontend.Models;
+using Microsoft.Extensions.Logging; // Ajout de l'espace de noms pour le logging
 
 namespace projet_csharp_travel_plan_frontend.Controllers
 {
@@ -15,15 +16,16 @@ namespace projet_csharp_travel_plan_frontend.Controllers
     public class ActivitesController : Controller
     {
         private readonly HttpClient _client;
+        private readonly ILogger<ActivitesController> _logger; // Ajout du logger
         private const string API_URL = "https://localhost:7287/api/Activites/";
         private const string RESERVATION_API_URL = "https://localhost:7287/api/Reservations/";
 
-        public ActivitesController(IHttpClientFactory httpClientFactory)
+        public ActivitesController(IHttpClientFactory httpClientFactory, ILogger<ActivitesController> logger)
         {
             _client = httpClientFactory.CreateClient("default");
+            _logger = logger; // Initialisation du logger
         }
 
-        // GET: Activites
         public async Task<IActionResult> Index(string country, int voyageId)
         {
             try
@@ -33,13 +35,15 @@ namespace projet_csharp_travel_plan_frontend.Controllers
                 {
                     var json = await response.Content.ReadAsStringAsync();
                     var activites = JsonConvert.DeserializeObject<List<ActiviteDTO>>(json);
-                    activites = activites.Where(a => a.NomPays == country).ToList();
+
+                    // Filtrer les activités par pays
+                    activites = activites.Where(a => a.NomPays.Equals(country, StringComparison.OrdinalIgnoreCase)).ToList();
+
                     ViewData["SelectedCountry"] = country;
                     ViewData["VoyageId"] = voyageId;
                     return View(activites);
                 }
 
-                // Handle error
                 var errorMessage = await response.Content.ReadAsStringAsync();
                 return RedirectToAction("Error", "Home", new { message = errorMessage });
             }
@@ -48,6 +52,8 @@ namespace projet_csharp_travel_plan_frontend.Controllers
                 return RedirectToAction("Error", "Home", new { message = ex.Message });
             }
         }
+
+
 
         public async Task<IActionResult> Details(int id, string country, int voyageId)
         {
@@ -63,13 +69,11 @@ namespace projet_csharp_travel_plan_frontend.Controllers
                     return View(activite);
                 }
 
-                // Handle error
                 var errorMessage = await response.Content.ReadAsStringAsync();
                 return RedirectToAction("Error", "Home", new { message = errorMessage });
             }
             catch (Exception ex)
             {
-                // Handle exception
                 return RedirectToAction("Error", "Home", new { message = ex.Message });
             }
         }
