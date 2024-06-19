@@ -1,4 +1,4 @@
-﻿ @model IEnumerable<projet_csharp_travel_plan_frontend.DTO.ReservationDTO>
+﻿@model IEnumerable<projet_csharp_travel_plan_frontend.DTO.ReservationDTO>
 
 @{
     ViewData["Title"] = "Timeline des Réservations";
@@ -9,131 +9,163 @@
 }
 
 <div class="container mt-5">
-<h1 class="display-4 font-weight-bold">Étapes de votre voyage</h1>
-<p class="description">Voici la timeline de vos réservations effectuées.</p>
 
-<div class="timeline">
-    @for (int i = 0; i < sortedReservations.Count; i++)
-    {
-        var item = sortedReservations[i];
-        var isFirst = i == 0;
-        var isLast = i == sortedReservations.Count - 1;
+    <!-- Bouton pour retourner à la liste des voyages -->
+    <a href="/Identity/Account/Manage/MesVoyages" class="btn btn-primary mb-3">
+        <i class="fas fa-arrow-left"></i> Retour à Mes Voyages
+    </a>
 
-        <div class="timeline-item">
-            <div class="timeline-icon">
-                @if (isFirst)
-                {
-                    <span class="icon debut">
-                        <i class="fas fa-flag-checkered"></i> <!-- Icône pour le début -->
-                    </span>
-                }
-                else if (isLast)
-                {
-                    <span class="icon fin">
-                        <i class="fas fa-check-circle"></i> <!-- Icône pour la fin -->
-                    </span>
-                }
-                else if (item.Logement != null)
-                {
-                    <span class="icon logement">
-                        <i class="fas fa-bed"></i> <!-- Icône pour Logement -->
-                    </span>
-                }
-                else if (item.Activite != null)
-                {
-                    <span class="icon activite">
-                        <i class="fas fa-running"></i> <!-- Icône pour Activité -->
-                    </span>
-                }
-                else if (item.Transport != null)
-                {
-                    <span class="icon transport">
-                        <i class="fas fa-car"></i> <!-- Icône pour Transport -->
-                    </span>
-                }
-            </div>
-            <div class="timeline-content">
-                <div class="badge-container">
-                    @if (item.Logement != null)
+    <h1 class="display-4 font-weight-bold flex-grow-1 text-center">Étapes de votre voyage</h1>
+
+    <div class="timeline">
+        @for (int i = 0; i < sortedReservations.Count; i++)
+        {
+            var item = sortedReservations[i];
+            var isFirst = i == 0;
+            var isLast = i == sortedReservations.Count - 1;
+
+            <div class="timeline-item">
+                <div class="timeline-icon">
+                    @if (isFirst)
                     {
-                        <span class="badge badge-pill badge-primary">Logement</span>
+                        <span class="icon debut">
+                            <i class="fas fa-flag-checkered"></i> <!-- Icône pour le début -->
+                        </span>
+                    }
+                    else if (isLast)
+                    {
+                        <span class="icon fin">
+                            <i class="fas fa-check-circle"></i> <!-- Icône pour la fin -->
+                        </span>
+                    }
+                    else if (item.Logement != null)
+                    {
+                        <span class="icon logement">
+                            <i class="fas fa-bed"></i> <!-- Icône pour Logement -->
+                        </span>
                     }
                     else if (item.Activite != null)
                     {
-                        <span class="badge badge-pill badge-success">Activité</span>
+                        <span class="icon activite">
+                            <i class="fas fa-running"></i> <!-- Icône pour Activité -->
+                        </span>
                     }
                     else if (item.Transport != null)
                     {
-                        <span class="badge badge-pill badge-warning">Transport</span>
+                        <span class="icon transport">
+                            <i class="fas fa-car"></i> <!-- Icône pour Transport -->
+                        </span>
                     }
                 </div>
-                <div class="details-section">
-                    <div class="date-time mb-2">
-                        <span class="date-icon">&#128197;</span>
-                        <span class="date-text">@item.DateDebut.ToString("dddd dd.MM.yyyy")</span>
-                        <br />
-                        <span class="time-icon">&#128337;</span>
-                        <span class="time-text">@item.HeureDebut.ToString(@"hh\:mm")</span>
+                <div class="timeline-content">
+                    <div class="country-section d-flex align-items-center mb-3">
+                        @if (item.Logement != null)
+                        {
+                            <span class="badge badge-pill badge-primary">Logement</span>
+                        }
+                        else if (item.Activite != null)
+                        {
+                            <span class="badge badge-pill badge-success">Activité</span>
+                        }
+                        else if (item.Transport != null)
+                        {
+                            <span class="badge badge-pill badge-warning">Transport</span>
+                        }
                     </div>
-                    <hr>
-                    @if (item.Logement != null)
-                    {
-                        <h5 class="card-title">@item.Logement.Nom</h5>
-                        <p class="card-text">
-                            <strong>Hébergeur :</strong> @item.Logement.NomFournisseur<br />
-                        </p>
-                    }
-                    else if (item.Activite != null)
-                    {
-                        <h5 class="card-title">@item.Activite.Nom</h5>
-                        <p class="card-text">
-                            <strong>Prestataire :</strong> @item.Activite.NomFournisseur<br />
-                        </p>
-                    }
-                    else if (item.Transport != null)
-                    {
-                        <h5 class="card-title">
-                            @if (item.Transport.CategorieTransportNom == "Avion")
-                            {
-                                <i class="fa-solid fa-plane-departure transport-icon"></i>
-                            }
-                            else if (item.Transport.CategorieTransportNom == "Train")
-                            {
-                                <i class="fa-solid fa-train transport-icon"></i>
-                            }
-                            else if (item.Transport.CategorieTransportNom == "Bateau")
-                            {
-                                <i class="fa-solid fa-ship transport-icon"></i>
-                            }
-                            @item.Transport.CategorieTransportNom
-                        </h5>
-                        <p class="card-text">
-                            <strong>Compagnie :</strong> @item.Transport.NomFournisseur<br />
-                            <strong>Lieu de départ :</strong> @item.Transport.LieuDepart<br />
-                        </p>
-                    }
-                    else
-                    {
-                        <h5 class="card-title">Voyage: @item.IdVoyage</h5>
-                        <p class="card-text">Aucun détail disponible</p>
-                    }
+                    <div class="details-section">
+                        <div class="date-time mb-2">
+                            <span class="date-icon">&#128197;</span>
+                            <span class="date-text">@item.DateDebut.ToString("dddd dd.MM.yyyy")</span>
+                            <br />
+                            <span class="time-icon">&#128337;</span>
+                            <span class="time-text">@item.HeureDebut.ToString(@"hh\:mm")</span>
+                        </div>
+                        <hr>
+                        @if (item.Logement != null)
+                        {
+                            <h5 class="card-title">@item.Logement.Nom</h5>
+                            <p class="card-text">
+                                <strong>Hébergeur :</strong> @item.Logement.NomFournisseur<br />
+                            </p>
+                        }
+                        else if (item.Activite != null)
+                        {
+                            <h5 class="card-title">@item.Activite.Nom</h5>
+                            <p class="card-text">
+                                <strong>Prestataire :</strong> @item.Activite.NomFournisseur<br />
+                            </p>
+                        }
+                        else if (item.Transport != null)
+                        {
+                            <h5 class="card-title">
+                                @if (item.Transport.CategorieTransportNom == "Avion")
+                                {
+                                    <i class="fa-solid fa-plane-departure transport-icon"></i>
+                                }
+                                else if (item.Transport.CategorieTransportNom == "Train")
+                                {
+                                    <i class="fa-solid fa-train transport-icon"></i>
+                                }
+                                else if (item.Transport.CategorieTransportNom == "Bateau")
+                                {
+                                    <i class="fa-solid fa-ship transport-icon"></i>
+                                }
+                                @item.Transport.CategorieTransportNom
+                            </h5>
+                            <p class="card-text">
+                                <strong>Compagnie :</strong> @item.Transport.NomFournisseur<br />
+                                <strong>Lieu de départ :</strong> @item.Transport.LieuDepart<br />
+                            </p>
+                        }
+                        else
+                        {
+                            <h5 class="card-title">Voyage: @item.IdVoyage</h5>
+                            <p class="card-text">Aucun détail disponible</p>
+                        }
+                    </div>
+                    <!-- Bouton "Détails" ajouté en bas à droite -->
+                    <div class="d-flex justify-content-end">
+                        <a href="@Url.Action("Details", "Reservations", new { id = item.IdReservation })" class="btn btn-details">Détails</a>
+                    </div>
                 </div>
-                <a href="@Url.Action("Details", "Reservations", new { id = item.IdReservation })" class="btn btn-details">Détails</a>
             </div>
-        </div>
-    }
-</div>
+        }
+    </div>
 </div>
 
 <!-- Inclure Font Awesome pour les icônes -->
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const items = document.querySelectorAll(".timeline-item");
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add("visible");
+                    } else {
+                        entry.target.classList.remove("visible");
+                    }
+                });
+            }, {
+                threshold: 0.1
+            });
+
+            items.forEach(item => {
+                observer.observe(item);
+            });
+        });
+    </script>
+}
 
 <style>
     .timeline {
         position: relative;
         max-width: 900px;
         margin: 0 auto;
-        padding: 20px;
+        padding: 40px;
         list-style: none;
     }
 
@@ -142,42 +174,32 @@
             position: absolute;
             width: 6px;
             background-color: #007bff;
-            top: 25px; /* Commence juste en dessous du premier point */
-            bottom: 25px; /* Se termine juste au-dessus du dernier point */
+            top: 50px; /* Aligné avec le premier point */
+            bottom: 50px; /* Aligné avec le dernier point */
             left: 50%;
             margin-left: -3px;
         }
 
-    .timeline-item:last-child::before {
-        content: '';
-        position: absolute;
-        width: 6px;
-        background-color: #007bff;
-        top: 25px;
-        bottom: 50%;
-        left: 50%;
-        margin-left: -3px;
-    }
-
     .timeline-item {
         display: flex;
-        align-items: flex-start;
-        justify-content: flex-end;
+        align-items: center;
         width: 50%;
         position: relative;
         margin-bottom: 50px;
-        padding-right: 30px;
+        padding: 20px 40px;
+        box-sizing: border-box;
     }
 
         .timeline-item:nth-child(odd) {
             left: 0;
+            justify-content: flex-end;
+            padding-right: 30px;
         }
 
         .timeline-item:nth-child(even) {
             left: 50%;
             justify-content: flex-start;
             padding-left: 30px;
-            padding-right: 0;
         }
 
     .timeline-icon {
@@ -211,8 +233,8 @@
     .timeline-content {
         padding: 20px;
         background-color: #f9f9f9;
-        border-radius: 10px;
-        border: 1px solid #ddd;
+        border-radius: 15px;
+        border: none; /* Suppression des bordures */
         position: relative;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         flex-grow: 1;
@@ -226,6 +248,7 @@
             background-color: #007bff;
             color: #fff;
             border: none;
+            margin-top: 20px;
             padding: 0.5rem 1rem;
             font-size: 1rem;
             border-radius: 5px;
@@ -236,6 +259,12 @@
             .timeline-content .btn-details:hover {
                 background-color: #0056b3;
             }
+
+    .badge-primary,
+    .badge-success,
+    .badge-warning {
+        border: none; /* Suppression des bordures des badges */
+    }
 
     .badge-primary {
         background-color: #ff9f43;
@@ -259,13 +288,15 @@
         color: #333;
     }
 
-        .date-time .date-icon, .date-time .time-icon {
+        .date-time .date-icon,
+        .date-time .time-icon {
             font-size: 1.2rem;
             color: #007bff;
             vertical-align: middle;
         }
 
-        .date-time .date-text, .date-time .time-text {
+        .date-time .date-text,
+        .date-time .time-text {
             margin-left: 0.5rem;
         }
 
@@ -297,4 +328,33 @@
             border-radius: 5px;
         }
 
+    /* Animations for entry */
+    .timeline-item {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    }
+
+        .timeline-item.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+    .font-weight-bold {
+        font-weight: bold;
+    }
+
+    /* Styles pour centrer le titre */
+    .text-center {
+        text-align: center;
+    }
+
+    /* Ajustement pour le bouton Détails en bas à droite */
+    .d-flex {
+        display: flex;
+    }
+
+    .justify-content-end {
+        justify-content: flex-end;
+    }
 </style>

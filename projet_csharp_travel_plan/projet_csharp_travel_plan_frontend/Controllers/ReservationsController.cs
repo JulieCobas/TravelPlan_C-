@@ -83,11 +83,32 @@ namespace projet_csharp_travel_plan_frontend.Controllers
         {
             try
             {
-                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                ViewBag.Voyages = new SelectList(await GetVoyagesByUser(userId), "IdVoyage", "IdVoyage");
-                ViewBag.Countries = new SelectList(await GetCountries(), "IdPays", "Nom");
-                ViewBag.Options = new SelectList(new List<string> { "Logement", "Activité", "Transport" });
-                return View(new ReservationCreateViewModel());
+                var response = await _client.GetAsync(PAYS_API_URL);
+                if (response.IsSuccessStatusCode)
+                {
+                    var json = await response.Content.ReadAsStringAsync();
+                    var countries = JsonConvert.DeserializeObject<List<PayDTO>>(json);
+
+                    ViewBag.Countries = new SelectList(countries, "Nom", "Nom");
+
+                    // Get the selected country for the voyage
+                    var voyageResponse = await _client.GetAsync($"{VOYAGE_API_URL}{id}");
+                    if (voyageResponse.IsSuccessStatusCode)
+                    {
+                        var voyageJson = await voyageResponse.Content.ReadAsStringAsync();
+                        var voyage = JsonConvert.DeserializeObject<VoyageDTO>(voyageJson);
+                        ViewBag.SelectedCountry = countries.FirstOrDefault(c => c.IdPays == voyage.IdPays)?.Nom;
+                    }
+
+                    ViewBag.Options = new SelectList(new List<string> { "Logement", "Activité", "Transport" });
+                    ViewBag.VoyageId = id;
+
+                    return View();
+                }
+
+                // Handle error
+                var errorMessage = await response.Content.ReadAsStringAsync();
+                return RedirectToAction("Error", "Home", new { message = errorMessage });
             }
             catch (HttpRequestException ex)
             {
@@ -100,31 +121,30 @@ namespace projet_csharp_travel_plan_frontend.Controllers
         // POST: Reservations/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(ReservationCreateViewModel model)
+        public IActionResult Create(int idVoyage, string selectedCountry, string selectedOption)
         {
-            if (ModelState.IsValid)
+            if (string.IsNullOrEmpty(selectedCountry) || string.IsNullOrEmpty(selectedOption))
             {
-                TempData["VoyageId"] = model.IdVoyage;
-                TempData["SelectedOption"] = model.SelectedOption;
-
-                switch (model.SelectedOption)
-                {
-                    case "Logement":
-                        return RedirectToAction("Index", "Logements", new { voyageId = model.IdVoyage });
-                    case "Activité":
-                        return RedirectToAction("Index", "Activites", new { voyageId = model.IdVoyage });
-                    case "Transport":
-                        return RedirectToAction("Index", "Transports", new { voyageId = model.IdVoyage });
-                    default:
-                        return View(model);
-                }
+                // Load countries and options again if validation fails
+                ViewBag.Countries = new SelectList(new List<PayDTO>(), "Nom", "Nom");
+                ViewBag.Options = new SelectList(new List<string> { "Logement", "Activité", "Transport" });
+                return View();
             }
 
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            ViewBag.Voyages = new SelectList(await GetVoyagesByUser(userId), "IdVoyage", "IdVoyage");
-            ViewBag.Countries = new SelectList(await GetCountries(), "IdPays", "Nom");
-            ViewBag.Options = new SelectList(new List<string> { "Logement", "Activité", "Transport" });
-            return View(model);
+            TempData["VoyageId"] = idVoyage;
+            TempData["Country"] = selectedCountry;
+
+            switch (selectedOption)
+            {
+                case "Logement":
+                    return RedirectToAction("Index", "Logements", new { country = selectedCountry, voyageId = idVoyage });
+                case "Activité":
+                    return RedirectToAction("Index", "Activites", new { country = selectedCountry, voyageId = idVoyage });
+                case "Transport":
+                    return RedirectToAction("Index", "Transports", new { voyageId = idVoyage });
+                default:
+                    return View();
+            }
         }
 
         // GET: Reservations/Details/5
@@ -152,26 +172,31 @@ namespace projet_csharp_travel_plan_frontend.Controllers
             }
         }
 
-        private async Task<List<VoyageDTO>> GetVoyagesByUser(string userId)
+        // GET reservations/byvoyages/{idvoyage}
+        public async Task<IActionResult> ByVoyage(int voyageId)
         {
-            var response = await _client.GetAsync($"{VOYAGE_API_URL}/VoyagesByClient/{userId}");
-            if (response.IsSuccessStatusCode)
+            try
             {
-                var json = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<List<VoyageDTO>>(json);
+                var response = await _client.GetAsync($"{API_URL}byvoyage/{voyageId}");
+                if (response.IsSuccessStatusCode)
+                {
+                    var json = await response.Content.ReadAsStringAsync();
+                    var reservations = JsonConvert.DeserializeObject<List<ReservationDTO>>(json);
+                    return View("Timeline", reservations); // Utilise la vue "Timeline" pour afficher les réservations filtrées
+                }
+
+                // Handle error
+                var errorMessage = await response.Content.ReadAsStringAsync();
+                return RedirectToAction("Error", "Home", new { message = errorMessage });
             }
-            return new List<VoyageDTO>();
+            catch (HttpRequestException ex)
+            {
+                _logger.LogError("Error in GET Reservations by voyage action: {Message}", ex.Message);
+                var errorModel = new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier, ErrorMessage = ex.Message };
+                return View("Error", errorModel);
+            }
         }
 
-        private async Task<List<PayDTO>> GetCountries()
-        {
-            var response = await _client.GetAsync(PAYS_API_URL);
-            if (response.IsSuccessStatusCode)
-            {
-                var json = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<List<PayDTO>>(json);
-            }
-            return new List<PayDTO>();
-        }
+
     }
 }
