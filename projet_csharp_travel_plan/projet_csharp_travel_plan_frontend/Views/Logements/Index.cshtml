@@ -8,39 +8,45 @@
 
 <h1>@ViewData["Title"]</h1>
 
-<p class="description">Voici les différents logements disponible pour vous ! Veuillez choisir :</p>
+<p class="description">Voici les différents logements disponibles pour vous ! Veuillez choisir :</p>
 
 <div class="container">
-    @foreach (var item in Model)
+    @if (Model != null && Model.Any())
     {
-        <div class="card mb-4 shadow-sm">
-            <div class="row no-gutters">
-                <div class="col-md-4">
-                    <img src="/img/logement_test.jpg" class="card-img" alt="Image du logement">
-                </div>
-                <div class="col-md-8 d-flex flex-column">
-                    <div class="card-body">
-                        <h5 class="card-title">@Html.DisplayFor(modelItem => item.Nom)</h5>
-                        <p class="card-text"><strong> @Html.DisplayFor(modelItem => item.NomFournisseur)</strong></p>
-                        <h6 class="card-subtitle mb-2 text-muted">@Html.DisplayFor(modelItem => item.NomCategorie)</h6>
-                        <p class="card-text">@Html.DisplayFor(modelItem => item.Details)</p>
-                        <p class="card-text">
-                            <strong>Note :</strong>
-                            @for (var i = 1; i <= 10; i++)
-                            {
-                                <span class="fa fa-star @(i <= item.Note ? "checked" : "")"></span>
-                            }
-                        </p>
-                        <p class="card-text"><strong>Prix : </strong>@Html.DisplayFor(modelItem => item.PrixLogement) CHF </p>
-                        <p class="card-text"><strong>Nombre d'évaluations :</strong> @Html.DisplayFor(modelItem => item.NbEvaluation) avis </p>
-
+        @foreach (var item in Model)
+        {
+            <div class="card mb-4 shadow-sm">
+                <div class="row no-gutters">
+                    <div class="col-md-4">
+                        <img src="/img/logement_test.jpg" class="card-img" alt="Image du logement">
                     </div>
-                    <div class="card-footer text-left">
-                        <a asp-action="Details" asp-route-id="@item.IdLogement" asp-route-country="@selectedCountry" asp-route-voyageId="@voyageId" class="btn btn-info">Réserver le logement</a>
+                    <div class="col-md-8 d-flex flex-column">
+                        <div class="card-body">
+                            <h5 class="card-title">@Html.DisplayFor(modelItem => item.Nom)</h5>
+                            <p class="card-text"><strong>@Html.DisplayFor(modelItem => item.NomFournisseur)</strong></p>
+                            <h6 class="card-subtitle mb-2 text-muted">@Html.DisplayFor(modelItem => item.NomCategorie)</h6>
+                            <p class="card-text">@Html.DisplayFor(modelItem => item.Details)</p>
+                            <p class="card-text">
+                                <strong>Note :</strong>
+                                @for (var i = 1; i <= 10; i++)
+                                {
+                                    <span class="fa fa-star @(i <= item.Note ? "checked" : "")"></span>
+                                }
+                            </p>
+                            <p class="card-text"><strong>Prix : </strong>@Html.DisplayFor(modelItem => item.PrixLogement) CHF </p>
+                            <p class="card-text"><strong>Nombre d'évaluations :</strong> @Html.DisplayFor(modelItem => item.NbEvaluation) avis </p>
+                        </div>
+                        <div class="card-footer text-left">
+                            <a asp-action="Details" asp-route-id="@item.IdLogement" asp-route-country="@selectedCountry" asp-route-voyageId="@voyageId" class="btn btn-info">Réserver le logement</a>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        }
+    }
+    else
+    {
+        <p>Aucun logement disponible pour ce pays.</p>
     }
 </div>
 

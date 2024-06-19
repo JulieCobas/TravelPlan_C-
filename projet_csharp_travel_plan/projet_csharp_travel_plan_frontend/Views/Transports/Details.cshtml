@@ -21,23 +21,23 @@
                 <div class="card-body">
                     <h5 class="card-title">Nom de la compagnie</h5>
                     <p class="card-text">@Model.NomFournisseur</p>
-                    @if (categoriesAfficherOptions.Contains(Model.CategorieTransport.Nom))
+                    @if (categoriesAfficherOptions.Contains(Model.CategorieTransportNom))
                     {
                         <p class="card-text">Numéro du siège</p>
                         <div class="form-check">
-                            <input class="form-check-input option-checkbox" type="checkbox" id="bagageMain" data-price="@Model.PrixBagageMain" />
+                            <input class="form-check-input option-checkbox" type="checkbox" id="bagageMain" name="BagageMain" value="true" data-price="@Model.PrixBagageMain" />
                             <label class="form-check-label" for="bagageMain">Bagage à main</label>
                         </div>
                         <div class="form-check">
-                            <input class="form-check-input option-checkbox" type="checkbox" id="bagageEnSoute" data-price="@Model.PrixBagageEnSoute" />
+                            <input class="form-check-input option-checkbox" type="checkbox" id="bagageEnSoute" name="BagageEnSoute" value="true" data-price="@Model.PrixBagageEnSoute" />
                             <label class="form-check-label" for="bagageEnSoute">Bagage en soute</label>
                         </div>
                         <div class="form-check">
-                            <input class="form-check-input option-checkbox" type="checkbox" id="bagageLarge" data-price="@Model.PrixBagageLarge" />
+                            <input class="form-check-input option-checkbox" type="checkbox" id="bagageLarge" name="BagageLarge" value="true" data-price="@Model.PrixBagageLarge" />
                             <label class="form-check-label" for="bagageLarge">Bagage large</label>
                         </div>
                         <div class="form-check">
-                            <input class="form-check-input option-checkbox" type="checkbox" id="speedyboarding" data-price="@Model.PrixSpeedyBoarding" />
+                            <input class="form-check-input option-checkbox" type="checkbox" id="speedyboarding" name="Speedyboarding" value="true" data-price="@Model.PrixSpeedyBoarding" />
                             <label class="form-check-label" for="speedyboarding">Speedyboarding</label>
                         </div>
                     }
@@ -58,10 +58,6 @@
                     <form id="transportForm" method="post" asp-action="ConfirmTransportSelection">
                         @Html.AntiForgeryToken()
                         <input type="hidden" name="IdTransport" value="@Model.IdTransport" />
-                        <input type="hidden" name="BagageMain" value="false" />
-                        <input type="hidden" name="BagageEnSoute" value="false" />
-                        <input type="hidden" name="BagageLarge" value="false" />
-                        <input type="hidden" name="Speedyboarding" value="false" />
                         <input type="hidden" name="voyageId" value="@voyageId" />
                         <button type="submit" class="btn btn-primary">Confirmer et passer à la réservation de logement</button>
                     </form>

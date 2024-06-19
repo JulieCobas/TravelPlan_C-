@@ -7,28 +7,35 @@
 
 <h1>Transports</h1>
 
-<p class="description">Voici les différents transports disponible pour vous ! Veuillez choisir :</p>
+<p class="description">Voici les différents transports disponibles pour vous ! Veuillez choisir :</p>
 
 <div class="container">
-    @foreach (var item in Model)
+    @if (Model != null && Model.Any())
     {
-        <div class="card mb-4 shadow-sm">
-            <div class="row no-gutters">
-                <div class="col-md-4">
-                    <img src="/img/transport_test.png" class="card-img" alt="Image du transport">
-                </div>
-                <div class="col-md-8 d-flex flex-column">
-                    <div class="card-body">
-                        <h5 class="card-title">@Html.DisplayFor(modelItem => item.NomFournisseur)</h5>
-                        <p class="card-text"><strong>@Html.DisplayFor(modelItem => item.CategorieTransportNom)</strong></p>
-                        <p class="card-text">@Html.DisplayFor(modelItem => item.Prix) €</p>
+        @foreach (var item in Model)
+        {
+            <div class="card mb-4 shadow-sm">
+                <div class="row no-gutters">
+                    <div class="col-md-4">
+                        <img src="/img/transport_test.png" class="card-img" alt="Image du transport">
                     </div>
-                    <div class="card-footer text-left">
-                        <a asp-action="Details" asp-route-id="@item.IdTransport" asp-route-voyageId="@voyageId" class="btn btn-info">Voir détails</a>
+                    <div class="col-md-8 d-flex flex-column">
+                        <div class="card-body">
+                            <h5 class="card-title">@Html.DisplayFor(modelItem => item.NomFournisseur)</h5>
+                            <p class="card-text"><strong>@Html.DisplayFor(modelItem => item.CategorieTransportNom)</strong></p>
+                            <p class="card-text">@Html.DisplayFor(modelItem => item.Prix) €</p>
+                        </div>
+                        <div class="card-footer text-left">
+                            <a asp-action="Details" asp-route-id="@item.IdTransport" asp-route-voyageId="@voyageId" class="btn btn-info">Voir détails</a>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        }
+    }
+    else
+    {
+        <p>Aucun transport disponible pour ce pays.</p>
     }
 </div>
 

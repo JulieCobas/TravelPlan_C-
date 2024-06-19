@@ -2,47 +2,52 @@
 
 @{
     ViewData["Title"] = $"Activités en {ViewData["SelectedCountry"]}";
-    var country = ViewData["SelectedCountry"];
-    var voyageId = ViewData["VoyageId"];
+    var country = ViewData["SelectedCountry"] as string;
+    var voyageId = ViewData["VoyageId"] as int?;
 }
 
 <h1>@ViewData["Title"]</h1>
 
-<p class="description">Voici les différents activitées disponible pour vous ! Veuillez choisir :</p>
+<p class="description">Voici les différentes activités disponibles pour vous ! Veuillez choisir :</p>
 
 <div class="container">
-    @foreach (var item in Model)
+    @if (Model != null && Model.Any())
     {
-        <div class="card mb-4 shadow-sm">
-            <div class="row no-gutters">
-                <div class="col-md-4">
-                    <img src="/img/activite_test.jpg" class="card-img" alt="Image de l'activité">
-                </div>
-                <div class="col-md-8 d-flex flex-column">
-                    <div class="card-body">
-                        <h5 class="card-title">@Html.DisplayFor(modelItem => item.Nom)</h5>
-                        <h6 class="card-subtitle mb-2 text-muted">@Html.DisplayFor(modelItem => item.NomCategorie)</h6>
-                        <p class="card-text">@Html.DisplayFor(modelItem => item.Details)</p>
-                        <p class="card-text"><strong>Prix :</strong> CHF @Html.DisplayFor(modelItem => item.PrixActivite) </p>
-                        <p class="card-text">
-                            <strong>Note :</strong>
-                            @for (var i = 1; i <= 10; i++)
-                            {
-                                <span class="fa fa-star @(i <= item.Note ? "checked" : "")"></span>
-                            }
-                        </p>
-                        <p class="card-text"><strong>Nombre d'évaluations:</strong> @Html.DisplayFor(modelItem => item.NbEvaluation) avis </p>
+        @foreach (var item in Model)
+        {
+            <div class="card mb-4 shadow-sm">
+                <div class="row no-gutters">
+                    <div class="col-md-4">
+                        <img src="/img/activite_test.jpg" class="card-img" alt="Image de l'activité">
                     </div>
-                    <div class="card-footer text-left">
-                        <a asp-action="Details" asp-route-id="@item.IdActivite" asp-route-country="@country" asp-route-voyageId="@voyageId" class="btn btn-info">Réserver l'activité</a>
+                    <div class="col-md-8 d-flex flex-column">
+                        <div class="card-body">
+                            <h5 class="card-title">@Html.DisplayFor(modelItem => item.Nom)</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">@Html.DisplayFor(modelItem => item.NomCategorie)</h6>
+                            <p class="card-text">@Html.DisplayFor(modelItem => item.Details)</p>
+                            <p class="card-text"><strong>Prix :</strong> CHF @Html.DisplayFor(modelItem => item.PrixActivite) </p>
+                            <p class="card-text">
+                                <strong>Note :</strong>
+                                @for (var i = 1; i <= 10; i++)
+                                {
+                                    <span class="fa fa-star @(i <= item.Note ? "checked" : "")"></span>
+                                }
+                            </p>
+                            <p class="card-text"><strong>Nombre d'évaluations:</strong> @Html.DisplayFor(modelItem => item.NbEvaluation) avis </p>
+                        </div>
+                        <div class="card-footer text-left">
+                            <a asp-action="Details" asp-route-id="@item.IdActivite" asp-route-country="@country" asp-route-voyageId="@voyageId" class="btn btn-info">Réserver l'activité</a>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        }
+    }
+    else
+    {
+        <p>Aucune activité disponible pour ce pays.</p>
     }
 </div>
-
-
 
 <style>
     .card {
