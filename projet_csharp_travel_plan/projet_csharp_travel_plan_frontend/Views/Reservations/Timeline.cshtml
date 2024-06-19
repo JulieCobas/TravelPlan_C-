@@ -123,6 +123,10 @@
                             <p class="card-text">Aucun détail disponible</p>
                         }
                     </div>
+                    <!-- Bouton "Détails" ajouté en bas à droite -->
+                    <div class="d-flex justify-content-end">
+                        <a href="@Url.Action("Details", "Reservations", new { id = item.IdReservation })" class="btn btn-details">Détails</a>
+                    </div>
                 </div>
             </div>
         }
@@ -156,14 +160,12 @@
     </script>
 }
 
-
-
 <style>
     .timeline {
         position: relative;
         max-width: 900px;
         margin: 0 auto;
-        padding: 20px;
+        padding: 40px;
         list-style: none;
     }
 
@@ -246,6 +248,7 @@
             background-color: #007bff;
             color: #fff;
             border: none;
+            margin-top: 20px;
             padding: 0.5rem 1rem;
             font-size: 1rem;
             border-radius: 5px;
@@ -340,6 +343,18 @@
     .font-weight-bold {
         font-weight: bold;
     }
+
+    /* Styles pour centrer le titre */
+    .text-center {
+        text-align: center;
+    }
+
+    /* Ajustement pour le bouton Détails en bas à droite */
+    .d-flex {
+        display: flex;
+    }
+
+    .justify-content-end {
+        justify-content: flex-end;
+    }
 </style>
-
-
