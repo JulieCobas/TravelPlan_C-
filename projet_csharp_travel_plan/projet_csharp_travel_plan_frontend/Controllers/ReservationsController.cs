@@ -170,5 +170,32 @@ namespace projet_csharp_travel_plan_frontend.Controllers
                 return View("Error", errorModel);
             }
         }
+
+        // GET reservations/byvoyages/{idvoyage}
+        public async Task<IActionResult> ByVoyage(int voyageId)
+        {
+            try
+            {
+                var response = await _client.GetAsync($"{API_URL}byvoyage/{voyageId}");
+                if (response.IsSuccessStatusCode)
+                {
+                    var json = await response.Content.ReadAsStringAsync();
+                    var reservations = JsonConvert.DeserializeObject<List<ReservationDTO>>(json);
+                    return View("Timeline", reservations); // Utilise la vue "Timeline" pour afficher les réservations filtrées
+                }
+
+                // Handle error
+                var errorMessage = await response.Content.ReadAsStringAsync();
+                return RedirectToAction("Error", "Home", new { message = errorMessage });
+            }
+            catch (HttpRequestException ex)
+            {
+                _logger.LogError("Error in GET Reservations by voyage action: {Message}", ex.Message);
+                var errorModel = new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier, ErrorMessage = ex.Message };
+                return View("Error", errorModel);
+            }
+        }
+
+
     }
 }

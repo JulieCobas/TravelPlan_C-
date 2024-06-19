@@ -1,7 +1,7 @@
 ﻿@page
 @model projet_csharp_travel_plan_frontend.Areas.Identity.Pages.Account.Manage.MesVoyagesModel
 @{
-    ViewData["Title"] = "Mes voyages";
+    ViewData["Title"] = "Mes Voyages";
 }
 
 <h1>@ViewData["Title"]</h1>
@@ -15,7 +15,7 @@ else
     <div class="voyages-container">
         @foreach (var voyage in Model.Voyages)
         {
-            <div class="voyage-card" data-href="@Url.Page("/", new { id = voyage.IdVoyage })">
+            <div class="voyage-card" data-href="@Url.Action("ByVoyage", "Reservations", new { voyageId = voyage.IdVoyage })">
                 <div class="voyage-dates">
                     <span>Date de début: @voyage.DateDebut.ToShortDateString()</span>
                     <span>Date de fin: @voyage.DateFin.ToShortDateString()</span>
@@ -59,8 +59,8 @@ else
     }
 
         .voyage-card:hover {
-            background-color: #f9f9f9;
-            transform: translateY(-3px);
+            background-color: #f1f1f1;
+            transform: translateY(-2px);
         }
 
     .voyage-dates {
