@@ -39,7 +39,6 @@ namespace projet_csharp_travel_plan_frontend.Controllers
                     return View(transportDtos);
                 }
 
-                // Handle error
                 var errorMessage = await response.Content.ReadAsStringAsync();
                 return RedirectToAction("Error", "Home", new { message = errorMessage });
             }
@@ -51,7 +50,6 @@ namespace projet_csharp_travel_plan_frontend.Controllers
             }
         }
 
-        // GET: Transports/Details/5
         public async Task<IActionResult> Details(int id, int voyageId)
         {
             try
@@ -65,7 +63,6 @@ namespace projet_csharp_travel_plan_frontend.Controllers
                     return View(transport);
                 }
 
-                // Handle error
                 var errorMessage = await response.Content.ReadAsStringAsync();
                 return RedirectToAction("Error", "Home", new { message = errorMessage });
             }
@@ -76,6 +73,7 @@ namespace projet_csharp_travel_plan_frontend.Controllers
                 return View("Error", errorModel);
             }
         }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]

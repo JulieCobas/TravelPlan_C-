@@ -33,13 +33,11 @@ namespace projet_csharp_travel_plan_frontend.Controllers
                 {
                     var json = await response.Content.ReadAsStringAsync();
                     var activites = JsonConvert.DeserializeObject<List<ActiviteDTO>>(json);
-                    activites = activites.Where(a => a.NomPays == country).ToList();
                     ViewData["SelectedCountry"] = country;
                     ViewData["VoyageId"] = voyageId;
                     return View(activites);
                 }
 
-                // Handle error
                 var errorMessage = await response.Content.ReadAsStringAsync();
                 return RedirectToAction("Error", "Home", new { message = errorMessage });
             }
@@ -63,16 +61,15 @@ namespace projet_csharp_travel_plan_frontend.Controllers
                     return View(activite);
                 }
 
-                // Handle error
                 var errorMessage = await response.Content.ReadAsStringAsync();
                 return RedirectToAction("Error", "Home", new { message = errorMessage });
             }
             catch (Exception ex)
             {
-                // Handle exception
                 return RedirectToAction("Error", "Home", new { message = ex.Message });
             }
         }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]

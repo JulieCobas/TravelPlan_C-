@@ -26,22 +26,19 @@ namespace projet_csharp_travel_plan_frontend.Controllers
             _logger = logger;
         }
 
-        public async Task<IActionResult> Index(string country, int voyageId)
+        public async Task<IActionResult> Index(int voyageId)
         {
             try
             {
-                var response = await _client.GetAsync($"{API_URL}?country={country}");
+                var response = await _client.GetAsync(API_URL);
                 if (response.IsSuccessStatusCode)
                 {
                     var json = await response.Content.ReadAsStringAsync();
                     var logements = JsonConvert.DeserializeObject<List<LogementDTO>>(json);
-                    logements = logements.Where(l => l.NomPays == country).ToList();
-                    ViewData["SelectedCountry"] = country;
                     ViewData["VoyageId"] = voyageId;
                     return View(logements);
                 }
 
-                // Handle error
                 var errorMessage = await response.Content.ReadAsStringAsync();
                 return RedirectToAction("Error", "Home", new { message = errorMessage });
             }
@@ -53,7 +50,7 @@ namespace projet_csharp_travel_plan_frontend.Controllers
             }
         }
 
-        public async Task<IActionResult> Details(int id, string country, int voyageId)
+        public async Task<IActionResult> Details(int id, int voyageId)
         {
             try
             {
@@ -62,12 +59,10 @@ namespace projet_csharp_travel_plan_frontend.Controllers
                 {
                     var json = await response.Content.ReadAsStringAsync();
                     var logement = JsonConvert.DeserializeObject<LogementDTO>(json);
-                    ViewData["SelectedCountry"] = country;
                     ViewData["VoyageId"] = voyageId;
                     return View(logement);
                 }
 
-                // Handle error
                 var errorMessage = await response.Content.ReadAsStringAsync();
                 return RedirectToAction("Error", "Home", new { message = errorMessage });
             }
@@ -78,6 +73,7 @@ namespace projet_csharp_travel_plan_frontend.Controllers
                 return View("Error", errorModel);
             }
         }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
