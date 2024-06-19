@@ -33,16 +33,52 @@ namespace projet_csharp_travel_plan_frontend.Controllers
         {
             try
             {
+                // Récupérer les réservations
                 var response = await _client.GetAsync(API_URL);
                 if (response.IsSuccessStatusCode)
                 {
                     var json = await response.Content.ReadAsStringAsync();
-                    var reservations = JsonConvert.DeserializeObject<List<ReservationDTO>>(json);
+                    var reservations = JsonConvert.DeserializeObject<List<ReservationPaysModelDTO>>(json);
+
+                    // Récupérer la liste des pays
+                    var countryResponse = await _client.GetAsync(PAYS_API_URL);
+                    if (countryResponse.IsSuccessStatusCode)
+                    {
+                        var countryJson = await countryResponse.Content.ReadAsStringAsync();
+                        var countries = JsonConvert.DeserializeObject<List<PayDTO>>(countryJson);
+
+                        // Optionnel: Vous pouvez utiliser cette liste pour des affichages futurs
+                        ViewBag.Countries = new SelectList(countries, "Nom", "Nom");
+
+                        // Associer chaque réservation avec son pays
+                        foreach (var reservation in reservations)
+                        {
+                            // Si le NomPays n'est pas déjà défini dans les données de réservation
+                            if (string.IsNullOrEmpty(reservation.NomPays))
+                            {
+                                var country = countries.FirstOrDefault(c => c.IdPays == reservation.Voyage?.IdPays);
+                                if (country != null)
+                                {
+                                    reservation.NomPays = country.Nom;
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        // Gestion d'erreur si l'appel aux pays échoue
+                        var errorCountryMessage = await countryResponse.Content.ReadAsStringAsync();
+                        _logger.LogError("Error fetching countries: {Message}", errorCountryMessage);
+                        return RedirectToAction("Error", "Home", new { message = errorCountryMessage });
+                    }
+
+                    // La vue utilise maintenant le NomPays directement dans ReservationPaysModelDTO
                     return View(reservations);
                 }
 
-                // Handle error
+                // Gestion d'erreur si l'appel aux réservations échoue
                 var errorMessage = await response.Content.ReadAsStringAsync();
+                _logger.LogError("Error fetching reservations: {Message}", errorMessage);
                 return RedirectToAction("Error", "Home", new { message = errorMessage });
             }
             catch (HttpRequestException ex)
@@ -53,6 +89,7 @@ namespace projet_csharp_travel_plan_frontend.Controllers
             }
         }
 
+
         // GET: Reservations
         public async Task<IActionResult> Timeline()
         {
@@ -62,7 +99,7 @@ namespace projet_csharp_travel_plan_frontend.Controllers
                 if (response.IsSuccessStatusCode)
                 {
                     var json = await response.Content.ReadAsStringAsync();
-                    var reservations = JsonConvert.DeserializeObject<List<ReservationDTO>>(json);
+                    var reservations = JsonConvert.DeserializeObject<List<ReservationPaysModelDTO>>(json);
                     return View(reservations);
                 }
 
