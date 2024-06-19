@@ -13,7 +13,7 @@ namespace projet_csharp_travel_plan_frontend.Areas.Identity.Pages.Account.Manage
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly ILogger<MesVoyagesModel> _logger;
         private const string API_URL = "https://localhost:7287/api";
-        private const string API_KEY = "test";  // Assurez-vous que c'est la bonne clé API
+        private const string API_KEY = "test"; 
 
         public MesVoyagesModel(UserManager<IdentityUser> userManager, IHttpClientFactory httpClientFactory, ILogger<MesVoyagesModel> logger)
         {

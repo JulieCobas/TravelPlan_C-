@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 using projet_csharp_travel_plan_frontend.DTO;
 using projet_csharp_travel_plan_frontend.Models;
 using Microsoft.Extensions.Logging;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace projet_csharp_travel_plan_frontend.Controllers
 {
@@ -101,6 +102,9 @@ namespace projet_csharp_travel_plan_frontend.Controllers
                 {
                     var json = await response.Content.ReadAsStringAsync();
                     var reservations = JsonConvert.DeserializeObject<List<ReservationPaysModelDTO>>(json);
+
+
+
                     return View(reservations);
                 }
 
@@ -219,7 +223,7 @@ namespace projet_csharp_travel_plan_frontend.Controllers
                 if (response.IsSuccessStatusCode)
                 {
                     var json = await response.Content.ReadAsStringAsync();
-                    var reservations = JsonConvert.DeserializeObject<List<ReservationDTO>>(json);
+                    var reservations = JsonConvert.DeserializeObject<List<ReservationPaysModelDTO>>(json);
                     return View("Timeline", reservations); // Utilise la vue "Timeline" pour afficher les réservations filtrées
                 }
 

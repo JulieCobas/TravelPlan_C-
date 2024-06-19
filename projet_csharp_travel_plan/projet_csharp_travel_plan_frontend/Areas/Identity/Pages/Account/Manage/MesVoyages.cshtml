@@ -4,15 +4,17 @@
     ViewData["Title"] = "Mes Voyages";
 }
 
-<h1>@ViewData["Title"]</h1>
+<h3>@ViewData["Title"]</h3>
 
 @if (Model.Voyages == null || !Model.Voyages.Any())
 {
-    <p>Vous n'avez aucun voyage enregistré.</p>
+    <p>Tu encore jamais planifié de voyage.</p>
 }
 else
 {
     <div class="voyages-container">
+        <h5>Voici la liste de tout tes voyages</h5>
+        <h8>Tu peux voir les détails du voyage en cliquant dessus.</h8>
         @foreach (var voyage in Model.Voyages)
         {
             <div class="voyage-card" data-href="@Url.Action("ByVoyage", "Reservations", new { voyageId = voyage.IdVoyage })">
