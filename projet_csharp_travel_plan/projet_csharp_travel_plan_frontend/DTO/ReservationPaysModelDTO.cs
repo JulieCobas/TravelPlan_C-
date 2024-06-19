@@ -8,7 +8,7 @@
         public short? IdTransport { get; set; }
         public short IdVoyage { get; set; }
         public VoyageDTO? Voyage { get; set; }
-        public string NomPays {  get; set; }    
+        public string NomPays { get; set; }
         public DateTime DateHeureDebut { get; set; }
         public DateTime? DateHeureFin { get; set; }
 
