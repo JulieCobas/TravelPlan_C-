@@ -28,7 +28,6 @@ namespace projet_csharp_travel_plan_frontend.Controllers
             _logger = logger;
         }
 
-        // GET: Reservations
         public async Task<IActionResult> Index()
         {
             try
@@ -37,12 +36,40 @@ namespace projet_csharp_travel_plan_frontend.Controllers
                 if (response.IsSuccessStatusCode)
                 {
                     var json = await response.Content.ReadAsStringAsync();
-                    var reservations = JsonConvert.DeserializeObject<List<ReservationDTO>>(json);
-                    return View(reservations);
+                    var reservations = JsonConvert.DeserializeObject<List<ReservationPaysModelDTO>>(json);
+
+                    // Récupérer la liste des pays
+                    var countryResponse = await _client.GetAsync(PAYS_API_URL);
+                    if (countryResponse.IsSuccessStatusCode)
+                    {
+                        var countryJson = await countryResponse.Content.ReadAsStringAsync();
+                        var countries = JsonConvert.DeserializeObject<List<PayDTO>>(countryJson);
+
+                        foreach (var reservation in reservations)
+                        {
+                            if (reservation.Voyage != null)
+                            {
+                                var country = countries.FirstOrDefault(c => c.IdPays == reservation.Voyage.IdVoyage); // Correspondance par ID
+                                if (country != null)
+                                {
+                                    // Assigner le nom du pays au nouveau DTO
+                                    reservation.Voyage.NomPays = country.Nom;
+                                }
+                            }
+                        }
+
+                        return View(reservations);
+                    }
+                    else
+                    {
+                        var errorCountryMessage = await countryResponse.Content.ReadAsStringAsync();
+                        _logger.LogError("Error fetching countries: {Message}", errorCountryMessage);
+                        return RedirectToAction("Error", "Home", new { message = errorCountryMessage });
+                    }
                 }
 
-                // Handle error
                 var errorMessage = await response.Content.ReadAsStringAsync();
+                _logger.LogError("Error fetching reservations: {Message}", errorMessage);
                 return RedirectToAction("Error", "Home", new { message = errorMessage });
             }
             catch (HttpRequestException ex)

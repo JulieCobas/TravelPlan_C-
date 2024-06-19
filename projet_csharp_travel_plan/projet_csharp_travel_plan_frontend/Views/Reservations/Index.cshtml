@@ -1,4 +1,4 @@
-﻿@model IEnumerable<projet_csharp_travel_plan_frontend.DTO.ReservationDTO>
+﻿@model IEnumerable<projet_csharp_travel_plan_frontend.DTO.ReservationPaysModelDTO>
 
 @{
     ViewData["Title"] = "Index";
@@ -52,7 +52,7 @@
                     <div class="country-section d-flex flex-column align-items-center justify-content-center">
                         <span class="badge badge-country">
                             &#127758; <!-- Icône de planète -->
-                            @item.Voyage.
+                            @item.Voyage.NomPays
                         </span>
                     </div>
                     <div class="card-body d-flex justify-content-between align-items-start">
@@ -324,26 +324,32 @@
             background-color: #0056b3;
         }
 
-    /* Style pour le nom du pays */
     .country-section {
-        min-width: 150px;
+        width: 250px; 
         background-color: #007bff;
         color: #fff;
-        padding:0.5rem;
+        padding: 1rem; 
         border-radius: 10px 0 0 10px;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
+        text-align: center; 
+        overflow: hidden; 
+        text-overflow: ellipsis; 
+        white-space: nowrap; 
     }
 
+        
         .country-section .badge-country {
             background-color: transparent;
             color: #fff;
-
             font-size: 1.2rem;
             padding: 0.5rem 0;
             border-radius: 0;
+            overflow: hidden; 
+            text-overflow: ellipsis; 
+            white-space: nowrap;
         }
 
     .details-section {
