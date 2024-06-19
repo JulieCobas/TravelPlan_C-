@@ -9,8 +9,13 @@
 }
 
 <div class="container mt-5">
-    <h1 class="display-4 font-weight-bold">Étapes de votre voyage</h1>
-    <p class="description">Voici la timeline de vos réservations effectuées.</p>
+
+    <!-- Bouton pour retourner à la liste des voyages -->
+    <a href="/Identity/Account/Manage/MesVoyages" class="btn btn-primary mb-3">
+        <i class="fas fa-arrow-left"></i> Retour à Mes Voyages
+    </a>
+
+    <h1 class="display-4 font-weight-bold flex-grow-1 text-center">Étapes de votre voyage</h1>
 
     <div class="timeline">
         @for (int i = 0; i < sortedReservations.Count; i++)
@@ -331,6 +336,10 @@
             opacity: 1;
             transform: translateY(0);
         }
+
+    .font-weight-bold {
+        font-weight: bold;
+    }
 </style>
 
 
