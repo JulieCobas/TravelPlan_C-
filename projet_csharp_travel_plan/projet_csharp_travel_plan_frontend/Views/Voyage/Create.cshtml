@@ -12,16 +12,16 @@
     <div class="form-group row">
         <label class="col-sm-2 col-form-label">Date d'arrivée</label>
         <div class="col-sm-10">
-            <input type="date" asp-for="DateDebut" class="form-control" />
-            <div class="invalid-feedback" data-name="DateDebut"></div>
+            <input type="date" asp-for="DateDebut" class="form-control" id="dateDebut" />
+            <div class="invalid-feedback" id="dateDebutError"></div>
         </div>
     </div>
 
     <div class="form-group row">
         <label class="col-sm-2 col-form-label">Date de départ</label>
         <div class="col-sm-10">
-            <input type="date" asp-for="DateFin" class="form-control" />
-            <div class="invalid-feedback" data-name="DateFin"></div>
+            <input type="date" asp-for="DateFin" class="form-control" id="dateFin" />
+            <div class="invalid-feedback" id="dateFinError"></div>
         </div>
     </div>
 
@@ -38,7 +38,7 @@
                     }
                 }
             </select>
-            <div class="invalid-feedback" data-name="IdPays"></div>
+            <div class="invalid-feedback" id="paysSelectError"></div>
         </div>
     </div>
 
@@ -93,10 +93,12 @@
     .invalid-feedback {
         color: red;
         font-size: 12px;
-        margin-right: 10px;
+        margin-top: 5px;
+        display: none; /* Initially hidden */
     }
 
-    .form-control.is-invalid {
+    .form-control.is-invalid,
+    .form-select.is-invalid {
         border-color: red;
     }
 
@@ -154,3 +156,43 @@
                 background-color: #23527c;
             }
 </style>
+
+<script>
+    document.getElementById('voyageForm').addEventListener('submit', function (event) {
+        let valid = true;
+
+        // Clear previous error messages and remove error styles
+        document.getElementById('dateDebutError').innerText = '';
+        document.getElementById('dateDebutError').style.display = 'none';
+        document.getElementById('dateFinError').innerText = '';
+        document.getElementById('dateFinError').style.display = 'none';
+        document.getElementById('dateDebut').classList.remove('is-invalid');
+        document.getElementById('dateFin').classList.remove('is-invalid');
+
+        // Get the date values
+        const dateDebut = document.getElementById('dateDebut').value;
+        const dateFin = document.getElementById('dateFin').value;
+        const today = new Date().toISOString().split('T')[0]; // Get today's date in yyyy-mm-dd format
+
+        // Check if DateDebut is in the past
+        if (dateDebut && dateDebut < today) {
+            document.getElementById('dateDebutError').innerText = 'La date d\'arrivée ne peut pas être dans le passé.';
+            document.getElementById('dateDebutError').style.display = 'block';
+            document.getElementById('dateDebut').classList.add('is-invalid');
+            valid = false;
+        }
+
+        // Check if DateFin is before DateDebut
+        if (dateFin && dateDebut && dateFin < dateDebut) {
+            document.getElementById('dateFinError').innerText = 'La date de départ ne peut pas être antérieure à la date d\'arrivée.';
+            document.getElementById('dateFinError').style.display = 'block';
+            document.getElementById('dateFin').classList.add('is-invalid');
+            valid = false;
+        }
+
+        // If not valid, prevent form submission
+        if (!valid) {
+            event.preventDefault();
+        }
+    });
+</script>
