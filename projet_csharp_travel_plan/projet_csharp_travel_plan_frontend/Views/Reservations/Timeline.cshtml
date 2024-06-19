@@ -19,7 +19,7 @@
             var isFirst = i == 0;
             var isLast = i == sortedReservations.Count - 1;
 
-            <div class="timeline-item" data-href="@Url.Action("Details", "Reservations", new { id = item.IdReservation })">
+            <div class="timeline-item">
                 <div class="timeline-icon">
                     @if (isFirst)
                     {
@@ -53,7 +53,7 @@
                     }
                 </div>
                 <div class="timeline-content">
-                    <div class="badge-container">
+                    <div class="country-section d-flex align-items-center mb-3">
                         @if (item.Logement != null)
                         {
                             <span class="badge badge-pill badge-primary">Logement</span>
@@ -130,15 +130,6 @@
 @section Scripts {
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            var items = document.querySelectorAll(".timeline-item");
-            items.forEach(function (item) {
-                item.addEventListener("click", function () {
-                    window.location.href = item.getAttribute("data-href");
-                });
-                item.style.cursor = "pointer";
-            });
-        });
-        document.addEventListener("DOMContentLoaded", function () {
             const items = document.querySelectorAll(".timeline-item");
 
             const observer = new IntersectionObserver((entries) => {
@@ -160,14 +151,14 @@
     </script>
 }
 
+
+
 <style>
     .timeline {
         position: relative;
         max-width: 900px;
         margin: 0 auto;
-        margin-top 15px;
-        padding-top 15px
-        padding: 20px 0;
+        padding: 20px;
         list-style: none;
     }
 
@@ -175,95 +166,100 @@
             content: '';
             position: absolute;
             width: 6px;
-            background-color: #9f2fff;
-            top: 0;
-            bottom: 0;
+            background-color: #007bff;
+            top: 50px; /* Aligné avec le premier point */
+            bottom: 50px; /* Aligné avec le dernier point */
             left: 50%;
             margin-left: -3px;
         }
 
     .timeline-item {
-        position: relative;
+        display: flex;
+        align-items: center;
         width: 50%;
+        position: relative;
+        margin-bottom: 50px;
         padding: 20px 40px;
         box-sizing: border-box;
-        opacity: 0;
-        transform: translateY(20px);
-        transition: opacity 0.6s ease-out, transform 0.6s ease-out;
     }
-
-        .timeline-item.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
 
         .timeline-item:nth-child(odd) {
             left: 0;
+            justify-content: flex-end;
+            padding-right: 30px;
         }
 
         .timeline-item:nth-child(even) {
             left: 50%;
+            justify-content: flex-start;
+            padding-left: 30px;
         }
 
-        .timeline-item::before {
-            content: '';
-            position: absolute;
-            top: 20px;
-            width: 25px;
-            height: 25px;
-            border-radius: 50%;
-            background-color: #fff;
-            border: 1px solid #9f2fff;
-            z-index: 1;
-        }
+    .timeline-icon {
+        position: absolute;
+        top: 0;
+        width: 50px;
+        height: 50px;
+        background-color: white;
+        border: 2px solid #007bff;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        color: #007bff;
+        z-index: 1;
+    }
 
-        .timeline-item:nth-child(odd)::before {
-            right: -12.5px;
-        }
+    .icon i {
+        font-size: 24px;
+    }
 
-        .timeline-item:nth-child(even)::before {
-            left: -12.5px;
-        }
+    .timeline-item:nth-child(odd) .timeline-icon {
+        right: -25px;
+    }
+
+    .timeline-item:nth-child(even) .timeline-icon {
+        left: -25px;
+    }
 
     .timeline-content {
         padding: 20px;
         background-color: #f9f9f9;
-        border-radius: 6px;
-        border: 1px solid #ddd;
+        border-radius: 15px;
+        border: none; /* Suppression des bordures */
         position: relative;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
+        flex-grow: 1;
     }
 
-    .timeline-item:nth-child(odd) .timeline-content {
-        margin-left: 40px;
-    }
+        .timeline-content h4 {
+            margin-top: 0;
+        }
 
-    .timeline-item:nth-child(even) .timeline-content {
-        margin-right: 40px;
-    }
+        .timeline-content .btn-details {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 0.5rem 1rem;
+            font-size: 1rem;
+            border-radius: 5px;
+            text-align: center;
+            font-weight: bold;
+        }
 
-    .timeline-item:hover .timeline-content {
-        background-color: #e6f7ff;
-        transform: translateY(-5px);
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        cursor: pointer;
-    }
+            .timeline-content .btn-details:hover {
+                background-color: #0056b3;
+            }
 
-    .timeline-icon {
-        display: none; /* Masquer les icônes de la timeline pour cette version */
-    }
-
-    .timeline-content h4 {
-        margin-top: 0;
-    }
-
-    .timeline-content .btn-details {
-        display: none;
+    .badge-primary,
+    .badge-success,
+    .badge-warning {
+        border: none; /* Suppression des bordures des badges */
     }
 
     .badge-primary {
-        background-color: #005f9f;
+        background-color: #ff9f43;
     }
 
     .badge-success {
@@ -277,8 +273,6 @@
     .badge {
         font-size: 1rem;
         padding: 0.5rem 2rem;
-        color: #fff;
-        border-radius: 20px;
     }
 
     .date-time {
@@ -326,23 +320,17 @@
             border-radius: 5px;
         }
 
-    /* Ajustements supplémentaires pour une meilleure présentation */
-    .timeline-item:hover .timeline-content {
-        background-color: #e6f7ff;
+    /* Animations for entry */
+    .timeline-item {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.6s ease-out, transform 0.6s ease-out;
     }
 
-    .timeline-item:hover .timeline-icon {
-        border-color: #5556b3;
-        color: #0056b3;
-    }
-
-    .timeline-item:nth-child(odd) .timeline-content {
-        border-top-right-radius: 0;
-        border-bottom-right-radius: 0;
-    }
-
-    .timeline-item:nth-child(even) .timeline-content {
-        border-top-left-radius: 0;
-        border-bottom-left-radius: 0;
-    }
+        .timeline-item.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
 </style>
+
+
