@@ -1,11 +1,12 @@
 ﻿@model IEnumerable<projet_csharp_travel_plan_frontend.DTO.TransportDTO>
 
 @{
-    ViewData["Title"] = "Transports";
+    ViewData["Title"] = $"Transports en {ViewData["SelectedCountry"]}";
+    var selectedCountry = ViewData["SelectedCountry"];
     var voyageId = ViewData["VoyageId"];
 }
 
-<h1>Transports</h1>
+<h1>@ViewData["Title"]</h1>
 
 <p class="description">Voici les différents transports disponibles pour vous ! Veuillez choisir :</p>
 
@@ -14,23 +15,26 @@
     {
         @foreach (var item in Model)
         {
-            <div class="card mb-4 shadow-sm">
-                <div class="row no-gutters">
-                    <div class="col-md-4">
-                        <img src="/img/transport_test.png" class="card-img" alt="Image du transport">
-                    </div>
-                    <div class="col-md-8 d-flex flex-column">
-                        <div class="card-body">
-                            <h5 class="card-title">@Html.DisplayFor(modelItem => item.NomFournisseur)</h5>
-                            <p class="card-text"><strong>@Html.DisplayFor(modelItem => item.CategorieTransportNom)</strong></p>
-                            <p class="card-text">@Html.DisplayFor(modelItem => item.Prix) €</p>
+            if (item.NomPays.Equals((string)selectedCountry, StringComparison.OrdinalIgnoreCase)) // Filter by selected country name
+            {
+                <div class="card mb-4 shadow-sm">
+                    <div class="row no-gutters">
+                        <div class="col-md-4">
+                            <img src="/img/transport_test.png" class="card-img" alt="Image du transport">
                         </div>
-                        <div class="card-footer text-left">
-                            <a asp-action="Details" asp-route-id="@item.IdTransport" asp-route-voyageId="@voyageId" class="btn btn-info">Voir détails</a>
+                        <div class="col-md-8 d-flex flex-column">
+                            <div class="card-body">
+                                <h5 class="card-title">@Html.DisplayFor(modelItem => item.NomFournisseur)</h5>
+                                <p class="card-text"><strong>@Html.DisplayFor(modelItem => item.CategorieTransportNom)</strong></p>
+                                <p class="card-text">@Html.DisplayFor(modelItem => item.Prix) €</p>
+                            </div>
+                            <div class="card-footer text-left">
+                                <a asp-action="Details" asp-route-id="@item.IdTransport" asp-route-country="@item.NomPays" asp-route-voyageId="@voyageId" class="btn btn-info">Voir détails</a>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            }
         }
     }
     else
@@ -42,6 +46,7 @@
 <form method="post" asp-action="ProceedToLodging">
     @Html.AntiForgeryToken()
     <input type="hidden" name="voyageId" value="@voyageId" />
+    <input type="hidden" name="country" value="@selectedCountry" />
     <button type="submit" class="btn btn-secondary">Passer à la réservation de logement sans sélectionner de transport</button>
 </form>
 

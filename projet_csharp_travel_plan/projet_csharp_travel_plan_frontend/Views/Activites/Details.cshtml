@@ -39,7 +39,7 @@
 
     <div class="card mb-4 shadow-sm">
         <div class="card-body">
-            <form method="post" asp-action="ConfirmActiviteSelection">
+            <form method="post" asp-action="ConfirmActiviteSelection" id="activiteForm">
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="IdActivite" value="@Model.IdActivite" />
                 <input type="hidden" name="VoyageId" value="@voyageId" />
@@ -143,3 +143,30 @@
             background-color: #23527c;
         }
 </style>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('DateDebut').setAttribute('min', today);
+            document.getElementById('DateFin').setAttribute('min', today);
+
+            document.getElementById('DateDebut').value = today;
+            document.getElementById('HeureDebut').value = '09:00';
+
+            document.getElementById('DateDebut').addEventListener('change', function () {
+                document.getElementById('DateFin').setAttribute('min', this.value);
+            });
+
+            document.getElementById('activiteForm').addEventListener('submit', function (event) {
+                const dateDebut = document.getElementById('DateDebut').value;
+                const dateFin = document.getElementById('DateFin').value;
+
+                if (dateFin < dateDebut) {
+                    event.preventDefault();
+                    alert('La date de fin ne peut pas être antérieure à la date de début.');
+                }
+            });
+        });
+    </script>
+}

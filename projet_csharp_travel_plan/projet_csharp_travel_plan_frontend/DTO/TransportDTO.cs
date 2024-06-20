@@ -4,6 +4,8 @@
     {
         public short IdTransport { get; set; }
         public string NomFournisseur { get; set; }
+        public short IdPays { get; set; }
+        public string NomPays { get; set; } = null!;
         public decimal Prix { get; set; }
         public string CategorieTransportNom { get; set; }
         public string VehiculeLocMarque { get; set; }

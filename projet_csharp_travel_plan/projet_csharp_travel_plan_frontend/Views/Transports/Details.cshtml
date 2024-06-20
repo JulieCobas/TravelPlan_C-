@@ -59,6 +59,10 @@
                         @Html.AntiForgeryToken()
                         <input type="hidden" name="IdTransport" value="@Model.IdTransport" />
                         <input type="hidden" name="voyageId" value="@voyageId" />
+                        <input type="hidden" name="BagageMain" value="false" />
+                        <input type="hidden" name="BagageEnSoute" value="false" />
+                        <input type="hidden" name="BagageLarge" value="false" />
+                        <input type="hidden" name="Speedyboarding" value="false" />
                         <button type="submit" class="btn btn-primary">Confirmer et passer à la réservation de logement</button>
                     </form>
                 </div>
@@ -68,10 +72,18 @@
 </div>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener('DOMContentLoaded', function () {
         const basePrice = parseFloat("@Model.Prix");
         const checkboxes = document.querySelectorAll('.option-checkbox');
         const totalPriceElement = document.getElementById('totalPrice');
+        const form = document.getElementById('transportForm');
+        const dateDebut = document.getElementById('DateDebut');
+        const dateFin = document.getElementById('DateFin');
+        const today = new Date().toISOString().split('T')[0]; // Format YYYY-MM-DD
+
+        // Set min attribute to today's date
+        dateDebut.setAttribute('min', today);
+        dateFin.setAttribute('min', today);
 
         checkboxes.forEach(checkbox => {
             checkbox.addEventListener('change', updatePrice);
@@ -79,18 +91,16 @@
 
         function updatePrice() {
             let totalPrice = basePrice;
-
             checkboxes.forEach(checkbox => {
                 if (checkbox.checked) {
                     totalPrice += parseFloat(checkbox.getAttribute('data-price')) || 0;
+                    document.getElementById(checkbox.id).previousElementSibling.value = "true";
                 }
             });
-
             totalPriceElement.textContent = totalPrice.toFixed(2);
         }
 
         // Validation du formulaire
-        const form = document.getElementById('transportForm');
         form.addEventListener('submit', function (event) {
             // Réinitialiser les messages d'erreur
             document.querySelectorAll('.is-invalid').forEach(function (element) {
@@ -99,17 +109,22 @@
 
             let valid = true;
 
-            // Vérifier si les champs dates sont remplis
-            const dateDebut = document.getElementById('DateDebut');
-            const dateFin = document.getElementById('DateFin');
-
+            // Vérifier si les champs dates sont remplis et valides
             if (!dateDebut.value) {
                 dateDebut.classList.add('is-invalid');
+                valid = false;
+            } else if (new Date(dateDebut.value) < new Date(today)) {
+                dateDebut.classList.add('is-invalid');
+                dateDebut.nextElementSibling.textContent = "La date de début ne peut pas être antérieure à aujourd'hui.";
                 valid = false;
             }
 
             if (!dateFin.value) {
                 dateFin.classList.add('is-invalid');
+                valid = false;
+            } else if (new Date(dateFin.value) < new Date(dateDebut.value)) {
+                dateFin.classList.add('is-invalid');
+                dateFin.nextElementSibling.textContent = "La date de fin ne peut pas être antérieure à la date de début.";
                 valid = false;
             }
 
@@ -119,6 +134,13 @@
         });
     });
 </script>
+
+
+
+
+
+
+
 
 <style>
     .card {

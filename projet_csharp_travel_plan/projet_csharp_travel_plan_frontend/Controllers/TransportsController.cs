@@ -26,22 +26,22 @@ namespace projet_csharp_travel_plan_frontend.Controllers
             _logger = logger;
         }
 
-        // GET: Transports
-        public async Task<IActionResult> Index(int voyageId)
+        public async Task<IActionResult> Index(string country, int voyageId)
         {
             try
             {
-                var response = await _client.GetAsync(API_URL);
+                var response = await _client.GetAsync($"{API_URL}ByCountryName?countryName={country}");
                 if (response.IsSuccessStatusCode)
                 {
                     var json = await response.Content.ReadAsStringAsync();
-                    var transportDtos = JsonConvert.DeserializeObject<List<TransportDTO>>(json);
-                    ViewData["VoyageId"] = voyageId; // Passing voyageId to the view
-                    return View(transportDtos);
+                    var transports = JsonConvert.DeserializeObject<List<TransportDTO>>(json);
+
+                    ViewData["SelectedCountry"] = country;
+                    ViewData["VoyageId"] = voyageId;
+                    return View(transports);
                 }
 
                 var errorMessage = await response.Content.ReadAsStringAsync();
-                _logger.LogError("Error in GET Transports action: {Message}", errorMessage);
                 return RedirectToAction("Error", "Home", new { message = errorMessage });
             }
             catch (HttpRequestException ex)
@@ -52,7 +52,7 @@ namespace projet_csharp_travel_plan_frontend.Controllers
             }
         }
 
-        public async Task<IActionResult> Details(int id, int voyageId)
+        public async Task<IActionResult> Details(int id, string country, int voyageId)
         {
             try
             {
@@ -61,12 +61,12 @@ namespace projet_csharp_travel_plan_frontend.Controllers
                 {
                     var json = await response.Content.ReadAsStringAsync();
                     var transport = JsonConvert.DeserializeObject<TransportDTO>(json);
+                    ViewData["SelectedCountry"] = country;
                     ViewData["VoyageId"] = voyageId;
                     return View(transport);
                 }
 
                 var errorMessage = await response.Content.ReadAsStringAsync();
-                _logger.LogError("Error in GET Transport Details action: {Message}", errorMessage);
                 return RedirectToAction("Error", "Home", new { message = errorMessage });
             }
             catch (HttpRequestException ex)
@@ -81,27 +81,18 @@ namespace projet_csharp_travel_plan_frontend.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ConfirmTransportSelection(short IdTransport, short voyageId, DateTime DateDebut, DateTime DateFin, bool BagageMain, bool BagageEnSoute, bool BagageLarge, bool Speedyboarding)
         {
-            _logger.LogInformation("ConfirmTransportSelection called with IdTransport: {IdTransport}, voyageId: {voyageId}, DateDebut: {DateDebut}, DateFin: {DateFin}, BagageMain: {BagageMain}, BagageEnSoute: {BagageEnSoute}, BagageLarge: {BagageLarge}, Speedyboarding: {Speedyboarding}", IdTransport, voyageId, DateDebut, DateFin, BagageMain, BagageEnSoute, BagageLarge, Speedyboarding);
+            if (DateDebut < DateTime.Now || DateFin < DateDebut)
+            {
+                ModelState.AddModelError("DateDebut", "Les dates sont invalides.");
+                ModelState.AddModelError("DateFin", "Les dates sont invalides.");
 
-            if (voyageId == 0) voyageId = 1; // Default to 1 if voyageId is 0
-
-            if (DateDebut == default(DateTime))
-            {
-                ModelState.AddModelError("DateDebut", "La date de début est requise.");
-            }
-            if (DateFin == default(DateTime))
-            {
-                ModelState.AddModelError("DateFin", "La date de fin est requise.");
-            }
-            if (!ModelState.IsValid)
-            {
-                _logger.LogError("Invalid model state in ConfirmTransportSelection");
-                // Recharger les données nécessaires pour la vue
                 var response = await _client.GetAsync($"{API_URL}{IdTransport}");
                 if (response.IsSuccessStatusCode)
                 {
                     var json = await response.Content.ReadAsStringAsync();
                     var transport = JsonConvert.DeserializeObject<TransportDTO>(json);
+                    ViewData["VoyageId"] = voyageId;
+                    ViewData["SelectedCountry"] = ViewData["SelectedCountry"];
                     return View("Details", transport);
                 }
 
@@ -110,38 +101,39 @@ namespace projet_csharp_travel_plan_frontend.Controllers
                 return RedirectToAction("Error", "Home", new { message = errorMessage });
             }
 
+            var reservation = new ReservationDTO
+            {
+                IdTransport = IdTransport,
+                IdVoyage = voyageId,
+                DateHeureDebut = DateDebut,
+                DateHeureFin = DateFin,
+                Disponibilite = true
+            };
+
             try
             {
-                var reservation = new ReservationDTO
+                var response = await _client.PostAsJsonAsync(RESERVATION_API_URL, reservation);
+                if (response.IsSuccessStatusCode)
                 {
-                    IdTransport = IdTransport,
-                    IdVoyage = voyageId,
-                    DateHeureDebut = DateDebut,
-                    DateHeureFin = DateFin,
-                    Disponibilite = true
-                };
-
-                _logger.LogInformation("Sending POST request to {Url} with data: {Data}", RESERVATION_API_URL, JsonConvert.SerializeObject(reservation));
-                var reservationResponse = await _client.PostAsJsonAsync(RESERVATION_API_URL, reservation);
-                if (reservationResponse.IsSuccessStatusCode)
-                {
-                    _logger.LogInformation("Reservation created successfully.");
                     return RedirectToAction("Index", "Reservations");
                 }
 
-                var reservationErrorMessage = await reservationResponse.Content.ReadAsStringAsync();
-                _logger.LogError("Error in POST Reservation action: {Message}", reservationErrorMessage);
-                return RedirectToAction("Error", "Home", new { message = reservationErrorMessage });
+                var errorMessage = await response.Content.ReadAsStringAsync();
+                return RedirectToAction("Error", "Home", new { message = errorMessage });
             }
             catch (HttpRequestException ex)
             {
-                _logger.LogError("Error in POST ConfirmTransportSelection action: {Message}", ex.Message);
-                var errorModel = new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier, ErrorMessage = ex.Message };
-                return View("Error", errorModel);
+                return RedirectToAction("Error", "Home", new { message = ex.Message });
             }
         }
+    
 
-        [HttpPost]
+
+
+
+
+
+    [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult ProceedToLodging(short voyageId)
         {

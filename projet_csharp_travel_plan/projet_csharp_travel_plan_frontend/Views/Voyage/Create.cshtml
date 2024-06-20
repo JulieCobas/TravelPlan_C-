@@ -7,7 +7,6 @@
 <h1>Nouveau Voyage</h1>
 
 <p class="description">Vous vous trouvez ici à l'aube d'un nouveau voyage ! Veuillez remplir les informations ci-dessous pour créer un nouveau voyage. Assurez-vous que toutes les données sont correctes et à jour avant de soumettre le formulaire.</p>
-
 <form id="voyageForm" asp-action="CreatePost" asp-controller="Voyage" method="post">
     <div class="form-group row">
         <label class="col-sm-2 col-form-label">Date d'arrivée</label>
@@ -158,41 +157,62 @@
 </style>
 
 <script>
-    document.getElementById('voyageForm').addEventListener('submit', function (event) {
-        let valid = true;
+    document.addEventListener("DOMContentLoaded", function () {
+        var today = new Date().toISOString().split('T')[0];
+        var dateDebutInput = document.getElementById('dateDebut');
+        var dateFinInput = document.getElementById('dateFin');
 
-        // Clear previous error messages and remove error styles
-        document.getElementById('dateDebutError').innerText = '';
-        document.getElementById('dateDebutError').style.display = 'none';
-        document.getElementById('dateFinError').innerText = '';
-        document.getElementById('dateFinError').style.display = 'none';
-        document.getElementById('dateDebut').classList.remove('is-invalid');
-        document.getElementById('dateFin').classList.remove('is-invalid');
+        dateDebutInput.setAttribute('min', today);
+        dateFinInput.setAttribute('min', today);
 
-        // Get the date values
-        const dateDebut = document.getElementById('dateDebut').value;
-        const dateFin = document.getElementById('dateFin').value;
-        const today = new Date().toISOString().split('T')[0]; // Get today's date in yyyy-mm-dd format
+        dateDebutInput.addEventListener('change', function () {
+            dateFinInput.setAttribute('min', this.value);
+            if (dateFinInput.value && dateFinInput.value < this.value) {
+                dateFinInput.value = this.value;
+            }
+        });
 
-        // Check if DateDebut is in the past
-        if (dateDebut && dateDebut < today) {
-            document.getElementById('dateDebutError').innerText = 'La date d\'arrivée ne peut pas être dans le passé.';
-            document.getElementById('dateDebutError').style.display = 'block';
-            document.getElementById('dateDebut').classList.add('is-invalid');
-            valid = false;
-        }
+        dateFinInput.addEventListener('change', function () {
+            if (this.value < dateDebutInput.value) {
+                this.value = dateDebutInput.value;
+            }
+        });
 
-        // Check if DateFin is before DateDebut
-        if (dateFin && dateDebut && dateFin < dateDebut) {
-            document.getElementById('dateFinError').innerText = 'La date de départ ne peut pas être antérieure à la date d\'arrivée.';
-            document.getElementById('dateFinError').style.display = 'block';
-            document.getElementById('dateFin').classList.add('is-invalid');
-            valid = false;
-        }
+        document.getElementById('voyageForm').addEventListener('submit', function (event) {
+            let valid = true;
 
-        // If not valid, prevent form submission
-        if (!valid) {
-            event.preventDefault();
-        }
+            // Clear previous error messages and remove error styles
+            document.getElementById('dateDebutError').innerText = '';
+            document.getElementById('dateDebutError').style.display = 'none';
+            document.getElementById('dateFinError').innerText = '';
+            document.getElementById('dateFinError').style.display = 'none';
+            dateDebutInput.classList.remove('is-invalid');
+            dateFinInput.classList.remove('is-invalid');
+
+            // Get the date values
+            const dateDebut = dateDebutInput.value;
+            const dateFin = dateFinInput.value;
+
+            // Check if DateDebut is in the past
+            if (dateDebut && dateDebut < today) {
+                document.getElementById('dateDebutError').innerText = 'La date d\'arrivée ne peut pas être dans le passé.';
+                document.getElementById('dateDebutError').style.display = 'block';
+                dateDebutInput.classList.add('is-invalid');
+                valid = false;
+            }
+
+            // Check if DateFin is before DateDebut
+            if (dateFin && dateDebut && dateFin < dateDebut) {
+                document.getElementById('dateFinError').innerText = 'La date de départ ne peut pas être antérieure à la date d\'arrivée.';
+                document.getElementById('dateFinError').style.display = 'block';
+                dateFinInput.classList.add('is-invalid');
+                valid = false;
+            }
+
+            // If not valid, prevent form submission
+            if (!valid) {
+                event.preventDefault();
+            }
+        });
     });
 </script>

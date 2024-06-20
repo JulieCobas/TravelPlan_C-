@@ -42,11 +42,11 @@
                 <input type="hidden" name="IdLogement" value="@Model.IdLogement" />
                 <input type="hidden" name="VoyageId" value="@voyageId" />
                 <div class="form-group">
-                    <label for="DateDebut">Date de début</label>
+                    <label for="DateDebut">Date arrivée</label>
                     <input type="date" class="form-control" id="DateDebut" name="DateDebut" required />
                 </div>
                 <div class="form-group">
-                    <label for="DateFin">Date de fin</label>
+                    <label for="DateFin">Date de départ</label>
                     <input type="date" class="form-control" id="DateFin" name="DateFin" required />
                 </div>
                 <div class="form-group row mt-4">
@@ -61,6 +61,30 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script type="text/javascript">
+        document.addEventListener("DOMContentLoaded", function () {
+            var today = new Date().toISOString().split('T')[0];
+            var dateDebutInput = document.getElementById('DateDebut');
+            var dateFinInput = document.getElementById('DateFin');
+
+            dateDebutInput.setAttribute('min', today);
+            dateFinInput.setAttribute('min', today);
+
+            dateDebutInput.addEventListener('change', function () {
+                dateFinInput.setAttribute('min', this.value);
+            });
+
+            dateFinInput.addEventListener('change', function () {
+                if (dateFinInput.value < dateDebutInput.value) {
+                    dateFinInput.value = dateDebutInput.value;
+                }
+            });
+        });
+    </script>
+}
+
 
 <style>
     .card {

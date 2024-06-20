@@ -1,9 +1,13 @@
-﻿namespace projet_csharp_travel_plan.DTO
+﻿using projet_csharp_travel_plan.Models;
+
+namespace projet_csharp_travel_plan.DTO
 {
     public class TransportDTO
     {
         public short IdTransport { get; set; }
         public string NomFournisseur { get; set; }
+        public short IdPays { get; set; }
+        public string NomPays { get; set; } = null!;
         public decimal Prix { get; set; }
         public string CategorieTransportNom { get; set; }
         public string VehiculeLocMarque { get; set; }

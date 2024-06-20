@@ -74,7 +74,6 @@ public class ReservationsController : ControllerBase
                     BagageLarge = (bool)r.IdTransportNavigation.IdOptionTransportNavigation.BagageLarge,
                     Speedyboarding = (bool)r.IdTransportNavigation.IdOptionTransportNavigation.Speedyboarding,
                     Prix = r.IdTransportNavigation.IdPrixTransportNavigation.Prix,
-                    LieuDepart = r.IdTransportNavigation.LieuDepart,
                     CategorieTransportNom = r.IdTransportNavigation.IdCategorieTransportNavigation.Nom
                 } : null,
                 Voyage = r.IdVoyageNavigation != null ? new VoyageDTO
@@ -155,7 +154,7 @@ public class ReservationsController : ControllerBase
                     Speedyboarding = (bool)r.IdTransportNavigation.IdOptionTransportNavigation.Speedyboarding,
                     Prix = r.IdTransportNavigation.IdPrixTransportNavigation.Prix,
                     CategorieTransportNom = r.IdTransportNavigation.IdCategorieTransportNavigation.Nom
-                } : null,
+                } : null
 
             })
             .FirstOrDefaultAsync();

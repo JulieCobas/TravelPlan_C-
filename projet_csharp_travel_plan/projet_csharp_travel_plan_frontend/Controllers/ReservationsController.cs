@@ -197,7 +197,7 @@ namespace projet_csharp_travel_plan_frontend.Controllers
                 if (response.IsSuccessStatusCode)
                 {
                     var json = await response.Content.ReadAsStringAsync();
-                    var reservations = JsonConvert.DeserializeObject<List<ReservationDTO>>(json);
+                    var reservations = JsonConvert.DeserializeObject<List<ReservationPaysModelDTO>>(json);
                     return View("Timeline", reservations); // Utilise la vue "Timeline" pour afficher les réservations filtrées
                 }
 

@@ -15,15 +15,19 @@
         <form asp-action="Create" method="post" id="reservationForm">
             <div class="form-group">
                 <label for="voyageId">Voyage</label>
-                <select asp-for="IdVoyage" asp-items="ViewBag.Voyages" class="form-control" id="voyageId">
-                    <option value="">Sélectionnez un voyage</option>
+                <select asp-for="IdVoyage" class="form-control" id="voyageId">
+                    <option value="" disabled selected>Sélectionnez un voyage</option>
+                    @foreach (var voyage in ViewBag.Voyages)
+                    {
+                        <option value="@voyage.Value">@voyage.Text</option>
+                    }
                 </select>
                 <span class="text-danger" id="voyageError"></span>
             </div>
             <div class="form-group mt-3">
                 <label for="selectedCountry">Pays</label>
                 <select asp-for="SelectedCountry" asp-items="ViewBag.Countries" class="form-control" id="selectedCountry">
-                    <option value="">Sélectionnez un pays</option>
+                    <option value="" disabled selected>Sélectionnez un pays</option>
                 </select>
                 <span class="text-danger" id="countryError"></span>
             </div>
@@ -67,36 +71,53 @@
     }
 </style>
 
-<script>
-    document.getElementById('reservationForm').addEventListener('submit', function (event) {
-        let valid = true;
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const voyageSelect = document.getElementById('voyageId');
+            const options = Array.from(voyageSelect.options);
 
-        // Clear previous error messages and remove error borders
-        document.getElementById('voyageError').innerText = '';
-        document.getElementById('countryError').innerText = '';
-        document.getElementById('optionError').innerText = '';
-        document.getElementById('voyageId').classList.remove('error-border');
-        document.getElementById('selectedCountry').classList.remove('error-border');
+            // Extract the options excluding the disabled placeholder
+            const voyageOptions = options.slice(1);
 
-        // Check Voyage selection
-        const voyageSelect = document.getElementById('voyageId');
-        if (voyageSelect.value === '') {
-            document.getElementById('voyageError').innerText = 'Veuillez sélectionner un voyage.';
-            voyageSelect.classList.add('error-border');
-            valid = false;
-        }
+            // Sort the options by value (ID) in descending order
+            voyageOptions.sort((a, b) => b.value - a.value);
 
-        // Check Country selection
-        const countrySelect = document.getElementById('selectedCountry');
-        if (countrySelect.value === '') {
-            document.getElementById('countryError').innerText = 'Veuillez sélectionner un pays.';
-            countrySelect.classList.add('error-border');
-            valid = false;
-        }
+            // Clear the select and append the sorted options
+            voyageSelect.innerHTML = '';
+            voyageSelect.appendChild(options[0]); // Re-add the placeholder option
+            voyageOptions.forEach(option => voyageSelect.appendChild(option));
 
-        // If not valid, prevent form submission
-        if (!valid) {
-            event.preventDefault();
-        }
-    });
-</script>
+            document.getElementById('reservationForm').addEventListener('submit', function (event) {
+                let valid = true;
+
+                // Clear previous error messages and remove error borders
+                document.getElementById('voyageError').innerText = '';
+                document.getElementById('countryError').innerText = '';
+                document.getElementById('optionError').innerText = '';
+                document.getElementById('voyageId').classList.remove('error-border');
+                document.getElementById('selectedCountry').classList.remove('error-border');
+
+                // Check Voyage selection
+                if (voyageSelect.value === '') {
+                    document.getElementById('voyageError').innerText = 'Veuillez sélectionner un voyage.';
+                    voyageSelect.classList.add('error-border');
+                    valid = false;
+                }
+
+                // Check Country selection
+                const countrySelect = document.getElementById('selectedCountry');
+                if (countrySelect.value === '') {
+                    document.getElementById('countryError').innerText = 'Veuillez sélectionner un pays.';
+                    countrySelect.classList.add('error-border');
+                    valid = false;
+                }
+
+                // If not valid, prevent form submission
+                if (!valid) {
+                    event.preventDefault();
+                }
+            });
+        });
+    </script>
+}

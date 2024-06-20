@@ -1,4 +1,4 @@
-﻿@model IEnumerable<projet_csharp_travel_plan_frontend.DTO.ReservationDTO>
+﻿@model IEnumerable<projet_csharp_travel_plan_frontend.DTO.ReservationPaysModelDTO>
 
 @{
     ViewData["Title"] = "Timeline des Réservations";
@@ -170,13 +170,38 @@
                 observer.observe(item);
             });
 
+            function smoothScroll(distance, duration) {
+                const start = window.scrollY;
+                let startTime = null;
+
+                function animation(currentTime) {
+                    if (startTime === null) startTime = currentTime;
+                    const timeElapsed = currentTime - startTime;
+                    const run = easeInOutQuad(timeElapsed, start, distance, duration);
+                    window.scrollTo(0, run);
+                    if (timeElapsed < duration) {
+                        requestAnimationFrame(animation);
+                    }
+                }
+
+                function easeInOutQuad(t, b, c, d) {
+                    t /= d / 2;
+                    if (t < 1) return c / 2 * t * t + b;
+                    t--;
+                    return -c / 2 * (t * (t - 2) - 1) + b;
+                }
+
+                requestAnimationFrame(animation);
+            }
+
             document.getElementById("scroll-up").addEventListener("click", function () {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+                smoothScroll(-1000, 800); // Scroll up 500px over 1000ms
             });
 
             document.getElementById("scroll-down").addEventListener("click", function () {
-                window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+                smoothScroll(1000, 800); // Scroll down 500px over 1000ms
             });
+
             filterButtons.forEach(button => {
                 button.addEventListener("click", function () {
                     const filter = this.getAttribute("data-filter");
@@ -408,7 +433,6 @@
         text-decoration: none;
         color: inherit; /* Ensure link text color remains the same */
     }
-
 
     .scroll-buttons {
         position: fixed;

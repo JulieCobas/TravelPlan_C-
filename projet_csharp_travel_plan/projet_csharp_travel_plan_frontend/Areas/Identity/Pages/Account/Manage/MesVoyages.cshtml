@@ -19,6 +19,7 @@ else
         {
             <div class="voyage-card" data-href="@Url.Action("ByVoyage", "Reservations", new { voyageId = voyage.IdVoyage })">
                 <div class="voyage-dates">
+                    <span>ID Voyage @voyage.IdVoyage</span>
                     <span>Date de début: @voyage.DateDebut.ToShortDateString()</span>
                     <span>Date de fin: @voyage.DateFin.ToShortDateString()</span>
                 </div>
@@ -27,6 +28,10 @@ else
                 </div>
             </div>
         }
+    </div>
+    <div class="scroll-buttons">
+        <button id="scroll-up" class="btn btn-secondary"><i class="fas fa-arrow-up"></i></button>
+        <button id="scroll-down" class="btn btn-secondary"><i class="fas fa-arrow-down"></i></button>
     </div>
 }
 
@@ -39,6 +44,38 @@ else
                     window.location.href = card.getAttribute("data-href");
                 });
                 card.style.cursor = "pointer";
+            });
+
+            function smoothScroll(distance, duration) {
+                const start = window.scrollY;
+                let startTime = null;
+
+                function animation(currentTime) {
+                    if (startTime === null) startTime = currentTime;
+                    const timeElapsed = currentTime - startTime;
+                    const run = easeInOutQuad(timeElapsed, start, distance, duration);
+                    window.scrollTo(0, run);
+                    if (timeElapsed < duration) {
+                        requestAnimationFrame(animation);
+                    }
+                }
+
+                function easeInOutQuad(t, b, c, d) {
+                    t /= d / 2;
+                    if (t < 1) return c / 2 * t * t + b;
+                    t--;
+                    return -c / 2 * (t * (t - 2) - 1) + b;
+                }
+
+                requestAnimationFrame(animation);
+            }
+
+            document.getElementById("scroll-up").addEventListener("click", function () {
+                smoothScroll(-700, 800); // Scroll up 500px over 1000ms
+            });
+
+            document.getElementById("scroll-down").addEventListener("click", function () {
+                smoothScroll(700, 800); // Scroll down 500px over 1000ms
             });
         });
     </script>
@@ -75,4 +112,19 @@ else
         font-weight: bold;
         color: #333;
     }
+
+    .scroll-buttons {
+        position: fixed;
+        bottom: 100px;
+        right: 80px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+        .scroll-buttons .btn {
+            font-size: 35px;
+            padding: 10px;
+            border-radius: 10%;
+        }
 </style>
